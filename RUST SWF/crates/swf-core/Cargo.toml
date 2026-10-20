@@ -1,0 +1,17 @@
+[package]
+name = "swf-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+anyhow.workspace = true
+flate2 = "=1.1.9"
+lzma-rs = "=0.3.0"
+swf = { git = "https://github.com/ruffle-rs/ruffle", rev = "bfb540427dbdacb99eac9c0adb66509ba90151d0", default-features = false }
+image = { version = "0.25", default-features = false, features = ["jpeg", "png"] }
+base64 = "0.22"
+

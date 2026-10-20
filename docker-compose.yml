@@ -1,8 +1,0 @@
-version: '3.8'
-services:
-  app:
-    build: .
-    volumes:
-      - ./:/app
-    command: python main.py
-    # Note: GUI forwarding requires X/socket mapping on host; this compose is a baseline.

@@ -1,0 +1,171 @@
+{
+  "schema_version": 1,
+  "objective": "Conjunto de funciones común para comparar y mejorar PySWF y RustSWF conservando límites y evidencia.",
+  "default_application_engine": "native",
+  "comparative_engines": [
+    "native",
+    "rust",
+    "jpexs"
+  ],
+  "external_tools_role": "referencias locales; detectadas al refrescar el inventario",
+  "status_policy": "Las capacidades parciales o pendientes no se presentan como implementadas ni como equivalencia con JPEXS.",
+  "features": [
+    {
+      "id": "container",
+      "name": "Leer FWS, CWS y ZWS; conservar originales",
+      "priority": 1,
+      "python": "implemented_with_validation",
+      "rust": "implemented_reading_and_wrapper_roundtrip",
+      "evidence": [
+        "py_swf_editor/py_swf/swf_parser.py",
+        "RUST SWF/crates/swf-core/src",
+        "RUST SWF/reports/rustswf-source-only-summary.json"
+      ]
+    },
+    {
+      "id": "inventory",
+      "name": "Inventario completo de tags, scripts, clases y recursos",
+      "priority": 1,
+      "python": "implemented",
+      "rust": "implemented_paginated",
+      "evidence": [
+        "py_swf_editor/py_swf/script_inventory.py",
+        "RUST SWF/crates/swf-avm/src"
+      ]
+    },
+    {
+      "id": "pcode",
+      "name": "Desensamblar AVM1 y AVM2, conservando identidades y offsets",
+      "priority": 1,
+      "python": "implemented",
+      "rust": "implemented",
+      "verification": "Requiere corpus diferencial para equivalencia."
+    },
+    {
+      "id": "source",
+      "name": "Reconstruir fuente AS1/AS2/AS3, clases y control de flujo",
+      "priority": 1,
+      "python": "partial",
+      "rust": "partial",
+      "verification": "Comparar la misma unidad de bytecode; mantener fallos y P-code visibles."
+    },
+    {
+      "id": "source_edit",
+      "name": "Editar y recompilar fuente o P-code; guardar, validar y reabrir",
+      "priority": 1,
+      "python": "partial_supported_programs_and_saved_sources",
+      "rust": "delegated_to_pyswf_in_suite",
+      "evidence": [
+        "py_swf_editor/py_swf/editing.py",
+        "RUST SWF/README.md"
+      ],
+      "verification": "Fuente aportada con hash del texto y revisión del SWF; recompilación desde fuentes guardadas. Familias AS no compatibles permanecen acotadas."
+    },
+    {
+      "id": "resource_export",
+      "name": "Exportar imágenes, formas, audio, fuentes, textos y recursos binarios",
+      "priority": 2,
+      "python": "implemented_by_resource_type",
+      "rust": "implemented_by_resource_type",
+      "verification": "Verificar el formato y los límites por tipo de recurso."
+    },
+    {
+      "id": "project",
+      "name": "Proyectos reabribles, snapshots, historial y deshacer/rehacer",
+      "priority": 2,
+      "python": "v3_sources_recovery_undo_redo_reads_v1_v2",
+      "rust": "delegated_in_suite"
+    },
+    {
+      "id": "preview",
+      "name": "Previsualización de escena, timeline y recursos",
+      "priority": 2,
+      "python": "partial",
+      "rust": "partial",
+      "verification": "Renderizado de vista previa no demuestra ejecución equivalente de Flash."
+    },
+    {
+      "id": "fla",
+      "name": "Exportar FLA/XFL reutilizable",
+      "priority": 3,
+      "python": "delegated_to_jpexs_export_observed",
+      "rust": "delegated_in_suite",
+      "verification": "Exportación producida; apertura y reutilización en Animate pendiente. No es el ZIP/JSON de recursos."
+    },
+    {
+      "id": "deobfuscation",
+      "name": "Recuperar flujo y símbolos de SWF ofuscados o dañados",
+      "priority": 2,
+      "python": "partial",
+      "rust": "partial",
+      "verification": "Incluir entradas inválidas y fijar límites de tiempo/memoria."
+    },
+    {
+      "id": "differential",
+      "name": "Corpus compartido y comparación reproducible",
+      "priority": 1,
+      "python": "existing_harness",
+      "rust": "adapter_verified_smoke",
+      "metrics": [
+        "cobertura por unidad",
+        "errores y fallback",
+        "compilación y reapertura",
+        "conducta cuando se verifique",
+        "tiempo frío y caliente",
+        "RAM del árbol de procesos",
+        "hashes de entrada y herramientas"
+      ]
+    },
+    {
+      "id": "resource_edit",
+      "name": "Editar texto, audio, imágenes, vértices, glifos y propiedades de fuentes compatibles",
+      "priority": 2,
+      "python": "implemented_supported_types",
+      "rust": "delegated_to_pyswf_in_suite",
+      "verification": "Cambios validados con historial; formas en píxeles, glifos en sus unidades originales. Arrastre profesional, controles de curvas y estilos completos pendientes.",
+      "evidence": [
+        "py_swf_editor/tests/test_suite_resource_documents.py",
+        "py_swf_editor/tests/test_suite_font_documents.py",
+        "RUST SWF/web/src/components/SuiteResources.tsx"
+      ]
+    }
+  ],
+  "benchmark_policy": {
+    "winner_requires": "Alcance comparable y calidad verificada; rapidez por sí sola no determina el mejor descompilador.",
+    "unavailable": "Registrar ausente/no aplicable sin tiempos ficticios.",
+    "unmapped": "La salida sin correspondencia de unidades conserva cobertura no verificada.",
+    "profiles": {
+      "smoke": {
+        "warmups": 1,
+        "hot_runs": 3,
+        "cold_runs": 1
+      },
+      "full": {
+        "warmups": 3,
+        "hot_runs": 30,
+        "cold_runs": 5
+      }
+    },
+    "execution": "Cada motor trabaja sobre una copia; no ejecutar código Flash durante descompilación."
+  },
+  "display_names": {
+    "python": "PySWF",
+    "native": "PySWF",
+    "rust": "RustSWF"
+  },
+  "delivery": "0.3.0_next",
+  "verification_campaign": {
+    "release": "0.3.0",
+    "gui": false,
+    "frontend": [
+      "npm run lint",
+      "npm run build"
+    ],
+    "counts": "Consultar el reporte final; no sumar ejecuciones parciales o mezclar con GUI histórica.",
+    "pending": [
+      "familias AS no compatibles",
+      "FLA/XFL abierto y verificado en Animate",
+      "campañas legítimas con herramientas comerciales"
+    ]
+  }
+}

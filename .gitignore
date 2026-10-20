@@ -1,37 +1,38 @@
-# Python
+# Entornos y dependencias locales
+.venv/
+venv/
+node_modules/
+.build-staging/
 __pycache__/
 *.py[cod]
-*$py.class
-.Python
-env/
-.env
-.venv
-venv/
-ENV/
-.venv/
-
-# Virtual environment
-.vscode/
-.idea/
-/.venv
-
-# Distribution / packaging
-build/
-dist/
+.pytest_cache/
 *.egg-info/
 
-# macOS
-.DS_Store
+# Compilación y entregas: se regeneran con RUST SWF/build.ps1 y PyInstaller
+target/
+dist/
+build/
+RUST SWF/reports/
+RUST SWF/desktop/binaries/
+RUST SWF/tools/bootstrap/
 
-# Windows
-Thumbs.db
-ehthumbs.db
+# Informes, catálogos SQLite y evidencias de benchmarks (varios GB; se regeneran)
+/reports/
+py_swf_editor/reports/
 
-# Editor settings
-*.swp
+# Herramientas de terceros: binarios, instaladores y SDK con licencias propias.
+# El código las busca en estas mismas rutas; README.md explica cómo instalarlas.
+/jpexs-decompiler-master/
+/toolpacks/
+/as3sorcerer_setup/
+/asv202201_other/
+/swfdec/
+/flare06doswin/
+/flash_decompiler.exe
+py_swf_editor/.dev-references/
 
-# Local files
-GUIDE_es.txt
-
-# Third party large repos
-third_party/
+# Configuración local de editores y agentes
+.claude/
+.vscode/
+.idea/
+*.log

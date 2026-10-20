@@ -1,0 +1,1 @@
+package app { public namespace localns="urn:parity:model"; }

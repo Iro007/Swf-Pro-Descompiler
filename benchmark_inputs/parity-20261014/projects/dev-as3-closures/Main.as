@@ -1,0 +1,1 @@
+package { import flash.display.Sprite; public class Main extends Sprite { public function Main(){ super(); var f:Function=make(6);trace("PARITY_CLOSURE_"+f(4)); } private function make(base:int):Function { return function(step:int):int{return base+step;}; } } }

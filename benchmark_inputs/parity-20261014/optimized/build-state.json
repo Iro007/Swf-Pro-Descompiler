@@ -1,0 +1,2979 @@
+{
+  "families": [
+    {
+      "family_id": "dev-as2-timeline",
+      "split": "development",
+      "compiler": "rascal",
+      "language": "as2",
+      "entry": "Main.as",
+      "expected_trace": [
+        "PARITY_TIMELINE_10"
+      ],
+      "source_files": [
+        {
+          "relative": "projects/dev-as2-timeline/Main.as",
+          "sha256": "9b139051e3d51568c7a1b9a9af6941d1494ff6402ba0ac26e196393926efd4fd"
+        }
+      ],
+      "source_sha256": "13517f18c2a6c774724e30ce180d1bace18299c38368e0e6fca666314465abfc",
+      "compilations": [
+        {
+          "status": "compiled",
+          "compiler": "rascal",
+          "debug": false,
+          "command": [
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\py_swf_editor\\.dev-references\\extra-tools\\rascal-profile-0.3.5\\bin\\rascal-profile.exe",
+            "--profile",
+            "release",
+            "--source",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\optimized\\projects\\dev-as2-timeline\\Main.as",
+            "--output",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\optimized\\projects\\dev-as2-timeline\\builds\\release\\compiler.swf",
+            "--swf-version",
+            "15",
+            "--frame-rate",
+            "30"
+          ],
+          "log": "Rascal 0.3.5 profile=release fold_constants=true promote_variables_to_registers=true\n",
+          "binary_sha256": "8ff62ebfbf3efea5d7ac0fcd71b01f8c5b1829fe5f7fce041c34e87ec7a30471",
+          "compiler_output_sha256": "892d362d0bfe117abac2048d050cbf1200bcb1f7aa90ac1f2784903161730c45",
+          "behavior": "not_run",
+          "source_equivalence": "not_verified",
+          "debug_mode": "explicit independent compiler profile: release"
+        },
+        {
+          "status": "compiled",
+          "compiler": "rascal",
+          "debug": true,
+          "command": [
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\py_swf_editor\\.dev-references\\extra-tools\\rascal-profile-0.3.5\\bin\\rascal-profile.exe",
+            "--profile",
+            "debug",
+            "--source",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\optimized\\projects\\dev-as2-timeline\\Main.as",
+            "--output",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\optimized\\projects\\dev-as2-timeline\\builds\\debug\\compiler.swf",
+            "--swf-version",
+            "15",
+            "--frame-rate",
+            "30"
+          ],
+          "log": "Rascal 0.3.5 profile=debug fold_constants=false promote_variables_to_registers=false\n",
+          "binary_sha256": "8ff62ebfbf3efea5d7ac0fcd71b01f8c5b1829fe5f7fce041c34e87ec7a30471",
+          "compiler_output_sha256": "892d362d0bfe117abac2048d050cbf1200bcb1f7aa90ac1f2784903161730c45",
+          "behavior": "not_run",
+          "source_equivalence": "not_verified",
+          "debug_mode": "explicit independent compiler profile: debug"
+        }
+      ],
+      "compiled_variants": 6
+    },
+    {
+      "family_id": "dev-as2-captures",
+      "split": "development",
+      "compiler": "rascal",
+      "language": "as2",
+      "entry": "Main.as",
+      "expected_trace": [
+        "PARITY_CAPTURE_12"
+      ],
+      "source_files": [
+        {
+          "relative": "projects/dev-as2-captures/Main.as",
+          "sha256": "a0ea8a2b187c7c586d4dd6c5e3553b5ff3db794826c6830002d62e331c3aa123"
+        }
+      ],
+      "source_sha256": "d20720baf7cecc2c26df93fc816d32e57fed70129837f4f383574c450a7fd21d",
+      "compilations": [
+        {
+          "status": "compiled",
+          "compiler": "rascal",
+          "debug": false,
+          "command": [
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\py_swf_editor\\.dev-references\\extra-tools\\rascal-profile-0.3.5\\bin\\rascal-profile.exe",
+            "--profile",
+            "release",
+            "--source",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\optimized\\projects\\dev-as2-captures\\Main.as",
+            "--output",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\optimized\\projects\\dev-as2-captures\\builds\\release\\compiler.swf",
+            "--swf-version",
+            "15",
+            "--frame-rate",
+            "30"
+          ],
+          "log": "Rascal 0.3.5 profile=release fold_constants=true promote_variables_to_registers=true\n",
+          "binary_sha256": "8ff62ebfbf3efea5d7ac0fcd71b01f8c5b1829fe5f7fce041c34e87ec7a30471",
+          "compiler_output_sha256": "9f11b8308bdc97bd0e2be2939255332c8b5c1bcfed5e801c886e988a3480b71f",
+          "behavior": "not_run",
+          "source_equivalence": "not_verified",
+          "debug_mode": "explicit independent compiler profile: release"
+        },
+        {
+          "status": "compiled",
+          "compiler": "rascal",
+          "debug": true,
+          "command": [
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\py_swf_editor\\.dev-references\\extra-tools\\rascal-profile-0.3.5\\bin\\rascal-profile.exe",
+            "--profile",
+            "debug",
+            "--source",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\optimized\\projects\\dev-as2-captures\\Main.as",
+            "--output",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\optimized\\projects\\dev-as2-captures\\builds\\debug\\compiler.swf",
+            "--swf-version",
+            "15",
+            "--frame-rate",
+            "30"
+          ],
+          "log": "Rascal 0.3.5 profile=debug fold_constants=false promote_variables_to_registers=false\n",
+          "binary_sha256": "8ff62ebfbf3efea5d7ac0fcd71b01f8c5b1829fe5f7fce041c34e87ec7a30471",
+          "compiler_output_sha256": "59d14269a8fdbca6936097055933a5ede8d0db82f94c3c46dbf4492771bb466c",
+          "behavior": "not_run",
+          "source_equivalence": "not_verified",
+          "debug_mode": "explicit independent compiler profile: debug"
+        }
+      ],
+      "compiled_variants": 6
+    },
+    {
+      "family_id": "dev-as3-classes-namespaces",
+      "split": "development",
+      "compiler": "flex",
+      "language": "as3",
+      "entry": "Main.as",
+      "application_classes": [
+        "Main",
+        "app::Model"
+      ],
+      "expected_trace": [
+        "PARITY_NAMESPACE_7"
+      ],
+      "source_files": [
+        {
+          "relative": "projects/dev-as3-classes-namespaces/Main.as",
+          "sha256": "216943765b628d14ee90160ca7e6f95dff9c2b22686c6ca22a4d7cf7c350500c"
+        },
+        {
+          "relative": "projects/dev-as3-classes-namespaces/app/localns.as",
+          "sha256": "7e91569a92b3b16e71a9d066de26222813d37d341dbefaa774562cfab859c418"
+        },
+        {
+          "relative": "projects/dev-as3-classes-namespaces/app/Model.as",
+          "sha256": "bfc4475e7eea886b28041677f3b97e49c62ed4da82c1c344963b92ca5d5dbff0"
+        }
+      ],
+      "source_sha256": "0c845f8a18ebfeb069cae4b1719859aae3ee2c8a942ca2fa32d3fe6cbbac276c",
+      "compilations": [
+        {
+          "status": "compiled",
+          "compiler": "flex",
+          "debug": false,
+          "command": [
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\py_swf_editor\\.dev-references\\jdk\\jdk-21.0.12.1+1\\bin\\java.exe",
+            "-Xmx1024m",
+            "-jar",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\lib\\mxmlc.jar",
+            "+flexlib=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\frameworks",
+            "+playerglobalHome=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\frameworks\\libs\\player",
+            "-target-player=32.0",
+            "-debug=false",
+            "-omit-trace-statements=false",
+            "-output=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\dev-as3-classes-namespaces\\builds\\release\\compiler.swf",
+            "-source-path=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\dev-as3-classes-namespaces",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\dev-as3-classes-namespaces\\Main.as"
+          ],
+          "log": "Cargando el archivo de configuraci\u00f3n C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\frameworks\\flex-config.xml\r\nC:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\dev-as3-classes-namespaces\\builds\\release\\compiler.swf (832 bytes)\r\n",
+          "binary_sha256": "82051fdab26319d77d20cc0065045d05ec00b3e3d05f44935d7c06b96b621d55",
+          "compiler_output_sha256": "1e04dff8005ba7656dd453ca8995518fa64bfc69096ddcc118c7d1374000ff15",
+          "behavior": "not_run",
+          "source_equivalence": "not_verified"
+        },
+        {
+          "status": "compiled",
+          "compiler": "flex",
+          "debug": true,
+          "command": [
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\py_swf_editor\\.dev-references\\jdk\\jdk-21.0.12.1+1\\bin\\java.exe",
+            "-Xmx1024m",
+            "-jar",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\lib\\mxmlc.jar",
+            "+flexlib=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\frameworks",
+            "+playerglobalHome=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\frameworks\\libs\\player",
+            "-target-player=32.0",
+            "-debug=true",
+            "-omit-trace-statements=false",
+            "-output=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\dev-as3-classes-namespaces\\builds\\debug\\compiler.swf",
+            "-source-path=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\dev-as3-classes-namespaces",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\dev-as3-classes-namespaces\\Main.as"
+          ],
+          "log": "Cargando el archivo de configuraci\u00f3n C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\frameworks\\flex-config.xml\r\nC:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\dev-as3-classes-namespaces\\builds\\debug\\compiler.swf (1259 bytes)\r\n",
+          "binary_sha256": "82051fdab26319d77d20cc0065045d05ec00b3e3d05f44935d7c06b96b621d55",
+          "compiler_output_sha256": "6e6db9bed80b1bb37cc004dd327a0591838704f5d3dd0f5c2dfd7f3e835002ec",
+          "behavior": "not_run",
+          "source_equivalence": "not_verified"
+        }
+      ],
+      "compiled_variants": 6
+    },
+    {
+      "family_id": "dev-as3-closures",
+      "split": "development",
+      "compiler": "flex",
+      "language": "as3",
+      "entry": "Main.as",
+      "application_classes": [
+        "Main"
+      ],
+      "expected_trace": [
+        "PARITY_CLOSURE_10"
+      ],
+      "source_files": [
+        {
+          "relative": "projects/dev-as3-closures/Main.as",
+          "sha256": "0827af56eca3bcd89521162b760b98b871a146259e8227195eb0484d695f2b02"
+        }
+      ],
+      "source_sha256": "3e831c712df8b988682f8b7674921f2f811aeb17fda176e9e6ef5d149a59f3d5",
+      "compilations": [
+        {
+          "status": "compiled",
+          "compiler": "flex",
+          "debug": false,
+          "command": [
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\py_swf_editor\\.dev-references\\jdk\\jdk-21.0.12.1+1\\bin\\java.exe",
+            "-Xmx1024m",
+            "-jar",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\lib\\mxmlc.jar",
+            "+flexlib=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\frameworks",
+            "+playerglobalHome=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\frameworks\\libs\\player",
+            "-target-player=32.0",
+            "-debug=false",
+            "-omit-trace-statements=false",
+            "-output=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\dev-as3-closures\\builds\\release\\compiler.swf",
+            "-source-path=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\dev-as3-closures",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\dev-as3-closures\\Main.as"
+          ],
+          "log": "Cargando el archivo de configuraci\u00f3n C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\frameworks\\flex-config.xml\r\nC:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\dev-as3-closures\\builds\\release\\compiler.swf (686 bytes)\r\n",
+          "binary_sha256": "82051fdab26319d77d20cc0065045d05ec00b3e3d05f44935d7c06b96b621d55",
+          "compiler_output_sha256": "88c54bdd5578fb9c6bd0f83c87822090320e21d0939c6966a89b98d2f58390d1",
+          "behavior": "not_run",
+          "source_equivalence": "not_verified"
+        },
+        {
+          "status": "compiled",
+          "compiler": "flex",
+          "debug": true,
+          "command": [
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\py_swf_editor\\.dev-references\\jdk\\jdk-21.0.12.1+1\\bin\\java.exe",
+            "-Xmx1024m",
+            "-jar",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\lib\\mxmlc.jar",
+            "+flexlib=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\frameworks",
+            "+playerglobalHome=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\frameworks\\libs\\player",
+            "-target-player=32.0",
+            "-debug=true",
+            "-omit-trace-statements=false",
+            "-output=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\dev-as3-closures\\builds\\debug\\compiler.swf",
+            "-source-path=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\dev-as3-closures",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\dev-as3-closures\\Main.as"
+          ],
+          "log": "Cargando el archivo de configuraci\u00f3n C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\frameworks\\flex-config.xml\r\nC:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\dev-as3-closures\\builds\\debug\\compiler.swf (952 bytes)\r\n",
+          "binary_sha256": "82051fdab26319d77d20cc0065045d05ec00b3e3d05f44935d7c06b96b621d55",
+          "compiler_output_sha256": "4cbf0d816c4377c3ca8ee14917a8cb3db02fffb99cc225b8e69778fe1d9bd9fb",
+          "behavior": "not_run",
+          "source_equivalence": "not_verified"
+        }
+      ],
+      "compiled_variants": 6
+    },
+    {
+      "family_id": "dev-as3-control-handlers",
+      "split": "development",
+      "compiler": "flex",
+      "language": "as3",
+      "entry": "Main.as",
+      "application_classes": [
+        "Main"
+      ],
+      "expected_trace": [
+        "PARITY_HANDLER_11"
+      ],
+      "source_files": [
+        {
+          "relative": "projects/dev-as3-control-handlers/Main.as",
+          "sha256": "7d3c701e5698de47438ee4b56b2a85f153dd5622aea427c1b9924fee9e91b2b1"
+        }
+      ],
+      "source_sha256": "476c4078ac66eaabb01757bfdc4836bece382eb6e8fc767ba79f84d81dca7551",
+      "compilations": [
+        {
+          "status": "compiled",
+          "compiler": "flex",
+          "debug": false,
+          "command": [
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\py_swf_editor\\.dev-references\\jdk\\jdk-21.0.12.1+1\\bin\\java.exe",
+            "-Xmx1024m",
+            "-jar",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\lib\\mxmlc.jar",
+            "+flexlib=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\frameworks",
+            "+playerglobalHome=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\frameworks\\libs\\player",
+            "-target-player=32.0",
+            "-debug=false",
+            "-omit-trace-statements=false",
+            "-output=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\dev-as3-control-handlers\\builds\\release\\compiler.swf",
+            "-source-path=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\dev-as3-control-handlers",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\dev-as3-control-handlers\\Main.as"
+          ],
+          "log": "Cargando el archivo de configuraci\u00f3n C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\frameworks\\flex-config.xml\r\nC:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\dev-as3-control-handlers\\builds\\release\\compiler.swf (873 bytes)\r\n",
+          "binary_sha256": "82051fdab26319d77d20cc0065045d05ec00b3e3d05f44935d7c06b96b621d55",
+          "compiler_output_sha256": "d406e9072f83914852cc6c6408b61e760dad0c420fde55318ff433ed7d5c29ad",
+          "behavior": "not_run",
+          "source_equivalence": "not_verified"
+        },
+        {
+          "status": "compiled",
+          "compiler": "flex",
+          "debug": true,
+          "command": [
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\py_swf_editor\\.dev-references\\jdk\\jdk-21.0.12.1+1\\bin\\java.exe",
+            "-Xmx1024m",
+            "-jar",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\lib\\mxmlc.jar",
+            "+flexlib=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\frameworks",
+            "+playerglobalHome=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\frameworks\\libs\\player",
+            "-target-player=32.0",
+            "-debug=true",
+            "-omit-trace-statements=false",
+            "-output=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\dev-as3-control-handlers\\builds\\debug\\compiler.swf",
+            "-source-path=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\dev-as3-control-handlers",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\dev-as3-control-handlers\\Main.as"
+          ],
+          "log": "Cargando el archivo de configuraci\u00f3n C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\frameworks\\flex-config.xml\r\nC:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\dev-as3-control-handlers\\builds\\debug\\compiler.swf (1139 bytes)\r\n",
+          "binary_sha256": "82051fdab26319d77d20cc0065045d05ec00b3e3d05f44935d7c06b96b621d55",
+          "compiler_output_sha256": "b54c0f97cf6fc883fb776f001e1711fa0571c73630ce49eafb3dd1a14f65c22d",
+          "behavior": "not_run",
+          "source_equivalence": "not_verified"
+        }
+      ],
+      "compiled_variants": 6
+    },
+    {
+      "family_id": "dev-haxe-application",
+      "split": "development",
+      "compiler": "haxe",
+      "language": "as3",
+      "entry": "Main.hx",
+      "application_classes": [
+        "Main"
+      ],
+      "expected_trace": [
+        "PARITY_HAXE_12"
+      ],
+      "source_files": [
+        {
+          "relative": "projects/dev-haxe-application/Main.hx",
+          "sha256": "f29f3aafd5c5410b72cf3d1faea5ee6b96913c873b93fef4574af2b4a9f98c81"
+        }
+      ],
+      "source_sha256": "7378ba3b9017fd81faff34309708685049e3f5d6347cf4a0a6555639e7ebbcc4",
+      "compilations": [
+        {
+          "status": "compiled",
+          "compiler": "haxe",
+          "debug": false,
+          "command": [
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\haxe\\haxe_20250509143529_e0b355c\\haxe.exe",
+            "-cp",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\dev-haxe-application",
+            "-main",
+            "Main",
+            "--swf",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\dev-haxe-application\\builds\\release\\compiler.swf",
+            "--swf-version",
+            "11.8"
+          ],
+          "log": "",
+          "binary_sha256": "aeb42dbaafccadfa721d48254410bfaebf777ae3d65537d2b667810b460fee5d",
+          "compiler_output_sha256": "3244218a48e6f8d87aed04d5b3843155838166dc77fa5bfb2c4177d9e709392c",
+          "behavior": "not_run",
+          "source_equivalence": "not_verified"
+        },
+        {
+          "status": "compiled",
+          "compiler": "haxe",
+          "debug": true,
+          "command": [
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\haxe\\haxe_20250509143529_e0b355c\\haxe.exe",
+            "-cp",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\dev-haxe-application",
+            "-main",
+            "Main",
+            "--swf",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\dev-haxe-application\\builds\\debug\\compiler.swf",
+            "--swf-version",
+            "11.8",
+            "--debug"
+          ],
+          "log": "",
+          "binary_sha256": "aeb42dbaafccadfa721d48254410bfaebf777ae3d65537d2b667810b460fee5d",
+          "compiler_output_sha256": "d23a2b5ad94edef6b628e0899cdda14994706870e5d92f11fdf5e30d248990ad",
+          "behavior": "not_run",
+          "source_equivalence": "not_verified"
+        }
+      ],
+      "compiled_variants": 6
+    },
+    {
+      "family_id": "validation-as2-prototype-app",
+      "split": "validation",
+      "compiler": "rascal",
+      "language": "as2",
+      "entry": "Main.as",
+      "expected_trace": [
+        "PARITY_PROTOTYPE_14"
+      ],
+      "source_files": [
+        {
+          "relative": "projects/validation-as2-prototype-app/Main.as",
+          "sha256": "95426baa6c04e1f30ac9b321a7ff609274a05a698feb76cf4c9a71607a614265"
+        }
+      ],
+      "source_sha256": "ae951f6166017c40e70b58e93340c949ad4fc5c4f8f1b6913790a64883df1131",
+      "compilations": [
+        {
+          "status": "compiled",
+          "compiler": "rascal",
+          "debug": false,
+          "command": [
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\py_swf_editor\\.dev-references\\extra-tools\\rascal-profile-0.3.5\\bin\\rascal-profile.exe",
+            "--profile",
+            "release",
+            "--source",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\optimized\\projects\\validation-as2-prototype-app\\Main.as",
+            "--output",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\optimized\\projects\\validation-as2-prototype-app\\builds\\release\\compiler.swf",
+            "--swf-version",
+            "15",
+            "--frame-rate",
+            "30"
+          ],
+          "log": "Rascal 0.3.5 profile=release fold_constants=true promote_variables_to_registers=true\n",
+          "binary_sha256": "8ff62ebfbf3efea5d7ac0fcd71b01f8c5b1829fe5f7fce041c34e87ec7a30471",
+          "compiler_output_sha256": "9db097ebae21660a289d03e7111f5fbcf1ec21f5d7069d0c3930f9f9f280de6e",
+          "behavior": "not_run",
+          "source_equivalence": "not_verified",
+          "debug_mode": "explicit independent compiler profile: release"
+        },
+        {
+          "status": "compiled",
+          "compiler": "rascal",
+          "debug": true,
+          "command": [
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\py_swf_editor\\.dev-references\\extra-tools\\rascal-profile-0.3.5\\bin\\rascal-profile.exe",
+            "--profile",
+            "debug",
+            "--source",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\optimized\\projects\\validation-as2-prototype-app\\Main.as",
+            "--output",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\optimized\\projects\\validation-as2-prototype-app\\builds\\debug\\compiler.swf",
+            "--swf-version",
+            "15",
+            "--frame-rate",
+            "30"
+          ],
+          "log": "Rascal 0.3.5 profile=debug fold_constants=false promote_variables_to_registers=false\n",
+          "binary_sha256": "8ff62ebfbf3efea5d7ac0fcd71b01f8c5b1829fe5f7fce041c34e87ec7a30471",
+          "compiler_output_sha256": "56382547725320c15a8b6f3a021d64d35ef6ffd31fbe93c00203784b63114c45",
+          "behavior": "not_run",
+          "source_equivalence": "not_verified",
+          "debug_mode": "explicit independent compiler profile: debug"
+        }
+      ],
+      "compiled_variants": 6
+    },
+    {
+      "family_id": "validation-flex-app",
+      "split": "validation",
+      "compiler": "flex",
+      "language": "as3",
+      "entry": "Main.as",
+      "application_classes": [
+        "Main",
+        "app::Board"
+      ],
+      "expected_trace": [
+        "PARITY_FLEXAPP_15"
+      ],
+      "source_files": [
+        {
+          "relative": "projects/validation-flex-app/Main.as",
+          "sha256": "c4df30a26e133459ea8bc51a06ddd0a098808c0db5cc66e16444cc3cd4162170"
+        },
+        {
+          "relative": "projects/validation-flex-app/app/Board.as",
+          "sha256": "5018a95dcaa895ce978caee544afea5f4a57991fe629a74dcb4d07e98ddfa2e0"
+        }
+      ],
+      "source_sha256": "ad4bd17df5f1798e1a54e6e46d63342f5c4796f55e487419bec9eb22b0e9cb3e",
+      "compilations": [
+        {
+          "status": "compiled",
+          "compiler": "flex",
+          "debug": false,
+          "command": [
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\py_swf_editor\\.dev-references\\jdk\\jdk-21.0.12.1+1\\bin\\java.exe",
+            "-Xmx1024m",
+            "-jar",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\lib\\mxmlc.jar",
+            "+flexlib=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\frameworks",
+            "+playerglobalHome=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\frameworks\\libs\\player",
+            "-target-player=32.0",
+            "-debug=false",
+            "-omit-trace-statements=false",
+            "-output=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\validation-flex-app\\builds\\release\\compiler.swf",
+            "-source-path=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\validation-flex-app",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\validation-flex-app\\Main.as"
+          ],
+          "log": "Cargando el archivo de configuraci\u00f3n C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\frameworks\\flex-config.xml\r\nC:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\validation-flex-app\\builds\\release\\compiler.swf (833 bytes)\r\n",
+          "binary_sha256": "82051fdab26319d77d20cc0065045d05ec00b3e3d05f44935d7c06b96b621d55",
+          "compiler_output_sha256": "24bfd27f25be572ae0fd242cc1827ffd1b1cc0e2dbdc0c2e7e2b6527aa6a7979",
+          "behavior": "not_run",
+          "source_equivalence": "not_verified"
+        },
+        {
+          "status": "compiled",
+          "compiler": "flex",
+          "debug": true,
+          "command": [
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\py_swf_editor\\.dev-references\\jdk\\jdk-21.0.12.1+1\\bin\\java.exe",
+            "-Xmx1024m",
+            "-jar",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\lib\\mxmlc.jar",
+            "+flexlib=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\frameworks",
+            "+playerglobalHome=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\frameworks\\libs\\player",
+            "-target-player=32.0",
+            "-debug=true",
+            "-omit-trace-statements=false",
+            "-output=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\validation-flex-app\\builds\\debug\\compiler.swf",
+            "-source-path=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\validation-flex-app",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\validation-flex-app\\Main.as"
+          ],
+          "log": "Cargando el archivo de configuraci\u00f3n C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\frameworks\\flex-config.xml\r\nC:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\validation-flex-app\\builds\\debug\\compiler.swf (1185 bytes)\r\n",
+          "binary_sha256": "82051fdab26319d77d20cc0065045d05ec00b3e3d05f44935d7c06b96b621d55",
+          "compiler_output_sha256": "8cb3326096b1144e6c8dcaec9b36a9750c8405b087d1eaad68d2e929ef6390c3",
+          "behavior": "not_run",
+          "source_equivalence": "not_verified"
+        }
+      ],
+      "compiled_variants": 6
+    },
+    {
+      "family_id": "validation-haxeflixel-game",
+      "split": "validation",
+      "compiler": "haxeflixel",
+      "language": "as3",
+      "entry": "Project.xml",
+      "application_classes": [
+        "Main",
+        "PlayState"
+      ],
+      "expected_trace": [
+        "PARITY_VALIDATION_READY"
+      ],
+      "source_files": [
+        {
+          "relative": "projects/validation-haxeflixel-game/Project.xml",
+          "sha256": "7eeaad211d49a651bd01cc82f495840d18b1c3c69cddd79b1b969ac530ab5898"
+        },
+        {
+          "relative": "projects/validation-haxeflixel-game/source/Main.hx",
+          "sha256": "b457d51ebfc5f3b0263899210319a022dcb4848c95614389b967336cba13ddbb"
+        },
+        {
+          "relative": "projects/validation-haxeflixel-game/source/PlayState.hx",
+          "sha256": "146d8a7c4485636df94fdb47920ccc60401af43a6754795ca68941d53b29d792"
+        }
+      ],
+      "source_sha256": "758ce5c881bb77e4667d5d2789be96b3e50f389ef9da75bb06b95aecad33f2dc",
+      "compilations": [
+        {
+          "status": "compiled",
+          "compiler": "haxeflixel",
+          "debug": false,
+          "command": [
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\haxe\\haxe_20250509143529_e0b355c\\haxelib.exe",
+            "run",
+            "lime",
+            "build",
+            "flash",
+            "-release"
+          ],
+          "log": "",
+          "binary_sha256": "61e6564a59fd069006c04e250264972087e7c1db9b2870d1163d97ea8697a292",
+          "compiler_output_sha256": "07d11fd0703d4a35f7456cc51943cf801bf3a086d8520bd218dd8a49094c3e6e",
+          "behavior": "not_run",
+          "source_equivalence": "not_verified"
+        },
+        {
+          "status": "compiled",
+          "compiler": "haxeflixel",
+          "debug": true,
+          "command": [
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\haxe\\haxe_20250509143529_e0b355c\\haxelib.exe",
+            "run",
+            "lime",
+            "build",
+            "flash",
+            "-debug"
+          ],
+          "log": "",
+          "binary_sha256": "61e6564a59fd069006c04e250264972087e7c1db9b2870d1163d97ea8697a292",
+          "compiler_output_sha256": "2641b39006aefd648726d5e977aeaec9e2350aca9ffdf31f48da404a1ac67b15",
+          "behavior": "not_run",
+          "source_equivalence": "not_verified"
+        }
+      ],
+      "compiled_variants": 6
+    },
+    {
+      "family_id": "holdout-as2-independent",
+      "split": "holdout",
+      "compiler": "rascal",
+      "language": "as2",
+      "entry": "Main.as",
+      "expected_trace": [
+        "PARITY_HOLDOUT_AS2_blue"
+      ],
+      "source_files": [
+        {
+          "relative": "projects/holdout-as2-independent/Main.as",
+          "sha256": "fc0b15f24a1cc5f18e7fc3ead4fd5b6b48667363cd2abcfe521c916db47c6dd0"
+        }
+      ],
+      "source_sha256": "f32300b1bb89e073ef7173f7f7a3ff99da077c51f83697b18c911bd25f17ea38",
+      "compilations": [
+        {
+          "status": "compiled",
+          "compiler": "rascal",
+          "debug": false,
+          "command": [
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\py_swf_editor\\.dev-references\\extra-tools\\rascal-profile-0.3.5\\bin\\rascal-profile.exe",
+            "--profile",
+            "release",
+            "--source",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\optimized\\projects\\holdout-as2-independent\\Main.as",
+            "--output",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\optimized\\projects\\holdout-as2-independent\\builds\\release\\compiler.swf",
+            "--swf-version",
+            "15",
+            "--frame-rate",
+            "30"
+          ],
+          "log": "Rascal 0.3.5 profile=release fold_constants=true promote_variables_to_registers=true\n",
+          "binary_sha256": "8ff62ebfbf3efea5d7ac0fcd71b01f8c5b1829fe5f7fce041c34e87ec7a30471",
+          "compiler_output_sha256": "286f70f9f777348518d6d1fdee1d9d5e667d7cb557fc709a992fb6ae2dcc9dbe",
+          "behavior": "not_run",
+          "source_equivalence": "not_verified",
+          "debug_mode": "explicit independent compiler profile: release"
+        },
+        {
+          "status": "compiled",
+          "compiler": "rascal",
+          "debug": true,
+          "command": [
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\py_swf_editor\\.dev-references\\extra-tools\\rascal-profile-0.3.5\\bin\\rascal-profile.exe",
+            "--profile",
+            "debug",
+            "--source",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\optimized\\projects\\holdout-as2-independent\\Main.as",
+            "--output",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\optimized\\projects\\holdout-as2-independent\\builds\\debug\\compiler.swf",
+            "--swf-version",
+            "15",
+            "--frame-rate",
+            "30"
+          ],
+          "log": "Rascal 0.3.5 profile=debug fold_constants=false promote_variables_to_registers=false\n",
+          "binary_sha256": "8ff62ebfbf3efea5d7ac0fcd71b01f8c5b1829fe5f7fce041c34e87ec7a30471",
+          "compiler_output_sha256": "286f70f9f777348518d6d1fdee1d9d5e667d7cb557fc709a992fb6ae2dcc9dbe",
+          "behavior": "not_run",
+          "source_equivalence": "not_verified",
+          "debug_mode": "explicit independent compiler profile: debug"
+        }
+      ],
+      "compiled_variants": 6
+    },
+    {
+      "family_id": "holdout-as3-ledger-events",
+      "split": "holdout",
+      "compiler": "flex",
+      "language": "as3",
+      "entry": "Main.as",
+      "evaluation_state": "decompiler observations withheld until implementation freeze",
+      "application_classes": [
+        "Main"
+      ],
+      "expected_trace": [
+        "PARITY_HOLDOUT_LEDGER_16"
+      ],
+      "source_files": [
+        {
+          "relative": "projects/holdout-as3-ledger-events/Main.as",
+          "sha256": "2414968393d6e0f94dc25d60de4345d441cbaf4cc3528797edd3257692693a92"
+        }
+      ],
+      "source_sha256": "bf19b22db0ee7995a8ffa99d1137a76896372cd9e39eda3f5c0359e1b35887cc",
+      "compilations": [
+        {
+          "status": "compiled",
+          "compiler": "flex",
+          "debug": false,
+          "command": [
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\py_swf_editor\\.dev-references\\jdk\\jdk-21.0.12.1+1\\bin\\java.exe",
+            "-Xmx1024m",
+            "-jar",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\lib\\mxmlc.jar",
+            "+flexlib=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\frameworks",
+            "+playerglobalHome=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\frameworks\\libs\\player",
+            "-target-player=32.0",
+            "-debug=false",
+            "-omit-trace-statements=false",
+            "-output=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\holdout-as3-ledger-events\\builds\\release\\compiler.swf",
+            "-source-path=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\holdout-as3-ledger-events",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\holdout-as3-ledger-events\\Main.as"
+          ],
+          "log": "Cargando el archivo de configuraci\u00f3n C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\frameworks\\flex-config.xml\r\nC:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\holdout-as3-ledger-events\\builds\\release\\compiler.swf (906 bytes)\r\n",
+          "binary_sha256": "82051fdab26319d77d20cc0065045d05ec00b3e3d05f44935d7c06b96b621d55",
+          "compiler_output_sha256": "6717cbd7c4a7837d15e6e2abe9960e6342aacbb96f440e256a5b1a5ef413fce1",
+          "behavior": "not_run",
+          "source_equivalence": "not_verified"
+        },
+        {
+          "status": "compiled",
+          "compiler": "flex",
+          "debug": true,
+          "command": [
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\py_swf_editor\\.dev-references\\jdk\\jdk-21.0.12.1+1\\bin\\java.exe",
+            "-Xmx1024m",
+            "-jar",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\lib\\mxmlc.jar",
+            "+flexlib=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\frameworks",
+            "+playerglobalHome=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\frameworks\\libs\\player",
+            "-target-player=32.0",
+            "-debug=true",
+            "-omit-trace-statements=false",
+            "-output=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\holdout-as3-ledger-events\\builds\\debug\\compiler.swf",
+            "-source-path=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\holdout-as3-ledger-events",
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\holdout-as3-ledger-events\\Main.as"
+          ],
+          "log": "Cargando el archivo de configuraci\u00f3n C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\frameworks\\flex-config.xml\r\nC:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\holdout-as3-ledger-events\\builds\\debug\\compiler.swf (1195 bytes)\r\n",
+          "binary_sha256": "82051fdab26319d77d20cc0065045d05ec00b3e3d05f44935d7c06b96b621d55",
+          "compiler_output_sha256": "929c57761a7392445be3a7307ff1aefe45f4a77c79c080e087c72dd82a2ef33e",
+          "behavior": "not_run",
+          "source_equivalence": "not_verified"
+        }
+      ],
+      "compiled_variants": 6
+    },
+    {
+      "family_id": "holdout-haxeflixel-independent",
+      "split": "holdout",
+      "compiler": "haxeflixel",
+      "language": "as3",
+      "entry": "Project.xml",
+      "application_classes": [
+        "Main",
+        "PlayState"
+      ],
+      "expected_trace": [
+        "PARITY_HOLDOUT_38"
+      ],
+      "source_files": [
+        {
+          "relative": "projects/holdout-haxeflixel-independent/Project.xml",
+          "sha256": "7ac795e164f89b86e6d910db6401d3ca4c9ac9a40fa68fb61ca06a5694160ea4"
+        },
+        {
+          "relative": "projects/holdout-haxeflixel-independent/source/Main.hx",
+          "sha256": "b457d51ebfc5f3b0263899210319a022dcb4848c95614389b967336cba13ddbb"
+        },
+        {
+          "relative": "projects/holdout-haxeflixel-independent/source/PlayState.hx",
+          "sha256": "a15028f5fba7e8c2e0b2765ae95fcfbb7805b4cf945dba924d2874e81d626ed6"
+        }
+      ],
+      "source_sha256": "51e5127003c5b7b0b69ef76c02d72042a9352a7d8b9220fc1d95da6bbe9ace78",
+      "compilations": [
+        {
+          "status": "compiled",
+          "compiler": "haxeflixel",
+          "debug": false,
+          "command": [
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\haxe\\haxe_20250509143529_e0b355c\\haxelib.exe",
+            "run",
+            "lime",
+            "build",
+            "flash",
+            "-release"
+          ],
+          "log": "",
+          "binary_sha256": "61e6564a59fd069006c04e250264972087e7c1db9b2870d1163d97ea8697a292",
+          "compiler_output_sha256": "6a944968c7cafec8d7516ae33ba377dac6812e58cbcf73256acfa50cc864c6c4",
+          "behavior": "not_run",
+          "source_equivalence": "not_verified"
+        },
+        {
+          "status": "compiled",
+          "compiler": "haxeflixel",
+          "debug": true,
+          "command": [
+            "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\haxe\\haxe_20250509143529_e0b355c\\haxelib.exe",
+            "run",
+            "lime",
+            "build",
+            "flash",
+            "-debug"
+          ],
+          "log": "",
+          "binary_sha256": "61e6564a59fd069006c04e250264972087e7c1db9b2870d1163d97ea8697a292",
+          "compiler_output_sha256": "7fa76792b0bb68b05aaaa4fb5c12cc948e4637ad8f408e44a405ae64aa6b7329",
+          "behavior": "not_run",
+          "source_equivalence": "not_verified"
+        }
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "relative": "swf/dev-as2-timeline/release.fws.swf",
+      "family_id": "dev-as2-timeline",
+      "split": "development",
+      "language": "as2",
+      "compiler": "rascal",
+      "debug": false,
+      "compression": "FWS",
+      "sha256": "892d362d0bfe117abac2048d050cbf1200bcb1f7aa90ac1f2784903161730c45",
+      "bytes": 207,
+      "source_sha256": "13517f18c2a6c774724e30ce180d1bace18299c38368e0e6fca666314465abfc",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_TIMELINE_10"
+      ],
+      "application_classes": [],
+      "canonical_inventory_sha256": "54a459708bea8b89a089b8bc14f8aba0ede20c2c8caee4b0cafb784cce294822",
+      "scope_denominators": {
+        "action": 1
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-as2-timeline/release.cws.swf",
+      "family_id": "dev-as2-timeline",
+      "split": "development",
+      "language": "as2",
+      "compiler": "rascal",
+      "debug": false,
+      "compression": "CWS",
+      "sha256": "d04f8e1be48f786d04e982c89018599864dcbe6e6cee67274026d5805737241e",
+      "bytes": 172,
+      "source_sha256": "13517f18c2a6c774724e30ce180d1bace18299c38368e0e6fca666314465abfc",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_TIMELINE_10"
+      ],
+      "application_classes": [],
+      "canonical_inventory_sha256": "abad65be26b10aae8b08b3796381d98ded5a5d127ba000e279825216080151f7",
+      "scope_denominators": {
+        "action": 1
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-as2-timeline/release.zws.swf",
+      "family_id": "dev-as2-timeline",
+      "split": "development",
+      "language": "as2",
+      "compiler": "rascal",
+      "debug": false,
+      "compression": "ZWS",
+      "sha256": "fd375e948011524a69773d7bcac6244bbbbb92b5732d3b115d86c9e328cdeb3c",
+      "bytes": 173,
+      "source_sha256": "13517f18c2a6c774724e30ce180d1bace18299c38368e0e6fca666314465abfc",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_TIMELINE_10"
+      ],
+      "application_classes": [],
+      "canonical_inventory_sha256": "0d5e46b287c1d937535be6c07113bf56211628a45fbc72f48322f206622b77f4",
+      "scope_denominators": {
+        "action": 1
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-as2-timeline/debug.fws.swf",
+      "family_id": "dev-as2-timeline",
+      "split": "development",
+      "language": "as2",
+      "compiler": "rascal",
+      "debug": true,
+      "compression": "FWS",
+      "sha256": "892d362d0bfe117abac2048d050cbf1200bcb1f7aa90ac1f2784903161730c45",
+      "bytes": 207,
+      "source_sha256": "13517f18c2a6c774724e30ce180d1bace18299c38368e0e6fca666314465abfc",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_TIMELINE_10"
+      ],
+      "application_classes": [],
+      "canonical_inventory_sha256": "54a459708bea8b89a089b8bc14f8aba0ede20c2c8caee4b0cafb784cce294822",
+      "scope_denominators": {
+        "action": 1
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-as2-timeline/debug.cws.swf",
+      "family_id": "dev-as2-timeline",
+      "split": "development",
+      "language": "as2",
+      "compiler": "rascal",
+      "debug": true,
+      "compression": "CWS",
+      "sha256": "d04f8e1be48f786d04e982c89018599864dcbe6e6cee67274026d5805737241e",
+      "bytes": 172,
+      "source_sha256": "13517f18c2a6c774724e30ce180d1bace18299c38368e0e6fca666314465abfc",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_TIMELINE_10"
+      ],
+      "application_classes": [],
+      "canonical_inventory_sha256": "abad65be26b10aae8b08b3796381d98ded5a5d127ba000e279825216080151f7",
+      "scope_denominators": {
+        "action": 1
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-as2-timeline/debug.zws.swf",
+      "family_id": "dev-as2-timeline",
+      "split": "development",
+      "language": "as2",
+      "compiler": "rascal",
+      "debug": true,
+      "compression": "ZWS",
+      "sha256": "fd375e948011524a69773d7bcac6244bbbbb92b5732d3b115d86c9e328cdeb3c",
+      "bytes": 173,
+      "source_sha256": "13517f18c2a6c774724e30ce180d1bace18299c38368e0e6fca666314465abfc",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_TIMELINE_10"
+      ],
+      "application_classes": [],
+      "canonical_inventory_sha256": "0d5e46b287c1d937535be6c07113bf56211628a45fbc72f48322f206622b77f4",
+      "scope_denominators": {
+        "action": 1
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-as2-captures/release.fws.swf",
+      "family_id": "dev-as2-captures",
+      "split": "development",
+      "language": "as2",
+      "compiler": "rascal",
+      "debug": false,
+      "compression": "FWS",
+      "sha256": "9f11b8308bdc97bd0e2be2939255332c8b5c1bcfed5e801c886e988a3480b71f",
+      "bytes": 169,
+      "source_sha256": "d20720baf7cecc2c26df93fc816d32e57fed70129837f4f383574c450a7fd21d",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_CAPTURE_12"
+      ],
+      "application_classes": [],
+      "canonical_inventory_sha256": "92b1c986b95158108427a6ae302d83ce364e919167cd86a19713ebb08d96d32f",
+      "scope_denominators": {
+        "action": 1,
+        "function": 2
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-as2-captures/release.cws.swf",
+      "family_id": "dev-as2-captures",
+      "split": "development",
+      "language": "as2",
+      "compiler": "rascal",
+      "debug": false,
+      "compression": "CWS",
+      "sha256": "e430034cd4b0724aeede5200d13c5d76cff0ebf754397f3f677c0008ebe82d87",
+      "bytes": 146,
+      "source_sha256": "d20720baf7cecc2c26df93fc816d32e57fed70129837f4f383574c450a7fd21d",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_CAPTURE_12"
+      ],
+      "application_classes": [],
+      "canonical_inventory_sha256": "4e86367f99e599625c23fee8e4ddd6c9a71f371ebc18b5fb057d7e9a7e1bf379",
+      "scope_denominators": {
+        "action": 1,
+        "function": 2
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-as2-captures/release.zws.swf",
+      "family_id": "dev-as2-captures",
+      "split": "development",
+      "language": "as2",
+      "compiler": "rascal",
+      "debug": false,
+      "compression": "ZWS",
+      "sha256": "8e9ec7585ac23ff820ab7acf87c6c67325c8d979b71715a5ba7eba379da316ba",
+      "bytes": 154,
+      "source_sha256": "d20720baf7cecc2c26df93fc816d32e57fed70129837f4f383574c450a7fd21d",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_CAPTURE_12"
+      ],
+      "application_classes": [],
+      "canonical_inventory_sha256": "a46b207f4f61be0ffd39886fa761ff4a19ef1974cab804e2becf79095a6418a9",
+      "scope_denominators": {
+        "action": 1,
+        "function": 2
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-as2-captures/debug.fws.swf",
+      "family_id": "dev-as2-captures",
+      "split": "development",
+      "language": "as2",
+      "compiler": "rascal",
+      "debug": true,
+      "compression": "FWS",
+      "sha256": "59d14269a8fdbca6936097055933a5ede8d0db82f94c3c46dbf4492771bb466c",
+      "bytes": 171,
+      "source_sha256": "d20720baf7cecc2c26df93fc816d32e57fed70129837f4f383574c450a7fd21d",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_CAPTURE_12"
+      ],
+      "application_classes": [],
+      "canonical_inventory_sha256": "2dfd409e13f6395afe77a31bc343b6b6c0f8099c9bba5c45744a2a515ef383d5",
+      "scope_denominators": {
+        "action": 1,
+        "function": 2
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-as2-captures/debug.cws.swf",
+      "family_id": "dev-as2-captures",
+      "split": "development",
+      "language": "as2",
+      "compiler": "rascal",
+      "debug": true,
+      "compression": "CWS",
+      "sha256": "e1103f2f8567c7a4df9733518e1de8b9ded186a75324444159190695e84883fd",
+      "bytes": 146,
+      "source_sha256": "d20720baf7cecc2c26df93fc816d32e57fed70129837f4f383574c450a7fd21d",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_CAPTURE_12"
+      ],
+      "application_classes": [],
+      "canonical_inventory_sha256": "1caf1936ca3e331b1cccacb2b9c43dea63aff95b1be96627cf1af681605c3fba",
+      "scope_denominators": {
+        "action": 1,
+        "function": 2
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-as2-captures/debug.zws.swf",
+      "family_id": "dev-as2-captures",
+      "split": "development",
+      "language": "as2",
+      "compiler": "rascal",
+      "debug": true,
+      "compression": "ZWS",
+      "sha256": "372b6f92fdc6d94bdac267cb7b997226c666691230f153d7d0889ce56d81656c",
+      "bytes": 152,
+      "source_sha256": "d20720baf7cecc2c26df93fc816d32e57fed70129837f4f383574c450a7fd21d",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_CAPTURE_12"
+      ],
+      "application_classes": [],
+      "canonical_inventory_sha256": "154f777082c2ba52fc1b817013db3341144945df1fb4a1a27d426095fc82577b",
+      "scope_denominators": {
+        "action": 1,
+        "function": 2
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-as3-classes-namespaces/release.fws.swf",
+      "family_id": "dev-as3-classes-namespaces",
+      "split": "development",
+      "language": "as3",
+      "compiler": "flex",
+      "debug": false,
+      "compression": "FWS",
+      "sha256": "ab8688179e5fbb7c922b022466fdc337526bd47d598f92a51c77f5b321719cce",
+      "bytes": 1242,
+      "source_sha256": "0c845f8a18ebfeb069cae4b1719859aae3ee2c8a942ca2fa32d3fe6cbbac276c",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_NAMESPACE_7"
+      ],
+      "application_classes": [
+        "Main",
+        "app::Model"
+      ],
+      "canonical_inventory_sha256": "52a2f682e934909b2fdf9ba978b79e889fbc25d1d7c278f3dba9fde5e3d5e783",
+      "scope_denominators": {
+        "class": 2,
+        "script": 3,
+        "method": 11
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-as3-classes-namespaces/release.cws.swf",
+      "family_id": "dev-as3-classes-namespaces",
+      "split": "development",
+      "language": "as3",
+      "compiler": "flex",
+      "debug": false,
+      "compression": "CWS",
+      "sha256": "4e79a424e004739638a14521a4c5b9fc81b2271f2ada4824c64921dee9f633b4",
+      "bytes": 844,
+      "source_sha256": "0c845f8a18ebfeb069cae4b1719859aae3ee2c8a942ca2fa32d3fe6cbbac276c",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_NAMESPACE_7"
+      ],
+      "application_classes": [
+        "Main",
+        "app::Model"
+      ],
+      "canonical_inventory_sha256": "d7e49e4dd345ae236792e5bf663d5456d8098788cc05ce81549d9a8c113c52d3",
+      "scope_denominators": {
+        "class": 2,
+        "script": 3,
+        "method": 11
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-as3-classes-namespaces/release.zws.swf",
+      "family_id": "dev-as3-classes-namespaces",
+      "split": "development",
+      "language": "as3",
+      "compiler": "flex",
+      "debug": false,
+      "compression": "ZWS",
+      "sha256": "294cfdfc0eeb8fa6d629f557bef270b9af5d09f870fb5217c758b107ba5ac301",
+      "bytes": 798,
+      "source_sha256": "0c845f8a18ebfeb069cae4b1719859aae3ee2c8a942ca2fa32d3fe6cbbac276c",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_NAMESPACE_7"
+      ],
+      "application_classes": [
+        "Main",
+        "app::Model"
+      ],
+      "canonical_inventory_sha256": "78b958fb52c7398905177f04086ad58332a6bd3f6a7d72a97d2687893e784a27",
+      "scope_denominators": {
+        "class": 2,
+        "script": 3,
+        "method": 11
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-as3-classes-namespaces/debug.fws.swf",
+      "family_id": "dev-as3-classes-namespaces",
+      "split": "development",
+      "language": "as3",
+      "compiler": "flex",
+      "debug": true,
+      "compression": "FWS",
+      "sha256": "c8c7dd5abbe1b586aeedef85f4036cc730ed9098f67edbdd96506751b5abcca1",
+      "bytes": 2299,
+      "source_sha256": "0c845f8a18ebfeb069cae4b1719859aae3ee2c8a942ca2fa32d3fe6cbbac276c",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_NAMESPACE_7"
+      ],
+      "application_classes": [
+        "Main",
+        "app::Model"
+      ],
+      "canonical_inventory_sha256": "0959adb113cd20bf25950289738eddd92740b3186e44cd087dedabd243d68078",
+      "scope_denominators": {
+        "class": 2,
+        "script": 3,
+        "method": 11
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-as3-classes-namespaces/debug.cws.swf",
+      "family_id": "dev-as3-classes-namespaces",
+      "split": "development",
+      "language": "as3",
+      "compiler": "flex",
+      "debug": true,
+      "compression": "CWS",
+      "sha256": "24a331a40180187367e077d0fb0f9de6b799ef4b5d4c87ae815ddb20805f26ba",
+      "bytes": 1260,
+      "source_sha256": "0c845f8a18ebfeb069cae4b1719859aae3ee2c8a942ca2fa32d3fe6cbbac276c",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_NAMESPACE_7"
+      ],
+      "application_classes": [
+        "Main",
+        "app::Model"
+      ],
+      "canonical_inventory_sha256": "385834be4e65974c3c0e52734f6684698a5e20855262282aa5b677b23b6d9760",
+      "scope_denominators": {
+        "class": 2,
+        "script": 3,
+        "method": 11
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-as3-classes-namespaces/debug.zws.swf",
+      "family_id": "dev-as3-classes-namespaces",
+      "split": "development",
+      "language": "as3",
+      "compiler": "flex",
+      "debug": true,
+      "compression": "ZWS",
+      "sha256": "58e1e65e7ba0a889340dbed1278d4cd5b786a6434400c878eb1237cdcab913e9",
+      "bytes": 1198,
+      "source_sha256": "0c845f8a18ebfeb069cae4b1719859aae3ee2c8a942ca2fa32d3fe6cbbac276c",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_NAMESPACE_7"
+      ],
+      "application_classes": [
+        "Main",
+        "app::Model"
+      ],
+      "canonical_inventory_sha256": "f49378765d012d24a4c2261eb7cd463c99e4f7a354bfb7e54013646e7a96f441",
+      "scope_denominators": {
+        "class": 2,
+        "script": 3,
+        "method": 11
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-as3-closures/release.fws.swf",
+      "family_id": "dev-as3-closures",
+      "split": "development",
+      "language": "as3",
+      "compiler": "flex",
+      "debug": false,
+      "compression": "FWS",
+      "sha256": "6827a90d565f059ce1cdea390d9a8c62ba90e31095e1e03108ab9fab77862cf6",
+      "bytes": 997,
+      "source_sha256": "3e831c712df8b988682f8b7674921f2f811aeb17fda176e9e6ef5d149a59f3d5",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_CLOSURE_10"
+      ],
+      "application_classes": [
+        "Main"
+      ],
+      "canonical_inventory_sha256": "ed79fc15c874556d879648aac7782ce020225464aedc65d6beb8824362f2c771",
+      "scope_denominators": {
+        "class": 1,
+        "script": 1,
+        "method": 5
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-as3-closures/release.cws.swf",
+      "family_id": "dev-as3-closures",
+      "split": "development",
+      "language": "as3",
+      "compiler": "flex",
+      "debug": false,
+      "compression": "CWS",
+      "sha256": "5e3575f4b041a1d6cd8c640afb7acf6666bdff503ced016760d910ae7e79603e",
+      "bytes": 692,
+      "source_sha256": "3e831c712df8b988682f8b7674921f2f811aeb17fda176e9e6ef5d149a59f3d5",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_CLOSURE_10"
+      ],
+      "application_classes": [
+        "Main"
+      ],
+      "canonical_inventory_sha256": "37fcf39003f98710343278cb19398045d11b3d6dce2b05b26ef8e9020d7e180d",
+      "scope_denominators": {
+        "class": 1,
+        "script": 1,
+        "method": 5
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-as3-closures/release.zws.swf",
+      "family_id": "dev-as3-closures",
+      "split": "development",
+      "language": "as3",
+      "compiler": "flex",
+      "debug": false,
+      "compression": "ZWS",
+      "sha256": "de0bd439d686ef2edbfce209a7dbdce22f802c6e12a0e7b61db054ac1d31429c",
+      "bytes": 667,
+      "source_sha256": "3e831c712df8b988682f8b7674921f2f811aeb17fda176e9e6ef5d149a59f3d5",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_CLOSURE_10"
+      ],
+      "application_classes": [
+        "Main"
+      ],
+      "canonical_inventory_sha256": "1788945dea20282301110d6ac028195527045e945f5d7a4a8299d619f996f840",
+      "scope_denominators": {
+        "class": 1,
+        "script": 1,
+        "method": 5
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-as3-closures/debug.fws.swf",
+      "family_id": "dev-as3-closures",
+      "split": "development",
+      "language": "as3",
+      "compiler": "flex",
+      "debug": true,
+      "compression": "FWS",
+      "sha256": "fc03efeda936d4287c80adcbc178768baa658b794732bb1c80bee8abf3dd6bd8",
+      "bytes": 1364,
+      "source_sha256": "3e831c712df8b988682f8b7674921f2f811aeb17fda176e9e6ef5d149a59f3d5",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_CLOSURE_10"
+      ],
+      "application_classes": [
+        "Main"
+      ],
+      "canonical_inventory_sha256": "0ff90245570bfb8b0df323b458270bbe88325731d0ddd348c79782c2a44a8ddf",
+      "scope_denominators": {
+        "class": 1,
+        "script": 1,
+        "method": 5
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-as3-closures/debug.cws.swf",
+      "family_id": "dev-as3-closures",
+      "split": "development",
+      "language": "as3",
+      "compiler": "flex",
+      "debug": true,
+      "compression": "CWS",
+      "sha256": "c88120058f0e634fe25e20f33403178f0b0417511219c88b49ad2e3927fa1141",
+      "bytes": 951,
+      "source_sha256": "3e831c712df8b988682f8b7674921f2f811aeb17fda176e9e6ef5d149a59f3d5",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_CLOSURE_10"
+      ],
+      "application_classes": [
+        "Main"
+      ],
+      "canonical_inventory_sha256": "609b9b82172e053fb76395beb7083ab0b6b97aa5212ea4bcb870d08fc15172b6",
+      "scope_denominators": {
+        "class": 1,
+        "script": 1,
+        "method": 5
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-as3-closures/debug.zws.swf",
+      "family_id": "dev-as3-closures",
+      "split": "development",
+      "language": "as3",
+      "compiler": "flex",
+      "debug": true,
+      "compression": "ZWS",
+      "sha256": "68829a7ef96d11d0f0412a5c953e88217117b04236b4ff141fbc55550231c3d7",
+      "bytes": 921,
+      "source_sha256": "3e831c712df8b988682f8b7674921f2f811aeb17fda176e9e6ef5d149a59f3d5",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_CLOSURE_10"
+      ],
+      "application_classes": [
+        "Main"
+      ],
+      "canonical_inventory_sha256": "941c58f2c50b1845350003b80e367938ce5d4534d28d6cb847943e3417bfcd19",
+      "scope_denominators": {
+        "class": 1,
+        "script": 1,
+        "method": 5
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-as3-control-handlers/release.fws.swf",
+      "family_id": "dev-as3-control-handlers",
+      "split": "development",
+      "language": "as3",
+      "compiler": "flex",
+      "debug": false,
+      "compression": "FWS",
+      "sha256": "600ed8586fd980756784125fa3916411c06d63c66b067622fbcc908ee1b20014",
+      "bytes": 1289,
+      "source_sha256": "476c4078ac66eaabb01757bfdc4836bece382eb6e8fc767ba79f84d81dca7551",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_HANDLER_11"
+      ],
+      "application_classes": [
+        "Main"
+      ],
+      "canonical_inventory_sha256": "7dfc51ba5bd02de13483b0806f8f2ebe381fafa1066c597dd453469a900ddd24",
+      "scope_denominators": {
+        "class": 1,
+        "script": 1,
+        "method": 4
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-as3-control-handlers/release.cws.swf",
+      "family_id": "dev-as3-control-handlers",
+      "split": "development",
+      "language": "as3",
+      "compiler": "flex",
+      "debug": false,
+      "compression": "CWS",
+      "sha256": "2d16491221e26f8a2d2dd6d883f3bbff0138a8116e48892b87c3ecb164c29830",
+      "bytes": 880,
+      "source_sha256": "476c4078ac66eaabb01757bfdc4836bece382eb6e8fc767ba79f84d81dca7551",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_HANDLER_11"
+      ],
+      "application_classes": [
+        "Main"
+      ],
+      "canonical_inventory_sha256": "f8d463956de2db1c4d73dce3405b97764b5fff8b7363f3bf8f3403ee07d5f18d",
+      "scope_denominators": {
+        "class": 1,
+        "script": 1,
+        "method": 4
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-as3-control-handlers/release.zws.swf",
+      "family_id": "dev-as3-control-handlers",
+      "split": "development",
+      "language": "as3",
+      "compiler": "flex",
+      "debug": false,
+      "compression": "ZWS",
+      "sha256": "f24be9553067011694ad4ea9752e9d118dd1f94bea1e49ecf3a7c8afa89bd9ff",
+      "bytes": 850,
+      "source_sha256": "476c4078ac66eaabb01757bfdc4836bece382eb6e8fc767ba79f84d81dca7551",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_HANDLER_11"
+      ],
+      "application_classes": [
+        "Main"
+      ],
+      "canonical_inventory_sha256": "cda501fd5b736c97fc16b511f2b18b04db31d03007b2c4bac1e8a29a769f1768",
+      "scope_denominators": {
+        "class": 1,
+        "script": 1,
+        "method": 4
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-as3-control-handlers/debug.fws.swf",
+      "family_id": "dev-as3-control-handlers",
+      "split": "development",
+      "language": "as3",
+      "compiler": "flex",
+      "debug": true,
+      "compression": "FWS",
+      "sha256": "dc46f7762e2792dd6beb6d5eca80d049dfbbe865d1f51550f78e91d81310131f",
+      "bytes": 1655,
+      "source_sha256": "476c4078ac66eaabb01757bfdc4836bece382eb6e8fc767ba79f84d81dca7551",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_HANDLER_11"
+      ],
+      "application_classes": [
+        "Main"
+      ],
+      "canonical_inventory_sha256": "48754b38ea210d677181086f1cc3262ac9c681007a7c73a96be98a728e902247",
+      "scope_denominators": {
+        "class": 1,
+        "script": 1,
+        "method": 4
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-as3-control-handlers/debug.cws.swf",
+      "family_id": "dev-as3-control-handlers",
+      "split": "development",
+      "language": "as3",
+      "compiler": "flex",
+      "debug": true,
+      "compression": "CWS",
+      "sha256": "706c04c657a2620449e1da1cf91d8d912804203c839afb7ee048bfee0428d621",
+      "bytes": 1141,
+      "source_sha256": "476c4078ac66eaabb01757bfdc4836bece382eb6e8fc767ba79f84d81dca7551",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_HANDLER_11"
+      ],
+      "application_classes": [
+        "Main"
+      ],
+      "canonical_inventory_sha256": "b8d7a9443a816b891000b81ad08bb307dffffdbbdafeb0c0529228f4f635bca4",
+      "scope_denominators": {
+        "class": 1,
+        "script": 1,
+        "method": 4
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-as3-control-handlers/debug.zws.swf",
+      "family_id": "dev-as3-control-handlers",
+      "split": "development",
+      "language": "as3",
+      "compiler": "flex",
+      "debug": true,
+      "compression": "ZWS",
+      "sha256": "1ca9c4ab7fb86701df3a114a070dad64486a25d5ae17d9b83263c50692779c02",
+      "bytes": 1093,
+      "source_sha256": "476c4078ac66eaabb01757bfdc4836bece382eb6e8fc767ba79f84d81dca7551",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_HANDLER_11"
+      ],
+      "application_classes": [
+        "Main"
+      ],
+      "canonical_inventory_sha256": "96497cafb5ef50e5c32af58634e4d8021b26edecc3fd61df98891eef35e5d9b5",
+      "scope_denominators": {
+        "class": 1,
+        "script": 1,
+        "method": 4
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-haxe-application/release.fws.swf",
+      "family_id": "dev-haxe-application",
+      "split": "development",
+      "language": "as3",
+      "compiler": "haxe",
+      "debug": false,
+      "compression": "FWS",
+      "sha256": "bcd3983545e2b72379da348f7c5ce77b9fe9225c5f712a4367dfd4002a8ba84b",
+      "bytes": 6995,
+      "source_sha256": "7378ba3b9017fd81faff34309708685049e3f5d6347cf4a0a6555639e7ebbcc4",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_HAXE_12"
+      ],
+      "application_classes": [
+        "Main"
+      ],
+      "canonical_inventory_sha256": "8b9cadb77831f9462995ecb0ddd8a236c2edb5285c1a7d0b6cdef754bc8cc585",
+      "scope_denominators": {
+        "class": 11,
+        "script": 11,
+        "method": 74
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-haxe-application/release.cws.swf",
+      "family_id": "dev-haxe-application",
+      "split": "development",
+      "language": "as3",
+      "compiler": "haxe",
+      "debug": false,
+      "compression": "CWS",
+      "sha256": "f08a7363aa0fea4bd3fea468f9dae0781702ed0d8ea0a7f87cc4f9c4ce7bbbdc",
+      "bytes": 4512,
+      "source_sha256": "7378ba3b9017fd81faff34309708685049e3f5d6347cf4a0a6555639e7ebbcc4",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_HAXE_12"
+      ],
+      "application_classes": [
+        "Main"
+      ],
+      "canonical_inventory_sha256": "44ca30078f52cbbf0b979254ffc4443fce2fd30f149fe7e08035bbba4686de76",
+      "scope_denominators": {
+        "class": 11,
+        "script": 11,
+        "method": 74
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-haxe-application/release.zws.swf",
+      "family_id": "dev-haxe-application",
+      "split": "development",
+      "language": "as3",
+      "compiler": "haxe",
+      "debug": false,
+      "compression": "ZWS",
+      "sha256": "06ba26b37e2dd022d79d17e0e046b9899759b5f551629744e752440885b20d2a",
+      "bytes": 4055,
+      "source_sha256": "7378ba3b9017fd81faff34309708685049e3f5d6347cf4a0a6555639e7ebbcc4",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_HAXE_12"
+      ],
+      "application_classes": [
+        "Main"
+      ],
+      "canonical_inventory_sha256": "591956819db7dc827698e79a86f6be0700f76e2fe922adad39c46823261fd845",
+      "scope_denominators": {
+        "class": 11,
+        "script": 11,
+        "method": 74
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-haxe-application/debug.fws.swf",
+      "family_id": "dev-haxe-application",
+      "split": "development",
+      "language": "as3",
+      "compiler": "haxe",
+      "debug": true,
+      "compression": "FWS",
+      "sha256": "62b2beecb896d6ab66eb3fdee677a6049a597c0bfd9d4a74701d0f611dbf8b1e",
+      "bytes": 10631,
+      "source_sha256": "7378ba3b9017fd81faff34309708685049e3f5d6347cf4a0a6555639e7ebbcc4",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_HAXE_12"
+      ],
+      "application_classes": [
+        "Main"
+      ],
+      "canonical_inventory_sha256": "1e7ab5bbf2edbbc3dc17f951e21571ab25352cd6bfe35b3d0a2e969224f08924",
+      "scope_denominators": {
+        "class": 11,
+        "script": 11,
+        "method": 74
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-haxe-application/debug.cws.swf",
+      "family_id": "dev-haxe-application",
+      "split": "development",
+      "language": "as3",
+      "compiler": "haxe",
+      "debug": true,
+      "compression": "CWS",
+      "sha256": "251223a1e8d0dcb28bba53f13a078f137fb55904486d3caeb7e86bc55bb5f425",
+      "bytes": 6343,
+      "source_sha256": "7378ba3b9017fd81faff34309708685049e3f5d6347cf4a0a6555639e7ebbcc4",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_HAXE_12"
+      ],
+      "application_classes": [
+        "Main"
+      ],
+      "canonical_inventory_sha256": "5c107e24b1cfcb252f4431534512a3877951d4e94d1c1c57938bf35aaea72584",
+      "scope_denominators": {
+        "class": 11,
+        "script": 11,
+        "method": 74
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/dev-haxe-application/debug.zws.swf",
+      "family_id": "dev-haxe-application",
+      "split": "development",
+      "language": "as3",
+      "compiler": "haxe",
+      "debug": true,
+      "compression": "ZWS",
+      "sha256": "e71c728ef751d5c10362915d9ba63a0020b26742d089deac1f26facbc0edb74d",
+      "bytes": 5507,
+      "source_sha256": "7378ba3b9017fd81faff34309708685049e3f5d6347cf4a0a6555639e7ebbcc4",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_HAXE_12"
+      ],
+      "application_classes": [
+        "Main"
+      ],
+      "canonical_inventory_sha256": "fd61721a60f43164467e5878e02ac886515ae8ba3543febd4dccaee77c05f8f9",
+      "scope_denominators": {
+        "class": 11,
+        "script": 11,
+        "method": 74
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/validation-as2-prototype-app/release.fws.swf",
+      "family_id": "validation-as2-prototype-app",
+      "split": "validation",
+      "language": "as2",
+      "compiler": "rascal",
+      "debug": false,
+      "compression": "FWS",
+      "sha256": "9db097ebae21660a289d03e7111f5fbcf1ec21f5d7069d0c3930f9f9f280de6e",
+      "bytes": 245,
+      "source_sha256": "ae951f6166017c40e70b58e93340c949ad4fc5c4f8f1b6913790a64883df1131",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_PROTOTYPE_14"
+      ],
+      "application_classes": [],
+      "canonical_inventory_sha256": "06aa96a0f898f1e4c65feb519b83934d572e7c1101ab8a3bfb3c88be166e1168",
+      "scope_denominators": {
+        "action": 1,
+        "function": 2
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/validation-as2-prototype-app/release.cws.swf",
+      "family_id": "validation-as2-prototype-app",
+      "split": "validation",
+      "language": "as2",
+      "compiler": "rascal",
+      "debug": false,
+      "compression": "CWS",
+      "sha256": "2f5a344e674f160a31a1e67bc6ce8f9a0d9023877753c4136974bf8046edcfbd",
+      "bytes": 194,
+      "source_sha256": "ae951f6166017c40e70b58e93340c949ad4fc5c4f8f1b6913790a64883df1131",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_PROTOTYPE_14"
+      ],
+      "application_classes": [],
+      "canonical_inventory_sha256": "d46601a02ae1272682234f4be94c2995ba9420200ca10cfb000a1c148f4a9769",
+      "scope_denominators": {
+        "action": 1,
+        "function": 2
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/validation-as2-prototype-app/release.zws.swf",
+      "family_id": "validation-as2-prototype-app",
+      "split": "validation",
+      "language": "as2",
+      "compiler": "rascal",
+      "debug": false,
+      "compression": "ZWS",
+      "sha256": "90d4639c5bbad8c8bd03b67080d049643a21b1b857353bea3840653b52e278f9",
+      "bytes": 202,
+      "source_sha256": "ae951f6166017c40e70b58e93340c949ad4fc5c4f8f1b6913790a64883df1131",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_PROTOTYPE_14"
+      ],
+      "application_classes": [],
+      "canonical_inventory_sha256": "2b7afdd6bae64f993970c6e38398b1d285319ae6b28591e5988a339aefcf82e3",
+      "scope_denominators": {
+        "action": 1,
+        "function": 2
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/validation-as2-prototype-app/debug.fws.swf",
+      "family_id": "validation-as2-prototype-app",
+      "split": "validation",
+      "language": "as2",
+      "compiler": "rascal",
+      "debug": true,
+      "compression": "FWS",
+      "sha256": "56382547725320c15a8b6f3a021d64d35ef6ffd31fbe93c00203784b63114c45",
+      "bytes": 273,
+      "source_sha256": "ae951f6166017c40e70b58e93340c949ad4fc5c4f8f1b6913790a64883df1131",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_PROTOTYPE_14"
+      ],
+      "application_classes": [],
+      "canonical_inventory_sha256": "86471fd05d3bf774ea369f3ae602f24eb046d9a2936260c10248ae11351e2fb7",
+      "scope_denominators": {
+        "action": 1,
+        "function": 2
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/validation-as2-prototype-app/debug.cws.swf",
+      "family_id": "validation-as2-prototype-app",
+      "split": "validation",
+      "language": "as2",
+      "compiler": "rascal",
+      "debug": true,
+      "compression": "CWS",
+      "sha256": "f3b4ee7326841605a95ef1952082febcf243bfa972522abd673d835ed1963cd9",
+      "bytes": 204,
+      "source_sha256": "ae951f6166017c40e70b58e93340c949ad4fc5c4f8f1b6913790a64883df1131",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_PROTOTYPE_14"
+      ],
+      "application_classes": [],
+      "canonical_inventory_sha256": "cbaad7fe6456f3cbd97a11e246b36895a7a7119b6038a028799a65694667f173",
+      "scope_denominators": {
+        "action": 1,
+        "function": 2
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/validation-as2-prototype-app/debug.zws.swf",
+      "family_id": "validation-as2-prototype-app",
+      "split": "validation",
+      "language": "as2",
+      "compiler": "rascal",
+      "debug": true,
+      "compression": "ZWS",
+      "sha256": "a8b61c354e128a2fab7a4ee7e3c159280df912691dfb1abf5a9ebc8b161ec4de",
+      "bytes": 205,
+      "source_sha256": "ae951f6166017c40e70b58e93340c949ad4fc5c4f8f1b6913790a64883df1131",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_PROTOTYPE_14"
+      ],
+      "application_classes": [],
+      "canonical_inventory_sha256": "8da87cc3fca4bd6f1b83fcab3d9cab38d6362d77ff1cd24dcab9445eccbbf9f2",
+      "scope_denominators": {
+        "action": 1,
+        "function": 2
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/validation-flex-app/release.fws.swf",
+      "family_id": "validation-flex-app",
+      "split": "validation",
+      "language": "as3",
+      "compiler": "flex",
+      "debug": false,
+      "compression": "FWS",
+      "sha256": "73b2167dc76445853cfe3a9789b681388a407ffdbdcb303a541590f7dbec6419",
+      "bytes": 1196,
+      "source_sha256": "ad4bd17df5f1798e1a54e6e46d63342f5c4796f55e487419bec9eb22b0e9cb3e",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_FLEXAPP_15"
+      ],
+      "application_classes": [
+        "Main",
+        "app::Board"
+      ],
+      "canonical_inventory_sha256": "8e48f17cf3bd6e6d1fb9216a6d9666387401c43cf94ab9d6642ea5bedfbadf68",
+      "scope_denominators": {
+        "class": 2,
+        "script": 2,
+        "method": 7
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/validation-flex-app/release.cws.swf",
+      "family_id": "validation-flex-app",
+      "split": "validation",
+      "language": "as3",
+      "compiler": "flex",
+      "debug": false,
+      "compression": "CWS",
+      "sha256": "1e89ee615c8bbf5b8103ff81753018c51d1ef9c141b620452d8af1aaeec3c875",
+      "bytes": 840,
+      "source_sha256": "ad4bd17df5f1798e1a54e6e46d63342f5c4796f55e487419bec9eb22b0e9cb3e",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_FLEXAPP_15"
+      ],
+      "application_classes": [
+        "Main",
+        "app::Board"
+      ],
+      "canonical_inventory_sha256": "b0388514d4281ee6ea3d736b710bda53e8aa5dd433ff1e799d583cf8ccb8344f",
+      "scope_denominators": {
+        "class": 2,
+        "script": 2,
+        "method": 7
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/validation-flex-app/release.zws.swf",
+      "family_id": "validation-flex-app",
+      "split": "validation",
+      "language": "as3",
+      "compiler": "flex",
+      "debug": false,
+      "compression": "ZWS",
+      "sha256": "a8d2b64a426c47d3e065cf717dc19d01e985f3ccf9a37be98f47be31e0e8c95c",
+      "bytes": 806,
+      "source_sha256": "ad4bd17df5f1798e1a54e6e46d63342f5c4796f55e487419bec9eb22b0e9cb3e",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_FLEXAPP_15"
+      ],
+      "application_classes": [
+        "Main",
+        "app::Board"
+      ],
+      "canonical_inventory_sha256": "bc1f9bfdf9f69846df159f6a4c9ff4fcd1ca92eb076ac11c5804489a3a2e059d",
+      "scope_denominators": {
+        "class": 2,
+        "script": 2,
+        "method": 7
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/validation-flex-app/debug.fws.swf",
+      "family_id": "validation-flex-app",
+      "split": "validation",
+      "language": "as3",
+      "compiler": "flex",
+      "debug": true,
+      "compression": "FWS",
+      "sha256": "4e02547eb379171253f9e6daf59885364f9f22f4fd664eecd07e6c271e8a04fb",
+      "bytes": 1913,
+      "source_sha256": "ad4bd17df5f1798e1a54e6e46d63342f5c4796f55e487419bec9eb22b0e9cb3e",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_FLEXAPP_15"
+      ],
+      "application_classes": [
+        "Main",
+        "app::Board"
+      ],
+      "canonical_inventory_sha256": "50391c7a0fbc0677418cc0cc8e8d4c8b612a0b2d63afd91d9a4f2b7c46998952",
+      "scope_denominators": {
+        "class": 2,
+        "script": 2,
+        "method": 7
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/validation-flex-app/debug.cws.swf",
+      "family_id": "validation-flex-app",
+      "split": "validation",
+      "language": "as3",
+      "compiler": "flex",
+      "debug": true,
+      "compression": "CWS",
+      "sha256": "4058ad30998052d16a5271f291d4a9193a3e95edab4620c33fe7b0d4042aca11",
+      "bytes": 1191,
+      "source_sha256": "ad4bd17df5f1798e1a54e6e46d63342f5c4796f55e487419bec9eb22b0e9cb3e",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_FLEXAPP_15"
+      ],
+      "application_classes": [
+        "Main",
+        "app::Board"
+      ],
+      "canonical_inventory_sha256": "a551426105698d1941762b51f7ac27583eb4d165a2f698cfb130969315953e1e",
+      "scope_denominators": {
+        "class": 2,
+        "script": 2,
+        "method": 7
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/validation-flex-app/debug.zws.swf",
+      "family_id": "validation-flex-app",
+      "split": "validation",
+      "language": "as3",
+      "compiler": "flex",
+      "debug": true,
+      "compression": "ZWS",
+      "sha256": "15c892679281bfe2beba9ea8f0d73899ee2761949dc5573192c71e1793d0af2a",
+      "bytes": 1134,
+      "source_sha256": "ad4bd17df5f1798e1a54e6e46d63342f5c4796f55e487419bec9eb22b0e9cb3e",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_FLEXAPP_15"
+      ],
+      "application_classes": [
+        "Main",
+        "app::Board"
+      ],
+      "canonical_inventory_sha256": "89915bbd1b13232463b067725434e634d4afe0d31ee5acf882b138d44b4f766b",
+      "scope_denominators": {
+        "class": 2,
+        "script": 2,
+        "method": 7
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/validation-haxeflixel-game/release.fws.swf",
+      "family_id": "validation-haxeflixel-game",
+      "split": "validation",
+      "language": "as3",
+      "compiler": "haxeflixel",
+      "debug": false,
+      "compression": "FWS",
+      "sha256": "cbdd82cede0acbe4c3ea5e361c172b3c543dc46fc606b342c64be33b08ce8637",
+      "bytes": 1424746,
+      "source_sha256": "758ce5c881bb77e4667d5d2789be96b3e50f389ef9da75bb06b95aecad33f2dc",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_VALIDATION_READY"
+      ],
+      "application_classes": [
+        "Main",
+        "PlayState"
+      ],
+      "canonical_inventory_sha256": "380060c99834306482dd41c5357a083caa11c7154b410f644aa70c1fb9b12f48",
+      "scope_denominators": {
+        "class": 660,
+        "script": 660,
+        "method": 8944
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/validation-haxeflixel-game/release.cws.swf",
+      "family_id": "validation-haxeflixel-game",
+      "split": "validation",
+      "language": "as3",
+      "compiler": "haxeflixel",
+      "debug": false,
+      "compression": "CWS",
+      "sha256": "eafadbffbc67a6399c1750fc093c569c7decd5aecc232a0889d08ce3e8e7cbd5",
+      "bytes": 582202,
+      "source_sha256": "758ce5c881bb77e4667d5d2789be96b3e50f389ef9da75bb06b95aecad33f2dc",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_VALIDATION_READY"
+      ],
+      "application_classes": [
+        "Main",
+        "PlayState"
+      ],
+      "canonical_inventory_sha256": "97753643780923072e42b3b78d1297e376b9c04630c5e8443cbd28bc7d3c4d05",
+      "scope_denominators": {
+        "class": 660,
+        "script": 660,
+        "method": 8944
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/validation-haxeflixel-game/release.zws.swf",
+      "family_id": "validation-haxeflixel-game",
+      "split": "validation",
+      "language": "as3",
+      "compiler": "haxeflixel",
+      "debug": false,
+      "compression": "ZWS",
+      "sha256": "f56cb172dbe7faeb72cade3c330403425a7705ebd0dcba42115b357d46e25a22",
+      "bytes": 436174,
+      "source_sha256": "758ce5c881bb77e4667d5d2789be96b3e50f389ef9da75bb06b95aecad33f2dc",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_VALIDATION_READY"
+      ],
+      "application_classes": [
+        "Main",
+        "PlayState"
+      ],
+      "canonical_inventory_sha256": "9abcac15bb27f920c31d69c80490bc4150a411b35f5b512d7a4bef7768967bda",
+      "scope_denominators": {
+        "class": 660,
+        "script": 660,
+        "method": 8944
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/validation-haxeflixel-game/debug.fws.swf",
+      "family_id": "validation-haxeflixel-game",
+      "split": "validation",
+      "language": "as3",
+      "compiler": "haxeflixel",
+      "debug": true,
+      "compression": "FWS",
+      "sha256": "e38c85d204acd6e4eb561a68eb7b4ee1b8571fa9b2136d6bafb98324f97e52d3",
+      "bytes": 1792398,
+      "source_sha256": "758ce5c881bb77e4667d5d2789be96b3e50f389ef9da75bb06b95aecad33f2dc",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_VALIDATION_READY"
+      ],
+      "application_classes": [
+        "Main",
+        "PlayState"
+      ],
+      "canonical_inventory_sha256": "8e76d3599211ce8708a458c587b510527eb33dbbcc7e8e636736c13bccaa6c8a",
+      "scope_denominators": {
+        "class": 660,
+        "script": 660,
+        "method": 8944
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/validation-haxeflixel-game/debug.cws.swf",
+      "family_id": "validation-haxeflixel-game",
+      "split": "validation",
+      "language": "as3",
+      "compiler": "haxeflixel",
+      "debug": true,
+      "compression": "CWS",
+      "sha256": "5d51dda6274e42f4d47bdf12999942c5dc3f71dd81c1c31c408eebaa7d72b161",
+      "bytes": 780768,
+      "source_sha256": "758ce5c881bb77e4667d5d2789be96b3e50f389ef9da75bb06b95aecad33f2dc",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_VALIDATION_READY"
+      ],
+      "application_classes": [
+        "Main",
+        "PlayState"
+      ],
+      "canonical_inventory_sha256": "8998eb07a82a51947c8f4f095e4af32aaa30bb7d7113e13e5c84e5d10e10bbc5",
+      "scope_denominators": {
+        "class": 660,
+        "script": 660,
+        "method": 8944
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/validation-haxeflixel-game/debug.zws.swf",
+      "family_id": "validation-haxeflixel-game",
+      "split": "validation",
+      "language": "as3",
+      "compiler": "haxeflixel",
+      "debug": true,
+      "compression": "ZWS",
+      "sha256": "cd1448ac00faea44cddb38f7c9b23485227429f351f0abec099dac1b6e8f7ed8",
+      "bytes": 581585,
+      "source_sha256": "758ce5c881bb77e4667d5d2789be96b3e50f389ef9da75bb06b95aecad33f2dc",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_VALIDATION_READY"
+      ],
+      "application_classes": [
+        "Main",
+        "PlayState"
+      ],
+      "canonical_inventory_sha256": "9cf00af679611ae3b253ac94bc7fea9aeee4437fd20722ac19d42695ee6905f1",
+      "scope_denominators": {
+        "class": 660,
+        "script": 660,
+        "method": 8944
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/holdout-as2-independent/release.fws.swf",
+      "family_id": "holdout-as2-independent",
+      "split": "holdout",
+      "language": "as2",
+      "compiler": "rascal",
+      "debug": false,
+      "compression": "FWS",
+      "sha256": "286f70f9f777348518d6d1fdee1d9d5e667d7cb557fc709a992fb6ae2dcc9dbe",
+      "bytes": 295,
+      "source_sha256": "f32300b1bb89e073ef7173f7f7a3ff99da077c51f83697b18c911bd25f17ea38",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_HOLDOUT_AS2_blue"
+      ],
+      "application_classes": [],
+      "canonical_inventory_sha256": "dded588ca525ee323cf38451dcb3d1634c485860c9b604913c6d78f61b268071",
+      "scope_denominators": {
+        "action": 1
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/holdout-as2-independent/release.cws.swf",
+      "family_id": "holdout-as2-independent",
+      "split": "holdout",
+      "language": "as2",
+      "compiler": "rascal",
+      "debug": false,
+      "compression": "CWS",
+      "sha256": "fc9d43ab343f43af3f4de66d262f9812ea9855795d8e37748fd016e3e8183fc0",
+      "bytes": 222,
+      "source_sha256": "f32300b1bb89e073ef7173f7f7a3ff99da077c51f83697b18c911bd25f17ea38",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_HOLDOUT_AS2_blue"
+      ],
+      "application_classes": [],
+      "canonical_inventory_sha256": "812367f947cc6d1c1606d18ba09a221dd55bb2465090fb11d961d1c9e6aa3162",
+      "scope_denominators": {
+        "action": 1
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/holdout-as2-independent/release.zws.swf",
+      "family_id": "holdout-as2-independent",
+      "split": "holdout",
+      "language": "as2",
+      "compiler": "rascal",
+      "debug": false,
+      "compression": "ZWS",
+      "sha256": "581160cb3c81570c128c462f35e81b6fdacd6257be7b441dc1634917d3bbfabf",
+      "bytes": 226,
+      "source_sha256": "f32300b1bb89e073ef7173f7f7a3ff99da077c51f83697b18c911bd25f17ea38",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_HOLDOUT_AS2_blue"
+      ],
+      "application_classes": [],
+      "canonical_inventory_sha256": "07a1b539c393be3438fadac4bf7bd38f5bf4d24ddd4a0ba56c83c7fd528536f3",
+      "scope_denominators": {
+        "action": 1
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/holdout-as2-independent/debug.fws.swf",
+      "family_id": "holdout-as2-independent",
+      "split": "holdout",
+      "language": "as2",
+      "compiler": "rascal",
+      "debug": true,
+      "compression": "FWS",
+      "sha256": "286f70f9f777348518d6d1fdee1d9d5e667d7cb557fc709a992fb6ae2dcc9dbe",
+      "bytes": 295,
+      "source_sha256": "f32300b1bb89e073ef7173f7f7a3ff99da077c51f83697b18c911bd25f17ea38",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_HOLDOUT_AS2_blue"
+      ],
+      "application_classes": [],
+      "canonical_inventory_sha256": "dded588ca525ee323cf38451dcb3d1634c485860c9b604913c6d78f61b268071",
+      "scope_denominators": {
+        "action": 1
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/holdout-as2-independent/debug.cws.swf",
+      "family_id": "holdout-as2-independent",
+      "split": "holdout",
+      "language": "as2",
+      "compiler": "rascal",
+      "debug": true,
+      "compression": "CWS",
+      "sha256": "fc9d43ab343f43af3f4de66d262f9812ea9855795d8e37748fd016e3e8183fc0",
+      "bytes": 222,
+      "source_sha256": "f32300b1bb89e073ef7173f7f7a3ff99da077c51f83697b18c911bd25f17ea38",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_HOLDOUT_AS2_blue"
+      ],
+      "application_classes": [],
+      "canonical_inventory_sha256": "812367f947cc6d1c1606d18ba09a221dd55bb2465090fb11d961d1c9e6aa3162",
+      "scope_denominators": {
+        "action": 1
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/holdout-as2-independent/debug.zws.swf",
+      "family_id": "holdout-as2-independent",
+      "split": "holdout",
+      "language": "as2",
+      "compiler": "rascal",
+      "debug": true,
+      "compression": "ZWS",
+      "sha256": "581160cb3c81570c128c462f35e81b6fdacd6257be7b441dc1634917d3bbfabf",
+      "bytes": 226,
+      "source_sha256": "f32300b1bb89e073ef7173f7f7a3ff99da077c51f83697b18c911bd25f17ea38",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_HOLDOUT_AS2_blue"
+      ],
+      "application_classes": [],
+      "canonical_inventory_sha256": "07a1b539c393be3438fadac4bf7bd38f5bf4d24ddd4a0ba56c83c7fd528536f3",
+      "scope_denominators": {
+        "action": 1
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/holdout-as3-ledger-events/release.fws.swf",
+      "family_id": "holdout-as3-ledger-events",
+      "split": "holdout",
+      "language": "as3",
+      "compiler": "flex",
+      "debug": false,
+      "compression": "FWS",
+      "sha256": "a262f219788771aadee99a5236e08c28aae3707b635a5273e346896cff675491",
+      "bytes": 1400,
+      "source_sha256": "bf19b22db0ee7995a8ffa99d1137a76896372cd9e39eda3f5c0359e1b35887cc",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_HOLDOUT_LEDGER_16"
+      ],
+      "application_classes": [
+        "Main"
+      ],
+      "canonical_inventory_sha256": "af19d144b27c27fe24c8b7218d75485876edde492c6841c4e9d1d246498e854d",
+      "scope_denominators": {
+        "class": 1,
+        "script": 1,
+        "method": 4
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/holdout-as3-ledger-events/release.cws.swf",
+      "family_id": "holdout-as3-ledger-events",
+      "split": "holdout",
+      "language": "as3",
+      "compiler": "flex",
+      "debug": false,
+      "compression": "CWS",
+      "sha256": "dbb8e69931bf11ea4708ef2cf29ee312685361808e79ad018742bbd67540ea52",
+      "bytes": 916,
+      "source_sha256": "bf19b22db0ee7995a8ffa99d1137a76896372cd9e39eda3f5c0359e1b35887cc",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_HOLDOUT_LEDGER_16"
+      ],
+      "application_classes": [
+        "Main"
+      ],
+      "canonical_inventory_sha256": "34d4bd1936905bd8e5fdc638e59a723decea3c9ec2b428436c83dc7acdb41034",
+      "scope_denominators": {
+        "class": 1,
+        "script": 1,
+        "method": 4
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/holdout-as3-ledger-events/release.zws.swf",
+      "family_id": "holdout-as3-ledger-events",
+      "split": "holdout",
+      "language": "as3",
+      "compiler": "flex",
+      "debug": false,
+      "compression": "ZWS",
+      "sha256": "8f38b60c10a06ad4658acb07d455145fd0a9927e028df2c31b1ed616dfba628c",
+      "bytes": 870,
+      "source_sha256": "bf19b22db0ee7995a8ffa99d1137a76896372cd9e39eda3f5c0359e1b35887cc",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_HOLDOUT_LEDGER_16"
+      ],
+      "application_classes": [
+        "Main"
+      ],
+      "canonical_inventory_sha256": "90b8ed19233bda5428429a173c9a9ecd228bbda83e877dcc8d9a01cd0c0667eb",
+      "scope_denominators": {
+        "class": 1,
+        "script": 1,
+        "method": 4
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/holdout-as3-ledger-events/debug.fws.swf",
+      "family_id": "holdout-as3-ledger-events",
+      "split": "holdout",
+      "language": "as3",
+      "compiler": "flex",
+      "debug": true,
+      "compression": "FWS",
+      "sha256": "b2103e9d5d12a15a89305558fd5eab0920591d23b4c147dde12adf68a01a4e8d",
+      "bytes": 1795,
+      "source_sha256": "bf19b22db0ee7995a8ffa99d1137a76896372cd9e39eda3f5c0359e1b35887cc",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_HOLDOUT_LEDGER_16"
+      ],
+      "application_classes": [
+        "Main"
+      ],
+      "canonical_inventory_sha256": "3472f5a952d39f49030a6d941af0c36a3151af7cfbab1105c5ba662833ca4708",
+      "scope_denominators": {
+        "class": 1,
+        "script": 1,
+        "method": 4
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/holdout-as3-ledger-events/debug.cws.swf",
+      "family_id": "holdout-as3-ledger-events",
+      "split": "holdout",
+      "language": "as3",
+      "compiler": "flex",
+      "debug": true,
+      "compression": "CWS",
+      "sha256": "a6c14a74ccd49277810e5fe92088abca5d887cc64b242e8112a0de55127a383c",
+      "bytes": 1192,
+      "source_sha256": "bf19b22db0ee7995a8ffa99d1137a76896372cd9e39eda3f5c0359e1b35887cc",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_HOLDOUT_LEDGER_16"
+      ],
+      "application_classes": [
+        "Main"
+      ],
+      "canonical_inventory_sha256": "aa8886acfaf3bcdc5ef4aeeeb7dedf4ae396fc7c31ce679381e121bba9942fd9",
+      "scope_denominators": {
+        "class": 1,
+        "script": 1,
+        "method": 4
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/holdout-as3-ledger-events/debug.zws.swf",
+      "family_id": "holdout-as3-ledger-events",
+      "split": "holdout",
+      "language": "as3",
+      "compiler": "flex",
+      "debug": true,
+      "compression": "ZWS",
+      "sha256": "18808022b614a803868eb4827599f46e3996d8ec3aeb7e8c17138b730dd5eeef",
+      "bytes": 1133,
+      "source_sha256": "bf19b22db0ee7995a8ffa99d1137a76896372cd9e39eda3f5c0359e1b35887cc",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_HOLDOUT_LEDGER_16"
+      ],
+      "application_classes": [
+        "Main"
+      ],
+      "canonical_inventory_sha256": "79e8645bbe4ee963c71387fc9b48a48cc97bad86ead2f9c6dd358bf0c33d08b8",
+      "scope_denominators": {
+        "class": 1,
+        "script": 1,
+        "method": 4
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/holdout-haxeflixel-independent/release.fws.swf",
+      "family_id": "holdout-haxeflixel-independent",
+      "split": "holdout",
+      "language": "as3",
+      "compiler": "haxeflixel",
+      "debug": false,
+      "compression": "FWS",
+      "sha256": "e3d6c9b528004d0cb848b8bc2c3368e723448d53f87124bcc9b9da65c2093d2f",
+      "bytes": 1424798,
+      "source_sha256": "51e5127003c5b7b0b69ef76c02d72042a9352a7d8b9220fc1d95da6bbe9ace78",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_HOLDOUT_38"
+      ],
+      "application_classes": [
+        "Main",
+        "PlayState"
+      ],
+      "canonical_inventory_sha256": "8c88c64de089398fd4a4dbd83d3c8175d87f8d9955b183022537b3f2306e1414",
+      "scope_denominators": {
+        "class": 660,
+        "script": 660,
+        "method": 8944
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/holdout-haxeflixel-independent/release.cws.swf",
+      "family_id": "holdout-haxeflixel-independent",
+      "split": "holdout",
+      "language": "as3",
+      "compiler": "haxeflixel",
+      "debug": false,
+      "compression": "CWS",
+      "sha256": "536b4f9d3415063351157eb67d39da55a8771e1cefafcaa9e9633528318ae496",
+      "bytes": 582245,
+      "source_sha256": "51e5127003c5b7b0b69ef76c02d72042a9352a7d8b9220fc1d95da6bbe9ace78",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_HOLDOUT_38"
+      ],
+      "application_classes": [
+        "Main",
+        "PlayState"
+      ],
+      "canonical_inventory_sha256": "d9027cf8f3060af0f0f549313c38a14dfbfc22b1e1eb69028bf5debcf5e0a53a",
+      "scope_denominators": {
+        "class": 660,
+        "script": 660,
+        "method": 8944
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/holdout-haxeflixel-independent/release.zws.swf",
+      "family_id": "holdout-haxeflixel-independent",
+      "split": "holdout",
+      "language": "as3",
+      "compiler": "haxeflixel",
+      "debug": false,
+      "compression": "ZWS",
+      "sha256": "42b4e1272f2ec1812394eedf1a85750d983333d16ec2e8cfff3490bc4a50f46c",
+      "bytes": 436478,
+      "source_sha256": "51e5127003c5b7b0b69ef76c02d72042a9352a7d8b9220fc1d95da6bbe9ace78",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_HOLDOUT_38"
+      ],
+      "application_classes": [
+        "Main",
+        "PlayState"
+      ],
+      "canonical_inventory_sha256": "2503efed5d1259baf1e4842b7be7ee2aed81e599c74b43bda6b758062e2f24f8",
+      "scope_denominators": {
+        "class": 660,
+        "script": 660,
+        "method": 8944
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/holdout-haxeflixel-independent/debug.fws.swf",
+      "family_id": "holdout-haxeflixel-independent",
+      "split": "holdout",
+      "language": "as3",
+      "compiler": "haxeflixel",
+      "debug": true,
+      "compression": "FWS",
+      "sha256": "ff9bbd47266e7648482b35bc888e9bebbd02923a0d2a574e6cd2766364695899",
+      "bytes": 1792494,
+      "source_sha256": "51e5127003c5b7b0b69ef76c02d72042a9352a7d8b9220fc1d95da6bbe9ace78",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_HOLDOUT_38"
+      ],
+      "application_classes": [
+        "Main",
+        "PlayState"
+      ],
+      "canonical_inventory_sha256": "d22571622073eb40545a9705043d8dbf6d5533da7760ae99495e830d7c3f13a9",
+      "scope_denominators": {
+        "class": 660,
+        "script": 660,
+        "method": 8944
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/holdout-haxeflixel-independent/debug.cws.swf",
+      "family_id": "holdout-haxeflixel-independent",
+      "split": "holdout",
+      "language": "as3",
+      "compiler": "haxeflixel",
+      "debug": true,
+      "compression": "CWS",
+      "sha256": "ad4a389d9b0033f043067dd7ac5e3be95ca85bf17ce441687b5552ea76d3aec2",
+      "bytes": 780890,
+      "source_sha256": "51e5127003c5b7b0b69ef76c02d72042a9352a7d8b9220fc1d95da6bbe9ace78",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_HOLDOUT_38"
+      ],
+      "application_classes": [
+        "Main",
+        "PlayState"
+      ],
+      "canonical_inventory_sha256": "615324895b3ab6aeb1327ff4fe6c1a82853c63a30efc291f16a6032f6b13439b",
+      "scope_denominators": {
+        "class": 660,
+        "script": 660,
+        "method": 8944
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    },
+    {
+      "relative": "swf/holdout-haxeflixel-independent/debug.zws.swf",
+      "family_id": "holdout-haxeflixel-independent",
+      "split": "holdout",
+      "language": "as3",
+      "compiler": "haxeflixel",
+      "debug": true,
+      "compression": "ZWS",
+      "sha256": "ec374dd9e0d3fa72c5d269724c743b6a01e7ac3263d7422b93bc2f99bd383e32",
+      "bytes": 581041,
+      "source_sha256": "51e5127003c5b7b0b69ef76c02d72042a9352a7d8b9220fc1d95da6bbe9ace78",
+      "source_license": "CC0-1.0",
+      "expected_trace": [
+        "PARITY_HOLDOUT_38"
+      ],
+      "application_classes": [
+        "Main",
+        "PlayState"
+      ],
+      "canonical_inventory_sha256": "beabd5e92acf878516205ee597523766334482a1732b2dcf7be2404520e5dd69",
+      "scope_denominators": {
+        "class": 660,
+        "script": 660,
+        "method": 8944
+      },
+      "quality_dimensions": {
+        "compilation": "original_compiled",
+        "behavior": "not_run",
+        "source_fidelity": "known_authored_source"
+      }
+    }
+  ],
+  "sealed": false,
+  "dependencies": {
+    "haxe": {
+      "path": "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\haxe",
+      "source": "existing verified optional toolpack",
+      "hash": {
+        "tree_sha256": "7f2b51bd51816dab1cf2b39872b187faf3559e5c6fd71e7a682e399e7baee12d",
+        "files": 2656,
+        "bytes": 34224311
+      }
+    },
+    "haxelib": {
+      "path": "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\haxelib",
+      "source": "existing verified optional toolpack",
+      "hash": {
+        "tree_sha256": "7da1f1cc325a6491d8d39fa8247242ee5f4a438bf2acbce60e4444e13f2c4622",
+        "files": 3872,
+        "bytes": 489828414
+      }
+    },
+    "flex": {
+      "path": "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex",
+      "source": "existing verified optional toolpack",
+      "hash": {
+        "tree_sha256": "099954827266a6a09c25c90b7fa5367d2796ddf058b359890df81f8c471060e4",
+        "files": 5880,
+        "bytes": 112122588
+      }
+    }
+  }
+}

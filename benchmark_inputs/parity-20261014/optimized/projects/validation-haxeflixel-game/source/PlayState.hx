@@ -1,0 +1,1 @@
+import flixel.FlxState; import flixel.FlxSprite; class PlayState extends FlxState { override public function create(){super.create();var tile=new FlxSprite(20,20).makeGraphic(40,40,0xff33aa11);add(tile);trace("PARITY_VALIDATION_READY");} }

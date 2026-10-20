@@ -1,0 +1,28 @@
+-main ApplicationMain 
+-cp C:/Users/Yoyobastidas/Desktop/ig2/05_Herramientas_y_entornos/PRO FLASH DESCOMPILER/toolpacks/haxelib/flixel/6,2,0
+-D flixel=6.2.0
+--macro openfl.utils._internal.ExtraParamsMacro.include()
+-cp C:/Users/Yoyobastidas/Desktop/ig2/05_Herramientas_y_entornos/PRO FLASH DESCOMPILER/toolpacks/haxelib/openfl/9,5,2/src
+-D openfl=9.5.2
+--macro lime._internal.macros.DefineMacro.run()
+--macro haxe.macro.Compiler.addMetadata("@:autoBuild(lime._internal.macros.AssetsMacro.embedBytes())", "haxe.io.Bytes")
+-cp C:/Users/Yoyobastidas/Desktop/ig2/05_Herramientas_y_entornos/PRO FLASH DESCOMPILER/toolpacks/haxelib/lime/8,3,2/src
+-D lime=8.3.2
+-cp source
+-cp C:/Users/Yoyobastidas/Desktop/ig2/05_Herramientas_y_entornos/PRO FLASH DESCOMPILER/toolpacks/haxelib/openfl/9,5,2/lib/flash-externs/src
+-D native-trace
+-D FLX_NO_GAMEPAD
+-D tools=8.3.2
+-D FLX_NO_MOUSE_ADVANCED
+-D flash-use-stage
+-D no-compilation
+-D openfl-flash
+-D fdb
+-D openfl-disable-handle-error
+-D web
+--macro flixel.system.macros.FlxDefines.run()
+-cp export/flash
+-swf-lib obj/assets.swf
+-swf-version 17
+-swf export/flash/bin/ParityGame.swf
+-cp export/flash/haxe

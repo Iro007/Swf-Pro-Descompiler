@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "runtime_policy": "Native Python in distributions; reference tools are development-only",
+  "jpexs": {
+    "repository": "https://github.com/jindrapetrik/jpexs-decompiler",
+    "version": "26.3.0",
+    "tag": "version26.3.0",
+    "commit": "b2ef2d3d3f44291a4bdfa899c986bc39a89fa6aa",
+    "source_license": "GPL-3.0; ffdec_lib LGPL-3.0; retain per-component notices",
+    "application": {"url": "https://github.com/jindrapetrik/jpexs-decompiler/releases/download/version26.3.0/ffdec_26.3.0.zip", "sha256": "35f4930eb7c380afe66f2117f90b006deac0631473ad7500bb39c78f68645ecd"},
+    "library": {"url": "https://github.com/jindrapetrik/jpexs-decompiler/releases/download/version26.3.0/ffdec_lib_26.3.0.zip", "sha256": "6fe8eb8195fb89e06949bf076127e4d6acaffec27fa2c990ede41d7d614580ba"}
+  },
+  "temurin": {
+    "version": "21.0.12.1+1",
+    "platform": "windows-x64",
+    "url": "https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.12.1%2B1/OpenJDK21U-jdk_x64_windows_hotspot_21.0.12.1_1.zip",
+    "sha256": "f9d6e191ab098c0d416e7d588a24420a8621cd2f4720dab2459b8b7b2d2d8b4e",
+    "license": "GPL-2.0 with Classpath exception; development only"
+  },
+  "references": [
+    {"name": "REA", "repository": "https://github.com/morluto/rea", "commit": "42b0ed126df7d5b908ac369715378d5e519051b7", "license": "MIT", "use": "Evidence model only; no MCP installation or agent configuration"},
+    {"name": "angr/Phoenix", "repository": "https://github.com/angr/angr", "commit": "d1e9ec806cae8c49139cd96a738dcc0821a5023d", "license": "BSD-2-Clause", "use": "Region-structuring reference; no angr runtime dependency"},
+    {"name": "Ruffle", "repository": "https://github.com/ruffle-rs/ruffle", "commit": "ba92d5af0a9981b322b67c68ef58f59342f843fe", "license": "MIT OR Apache-2.0; dependency notices apply", "use": "Independent execution reference, only when a case has actually been observed"}
+  ]
+}

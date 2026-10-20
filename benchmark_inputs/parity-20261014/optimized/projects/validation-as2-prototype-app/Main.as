@@ -1,0 +1,1 @@
+function Counter(start) { this.value = start; } Counter.prototype.add = function(amount) { this.value += amount; return this.value; }; var counter = new Counter(10); trace("PARITY_PROTOTYPE_" + counter.add(4));

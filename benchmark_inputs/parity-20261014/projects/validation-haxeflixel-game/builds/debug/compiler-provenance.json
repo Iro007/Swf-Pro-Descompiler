@@ -1,0 +1,18 @@
+{
+  "status": "compiled",
+  "compiler": "haxeflixel",
+  "debug": true,
+  "command": [
+    "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\haxe\\haxe_20250509143529_e0b355c\\haxelib.exe",
+    "run",
+    "lime",
+    "build",
+    "flash",
+    "-debug"
+  ],
+  "log": "",
+  "binary_sha256": "61e6564a59fd069006c04e250264972087e7c1db9b2870d1163d97ea8697a292",
+  "compiler_output_sha256": "2641b39006aefd648726d5e977aeaec9e2350aca9ffdf31f48da404a1ac67b15",
+  "behavior": "not_run",
+  "source_equivalence": "not_verified"
+}

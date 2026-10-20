@@ -1,0 +1,1 @@
+class Main { static function main(){ var items=[1,2,3];var sum=0;for(item in items)sum+=item*2;flash.Lib.trace("PARITY_HAXE_"+sum); }  }

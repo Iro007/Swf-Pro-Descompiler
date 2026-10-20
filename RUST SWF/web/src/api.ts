@@ -1,0 +1,15 @@
+import {convertFileSrc,invoke,isTauri} from '@tauri-apps/api/core';
+import {OpenResult,SuitePickKind} from './types';
+export const native=isTauri();
+export const openDocument=(path?:string)=>invoke<OpenResult|null>('open_document',{path:path??null});
+export const rpc=<T>(sid:string,operation:string,args:Record<string,unknown>={})=>invoke<T>('rpc',{sessionId:sid,operation,args});
+export const cancel=()=>invoke('cancel');
+export const startup=()=>native?invoke<{path:string|null;smoke:boolean}>('startup'):Promise.resolve({path:null,smoke:false});
+export const verified=(evidence:unknown)=>native?invoke('ui_verified',{evidence}):Promise.resolve();
+export const verifyExport=(sid:string,id:string,format:string,kind:string)=>invoke('verify_export',{sessionId:sid,id,format,kind});
+export const assetUrl=(path:string)=>convertFileSrc(path);
+export const exportItem=(sid:string,id:string,format:string,kind:string)=>invoke<{path:string;warning?:string|null}|null>('export_item',{sessionId:sid,id,format,kind});
+export const exportBatch=(sid:string)=>invoke<{path:string;items:number;complete:boolean;warning?:string|null}|null>('export_batch',{sessionId:sid});
+export const suiteRpc=<T,>(operation:string,args:Record<string,unknown>={})=>invoke<T>('suite_rpc',{operation,args});
+export const suitePick=(kind:SuitePickKind)=>invoke<string|null>('suite_pick',{kind});
+export const suiteCancel=()=>invoke('suite_cancel');

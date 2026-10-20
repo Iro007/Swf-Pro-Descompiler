@@ -1,0 +1,1 @@
+package { import flash.display.Sprite; import app.Board; public class Main extends Sprite { public function Main(){ super(); var board:Board=new Board();trace("PARITY_FLEXAPP_"+board.total());graphics.beginFill(0x33aa11);graphics.drawRect(20,20,40,40);graphics.endFill(); }  } }

@@ -1,0 +1,87 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+# Flash Universal Studio is a Windows application: every job runs on Windows.
+jobs:
+  pyswf:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: py_swf_editor
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt psutil pytest httpx
+    - name: Run tests
+      # JPEXS/JDK references are local-only (.dev-references); their tests skip.
+      run: python -m pytest tests -q
+
+  flashdec-py:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+    - name: Install PySWF dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r py_swf_editor/requirements.txt pytest
+    - name: Run flashdec-py tests
+      working-directory: flashdec_py
+      run: python -m pytest tests -q
+
+  rust:
+    runs-on: windows-latest
+    env:
+      # Local builds use the pinned GNU toolchain with MinGW (RUST SWF/bootstrap.ps1);
+      # CI uses the same Rust version with the runner's MSVC linker.
+      RUSTUP_TOOLCHAIN: 1.99.0-x86_64-pc-windows-msvc
+      CARGO_BUILD_TARGET: x86_64-pc-windows-msvc
+      SWF_CORPUS_DIR: ${{ github.workspace }}/jpexs-testdata/libsrc/ffdec_lib/testdata
+    steps:
+    - uses: actions/checkout@v4
+    - name: JPEXS 26.3.0 test SWFs (GPL, fetched, never vendored)
+      uses: actions/checkout@v4
+      with:
+        repository: jindrapetrik/jpexs-decompiler
+        ref: b2ef2d3d3f44291a4bdfa899c986bc39a89fa6aa
+        path: jpexs-testdata
+        sparse-checkout: |
+          libsrc/ffdec_lib/testdata/as2/as2.swf
+          libsrc/ffdec_lib/testdata/as3/as3.swf
+          libsrc/ffdec_lib/testdata/as3_new/bin/as3_new.flex.swf
+        sparse-checkout-cone-mode: false
+    - name: Install Rust
+      run: rustup toolchain install 1.99.0-x86_64-pc-windows-msvc --profile minimal
+    - name: Test crates
+      # The Tauri desktop crate needs the built web UI and sidecar binaries
+      # (RUST SWF/build.ps1); it is built by the release workflow instead.
+      working-directory: RUST SWF
+      run: cargo test --workspace --exclude rust-swf-studio --locked
+
+  suite-web:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: RUST SWF/web
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+    - name: Install, typecheck and build
+      run: |
+        npm ci
+        npm run lint
+        npm run build

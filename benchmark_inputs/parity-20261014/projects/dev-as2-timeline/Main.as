@@ -1,0 +1,1 @@
+var score = 0; var values = [2, 3, 5]; for (var i = 0; i < values.length; i++) { score += values[i]; } trace("PARITY_TIMELINE_" + score);

@@ -1,0 +1,21 @@
+{
+  "status": "compiled",
+  "compiler": "rascal",
+  "debug": true,
+  "command": [
+    "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\py_swf_editor\\.dev-references\\extra-tools\\rascal-0.3.5\\bin\\rascal.exe",
+    "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\validation-as2-prototype-app\\Main.as",
+    "--output",
+    "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\validation-as2-prototype-app\\builds\\debug\\compiler.swf",
+    "--swf-version",
+    "15",
+    "--frame-rate",
+    "30"
+  ],
+  "log": "",
+  "binary_sha256": "b90b2276106d3f05ec2d87ff903c8c0cb2faf2022fcf047fa5ae8c542365ceb3",
+  "compiler_output_sha256": "9db097ebae21660a289d03e7111f5fbcf1ec21f5d7069d0c3930f9f9f280de6e",
+  "behavior": "not_run",
+  "source_equivalence": "not_verified",
+  "debug_mode": "unavailable_in_rascal_0.3.5_cli; debug/release corpus labels compile identical options"
+}

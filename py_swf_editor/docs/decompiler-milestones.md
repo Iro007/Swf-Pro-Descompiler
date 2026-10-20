@@ -122,7 +122,6 @@ Véase [benchmark-tools.md](benchmark-tools.md) para resultados y limitaciones.
 .venv\Scripts\python.exe -m py_swf.cli benchmark third_party/references/jpexs-26.3.0/libsrc/ffdec_lib/testdata --profile smoke --engines native,jpexs --output reports/benchmark-current-smoke
 .venv\Scripts\python.exe -m py_swf.cli benchmark third_party/references/jpexs-26.3.0/libsrc/ffdec_lib/testdata/as3_new/bin/as3_new.flex.swf --profile full --output reports/benchmark-postdom-full-quiet
 .venv\Scripts\python.exe tools/publish_benchmark_snapshot.py reports/benchmark-current-smoke/benchmark.json
-.venv\Scripts\python.exe tools/verify_benchmark_page.py --exe dist/PySWFStudio.exe --output reports/benchmark-ui-executable.json
 ```
 
 El perfil full en un archivo aplica las repeticiones exhaustivas a ese archivo,

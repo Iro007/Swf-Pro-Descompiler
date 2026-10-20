@@ -24,27 +24,20 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-qt = ["PySide6>=6.5"]
 dev = ["pytest", "httpx"]
 ui-test = ["playwright>=1.50,<2"]
-desktop = ["pywebview>=5.0"]
 build = ["pyinstaller>=6.0"]
 benchmark = ["psutil>=7,<8"]
 reference-tools = ["py7zr>=1,<2"]
 
 [project.scripts]
-py_swf_editor = "main:main"
 py-swf-web = "server.__main__:main"
 pyswf = "py_swf.cli:main"
-pyswf-desktop = "desktop:main"
 flash-suite = "py_swf.suite_cli:main"
-
-[tool.setuptools]
-py-modules = ["main", "desktop"]
 
 [tool.setuptools.package-data]
 py_swf = ["benchmark_dashboard.html", "benchmark_overview.html"]
 
 [tool.setuptools.packages.find]
-include = ["py_swf*", "server*", "gui*"]
-exclude = ["tests*", "third_party*", "web*", "packaging*", "tools*"]
+include = ["py_swf*", "server*"]
+exclude = ["tests*", "third_party*", "packaging*", "tools*"]

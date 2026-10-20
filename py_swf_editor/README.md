@@ -6,13 +6,13 @@ El compilador actual de la suite admite clases AS3 compatibles en varias fuentes
 
 ## Aplicación Python anterior y evidencia histórica
 
-Decompilador y editor de archivos Flash SWF estilo JPEXS: **backend Python (FastAPI)** con
-interfaz **web (React)** en el navegador.
+Las interfaces anteriores de PySWF (web React + FastAPI, ventana Qt `gui/`, ventana pywebview
+`desktop.py` y el ejecutable `PySWFStudio.exe`) se retiraron en favor de **Flash Universal Studio**.
+Su código queda en la etiqueta git `legacy-ui-final`. `server/` sigue disponible como API local
+hasta que la sustituya el registro único de herramientas.
 
 El motor predeterminado propio es **PySWF**. Abrir, editar y exportar no requiere
-Java ni JPEXS. El ejecutable generado `dist/PySWFStudio.exe` contiene Python y la UI compilada;
-puede abrir una ventana local o usar `--browser`. Sus logs están en
-`%LOCALAPPDATA%\PySWFStudio\logs\studio.log` cuando se ejecuta sin consola.
+Java ni JPEXS.
 
 El ciclo nativo `abrir → editar → exportar → volver a abrir` se verifica por API y navegador
 con AS2/AS3 en FWS/CWS/ZWS. El código editado se construye en una copia y solo se añade al
@@ -65,7 +65,6 @@ No es todavía un compilador AS3 general ni un reproductor de juegos.
 
 ```powershell
 .venv\Scripts\python.exe -m py_swf.cli compile-classes Counter.as --output Counter.swf
-.venv\Scripts\python.exe tools/verify_class_editor.py --exe dist/PySWFStudio.exe
 ```
 
 Detalles y límites en [NATIVE_COMPILER.md](docs/NATIVE_COMPILER.md); seguimiento
@@ -136,11 +135,10 @@ pseudo-código decompilado. Constructores, inicializadores y closures siguen pro
 Las pruebas nuevas (`tests/test_native_control_flow.py`) comprueban el bytecode emitido
 con un intérprete acotado independiente del AST, además del guardado atómico,
 la reapertura, el historial y los proyectos. No sustituyen las pruebas en un reproductor Flash.
-Para repetir el flujo real de API e interfaz, sin Java/JPEXS:
+Para repetirlas, sin Java/JPEXS:
 
 ```powershell
 .venv\Scripts\python.exe -m pytest -q
-.venv\Scripts\python.exe tools\verify_native_flow.py --exe dist\PySWFStudio.exe --browser --output reports\native-control-flow-executable.json
 ```
 
 Atajos: `Ctrl O` abre archivos, `Ctrl S` exporta el SWF, `Ctrl Shift S` guarda el proyecto
@@ -155,31 +153,11 @@ python -m venv .venv
 .venv\Scripts\activate        # Windows  |  source .venv/bin/activate en Linux/macOS
 pip install -r requirements.txt
 
-# Compilar la UI web una vez (requiere Node.js)
-cd web && npm install && npm run build && cd ..
+# Interfaz gráfica: Flash Universal Studio, desde la raíz del repositorio
+..lash-studio.ps1
 
-# Arrancar: sirve la UI y abre el navegador en http://127.0.0.1:8000
-python -m server
-
-# Servidor controlable para desarrollo/automatización
+# API local (headless) para desarrollo/automatización
 python -m server --host 127.0.0.1 --port 8765 --no-browser
-```
-
-Para abrir una ventana de escritorio local (requiere `pywebview`):
-
-```bash
-pip install -e ".[desktop]"
-pyswf-desktop
-```
-
-También puedes forzar el navegador externo con `pyswf-desktop --browser`.
-El script `packaging/build_windows.ps1` prepara el ejecutable Python/web con
-el motor nativo como predeterminado.
-
-El build actual es nativo y no añade JRE/JPEXS. Para generarlo:
-
-```powershell
-.\packaging\build_windows.ps1
 ```
 
 La CLI para automatización incluye inspección, validación, comparación,
@@ -206,35 +184,7 @@ python tools/corpus_report.py third_party\jpexs-decompiler\libsrc\ffdec_lib\test
 El informe registra validez, tags, scripts, tiempo, pico de memoria y, cuando
 JPEXS está configurado, la proporción de líneas coincidentes entre motores.
 
-Para desarrollo del frontend con hot-reload, ver [web/README.md](web/README.md).
-
 ## Tests
-
-Para repetir la verificación del ejecutable sin Java en su entorno:
-
-```powershell
-.venv\Scripts\python.exe tools\verify_native_flow.py --exe dist\PySWFStudio.exe --browser --output reports\native-executable-flow.json
-dist\PySWFStudio.exe --verify-window
-```
-
-El verificador lanza el `.exe` con un `PATH` mínimo y rutas Java/FFDec inexistentes; comprueba
-edición de scripts y PNG, exportación, reapertura, conservación del original, undo/redo y
-rechazo de ediciones inválidas. `--verify-window` comprueba la ventana local oculta y sale.
-
-Prueba del flujo del workspace en navegador, usando el frontend compilado y el servidor local:
-
-```powershell
-.venv\Scripts\python.exe -m pip install -e ".[dev,ui-test]"
-.venv\Scripts\python.exe -m playwright install chromium
-# En una terminal:
-.venv\Scripts\python.exe -m server --port 8766 --no-browser
-# En otra terminal:
-.venv\Scripts\python.exe tools\smoke_workspace.py --url http://127.0.0.1:8766
-```
-
-La prueba cubre carga, búsqueda, timeline, edición/compilación, undo/redo, snapshots,
-exportación y reapertura de proyecto, además de la vista móvil. Puede incluir el corpus AS3
-con `--real-swf third_party\jpexs-decompiler\libsrc\ffdec_lib\testdata\as3\as3.swf`.
 
 ```bash
 pip install pytest httpx
@@ -248,23 +198,15 @@ prueba reales (se omite automáticamente si no está).
 ## Estructura
 
 - `py_swf/` — librería core (parser, shapes, imágenes, AVM1, AVM2) sin dependencias de UI.
-- `server/` — API FastAPI (`/api/files/...`) + servidor de la UI compilada.
-- `web/` — frontend React/Vite.
-- `gui/` — GUI de escritorio PySide6 (legado; requiere `pip install .[qt]`).
+- `server/` — API FastAPI (`/api/files/...`, `/api/benchmarks/...`).
+- `tools/` — scripts de desarrollo, benchmarks y configuración de herramientas.
 
-## GUI de escritorio (legado)
-
-```bash
-pip install PySide6
-python main.py
-```
-
-Se mantiene funcional pero el desarrollo se centra en la interfaz web.
+La interfaz gráfica es Flash Universal Studio (`../RUST SWF`).
 
 ## Página de benchmarks
 
-Abre el icono de gráficos **Benchmarks de decompilación** en la barra lateral,
-o entra en `/#benchmarks` desde el servidor local. No necesitas abrir un SWF.
+Está en la pestaña **Benchmarks** de Flash Universal Studio y en la página
+`RUST SWF/web/analysis.html` (servida con la API local). No necesitas abrir un SWF.
 La página muestra informes ya medidos; nunca arranca Java desde la interfaz.
 Al volver al editor se conserva el archivo y su historial.
 

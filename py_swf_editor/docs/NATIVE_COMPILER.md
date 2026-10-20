@@ -146,7 +146,7 @@ atómica, FWS/CWS/ZWS, DoAction/DoInitAction/DoABC 72 y 82, proyectos, undo/redo
 remapeo del P-code y rechazo de entradas incorrectas. El intérprete de referencia
 vive en `tests/native_control_vm.py`: ejecuta bytes, no el AST del compilador.
 
-`tools/verify_native_flow.py` verifica API y navegador contra el ejecutable
+`tools/verify_native_flow.py` (retirado con las interfaces anteriores; ver la etiqueta git `legacy-ui-final`) verificaba API y navegador contra el ejecutable
 con Java/JPEXS no disponibles, desde una carpeta temporal. Incluye edición de
 recursos, exportación, reapertura, tablas de excepciones y ejecución acotada
 del bytecode guardado.

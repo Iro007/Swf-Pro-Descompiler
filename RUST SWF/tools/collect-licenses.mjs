@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-const output=path.resolve('dist/RustSWFStudio/licenses');fs.mkdirSync(output,{recursive:true});
+const output=path.resolve('dist/FlashUniversalStudio/licenses');fs.mkdirSync(output,{recursive:true});
 const inventory=[];
 function collect(name,version,license,folder){
   const destination=path.join(output,`${name.replace(/[^a-z0-9_.-]/gi,'_')}-${version}`);fs.mkdirSync(destination,{recursive:true});

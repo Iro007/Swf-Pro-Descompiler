@@ -4,7 +4,7 @@ Suite local de descompilación, edición y compilación SWF/Flash para Windows. 
 
 ## Abrir la suite
 
-Ejecuta dist/RustSWFStudio/FlashUniversalStudio.exe. También se conserva RustSWFStudio.exe como nombre compatible. El ZIP portable es dist/FlashUniversalStudio-portable.zip: extrae toda la carpeta y conserva FlashSuiteWorker.exe, rustswf.exe, WebView2Loader.dll y licenses junto al programa.
+Ejecuta dist/FlashUniversalStudio/FlashUniversalStudio.exe (la carpeta única que genera build.ps1). El ZIP portable es dist/FlashUniversalStudio-portable.zip: extrae toda la carpeta y conserva FlashSuiteWorker.exe, rustswf.exe, WebView2Loader.dll y licenses junto al programa.
 
 Los motores nativos incluyen su runtime; no necesitan Python, Rust, Node ni Java instalados en el equipo. Windows 10/11 x64 y WebView2 Runtime son los requisitos. Los motores externos conservan sus propios requisitos y se configuran en **Mesa de trabajo → Herramientas**. Desde la carpeta compartida, flash-studio.ps1 abre la suite por defecto.
 

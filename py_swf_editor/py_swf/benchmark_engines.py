@@ -73,6 +73,10 @@ def checked_tool(engine, config_path=None):
     return config
 
 
+RUST_EXECUTABLE_CANDIDATES = ('RUST SWF/dist/FlashUniversalStudio/rustswf.exe',
+                              'RUST SWF/target/x86_64-pc-windows-gnu/release/rustswf.exe')
+
+
 def default_rust_executable():
     """Prefer the portable peer or current delivery; retain legacy fallbacks.
 
@@ -85,11 +89,8 @@ def default_rust_executable():
     if getattr(sys,'frozen',False):
         portable=Path(sys.executable).resolve().parent
         candidates.append((portable / 'rustswf.exe',portable))
-    candidates.extend((workspace / relative,workspace) for relative in (
-        'RUST SWF/dist/FlashUniversalStudio-Analysis-20261014/rustswf.exe',
-        'RUST SWF/dist/FlashUniversalStudio-Parity-20261014/rustswf.exe',
-        'RUST SWF/dist/FlashUniversalStudio-Engines/rustswf.exe',
-        'RUST SWF/dist/RustSWFStudio/rustswf.exe'))
+    # The single delivery folder written by RUST SWF/build.ps1, then the dev build.
+    candidates.extend((workspace / relative,workspace) for relative in RUST_EXECUTABLE_CANDIDATES)
     for candidate,allowed in candidates:
         executable = candidate.resolve()
         if executable.is_relative_to(allowed) and executable.is_file():

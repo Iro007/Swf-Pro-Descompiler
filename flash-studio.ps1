@@ -1,6 +1,6 @@
 # Ejecute desde cualquier carpeta. Todas las rutas parten de este archivo.
 # Inventario: .\flash-studio.ps1
-# Aplicaciones: .\flash-studio.ps1 -Accion Python  |  -Accion Rust
+# Aplicación: .\flash-studio.ps1 (Suite; 'Python' y 'Rust' son alias de la misma ventana)
 # Comparar: .\flash-studio.ps1 -Accion Comparar -Corpus benchmark_inputs -Perfil full
 # Source y disassemble son operaciones distintas; vea docs/funciones_objetivo.json.
 [CmdletBinding()]
@@ -21,28 +21,12 @@ $ErrorActionPreference = 'Stop'
 $workspaceFlash = $PSScriptRoot
 $pythonProjectFlash = Join-Path $workspaceFlash 'py_swf_editor'
 $pythonFlash = Join-Path $pythonProjectFlash '.venv/Scripts/python.exe'
-if ($Accion -eq 'Suite') {
-    $suiteFlash = Join-Path $workspaceFlash 'RUST SWF/dist/FlashUniversalStudio-Flashdec-20261017/FlashUniversalStudio.exe'
+# 'Python' y 'Rust' abren la misma aplicación: PySWF y RustSWF forman parte de la suite.
+if ($Accion -eq 'Suite' -or $Accion -eq 'Rust' -or $Accion -eq 'Python') {
+    # Entrega única de RUST SWF/build.ps1; si no existe, la compilación de desarrollo.
+    $suiteFlash = Join-Path $workspaceFlash 'RUST SWF/dist/FlashUniversalStudio/FlashUniversalStudio.exe'
     if (-not (Test-Path -LiteralPath $suiteFlash -PathType Leaf)) {
-        $suiteFlash = Join-Path $workspaceFlash 'RUST SWF/dist/FlashUniversalStudio-Analysis-20261014/FlashUniversalStudio.exe'
-    }
-    if (-not (Test-Path -LiteralPath $suiteFlash -PathType Leaf)) {
-        $suiteFlash = Join-Path $workspaceFlash 'RUST SWF/dist/FlashUniversalStudio-Parity-20261014/FlashUniversalStudio.exe'
-    }
-    if (-not (Test-Path -LiteralPath $suiteFlash -PathType Leaf)) {
-        $suiteFlash = Join-Path $workspaceFlash 'RUST SWF/dist/FlashUniversalStudio-Engines-20261014/FlashUniversalStudio.exe'
-    }
-    if (-not (Test-Path -LiteralPath $suiteFlash -PathType Leaf)) {
-        $suiteFlash = Join-Path $workspaceFlash 'RUST SWF/dist/FlashUniversalStudio-Engines/FlashUniversalStudio.exe'
-    }
-    if (-not (Test-Path -LiteralPath $suiteFlash -PathType Leaf)) {
-        $suiteFlash = Join-Path $workspaceFlash 'RUST SWF/dist/FlashUniversalStudio-Benchmarks/FlashUniversalStudio.exe'
-    }
-    if (-not (Test-Path -LiteralPath $suiteFlash -PathType Leaf)) {
-        $suiteFlash = Join-Path $workspaceFlash 'RUST SWF/dist/RustSWFStudio/FlashUniversalStudio.exe'
-    }
-    if (-not (Test-Path -LiteralPath $suiteFlash -PathType Leaf)) {
-        $suiteFlash = Join-Path $workspaceFlash 'RUST SWF/dist/RustSWFStudio/RustSWFStudio.exe'
+        $suiteFlash = Join-Path $workspaceFlash 'RUST SWF/target/x86_64-pc-windows-gnu/release/rust-swf-studio.exe'
     }
     if (-not (Test-Path -LiteralPath $suiteFlash -PathType Leaf)) { throw 'Falta el ejecutable de la suite. Ejecute RUST SWF/build.ps1.' }
     $suiteWorkspaceBeforeFlash = $env:FLASH_SUITE_WORKSPACE
@@ -58,18 +42,8 @@ if ($Accion -eq 'Funciones') {
     Get-Content -LiteralPath (Join-Path $workspaceFlash 'docs/funciones_objetivo.json') -Raw
     return
 }
-if ($Accion -eq 'Rust') {
-    $rustGuiFlash = Join-Path $workspaceFlash 'RUST SWF/dist/RustSWFStudio/RustSWFStudio.exe'
-    if (-not (Test-Path -LiteralPath $rustGuiFlash -PathType Leaf)) { throw 'No se encontro la GUI Rust portable.' }
-    Start-Process -FilePath $rustGuiFlash -WorkingDirectory (Split-Path $rustGuiFlash)
-    return
-}
 if (-not (Test-Path -LiteralPath $pythonFlash -PathType Leaf)) {
     throw 'Falta el entorno Python: cree py_swf_editor/.venv e instale las dependencias del proyecto.'
-}
-if ($Accion -eq 'Python') {
-    Start-Process -FilePath $pythonFlash -ArgumentList 'desktop.py' -WorkingDirectory $pythonProjectFlash
-    return
 }
 if ($Salida -and -not [System.IO.Path]::IsPathRooted($Salida)) {
     $Salida = Join-Path $workspaceFlash $Salida

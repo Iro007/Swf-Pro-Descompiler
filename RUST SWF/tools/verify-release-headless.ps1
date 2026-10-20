@@ -1,5 +1,5 @@
 param(
-    [string]$AppFolder=(Join-Path (Split-Path $PSScriptRoot -Parent) 'dist\RustSWFStudio'),
+    [string]$AppFolder=(Join-Path (Split-Path $PSScriptRoot -Parent) 'dist\FlashUniversalStudio'),
     [string]$ZipPath=(Join-Path (Split-Path $PSScriptRoot -Parent) 'dist\FlashUniversalStudio-portable.zip'),
     [switch]$RunCliChecks
 )
@@ -19,10 +19,10 @@ foreach($artifact in $manifest.artifacts){
     if($known.ContainsKey($artifact.path)){throw "Artefacto duplicado: $($artifact.path)"}
     $known[$artifact.path]=$artifact
 }
-foreach($name in @('FlashUniversalStudio.exe','RustSWFStudio.exe','rustswf.exe','FlashSuiteWorker.exe','PySWF.exe','pyswf.ps1','WebView2Loader.dll','rustswf-capabilities.json')){
+foreach($name in @('FlashUniversalStudio.exe','rustswf.exe','FlashSuiteWorker.exe','PySWF.exe','pyswf.ps1','WebView2Loader.dll','rustswf-capabilities.json')){
     if(-not $known.ContainsKey($name)){throw "Falta contrato portable: $name"}
 }
-if($known['FlashUniversalStudio.exe'].sha256 -ne $known['RustSWFStudio.exe'].sha256 -or $known['FlashSuiteWorker.exe'].sha256 -ne $known['PySWF.exe'].sha256){throw 'Los alias no coinciden con los ejecutables canónicos'}
+if($known['FlashSuiteWorker.exe'].sha256 -ne $known['PySWF.exe'].sha256){throw 'Los alias no coinciden con los ejecutables canónicos'}
 $mainVersion=[Diagnostics.FileVersionInfo]::GetVersionInfo((Join-Path $AppFolder 'FlashUniversalStudio.exe')).ProductVersion
 if($mainVersion -ne $manifest.version){throw 'La versión del recurso PE de escritorio no corresponde al manifiesto'}
 $capabilities=Get-Content -LiteralPath (Join-Path $AppFolder 'rustswf-capabilities.json') -Raw | ConvertFrom-Json

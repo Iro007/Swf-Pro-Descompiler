@@ -7,7 +7,7 @@ param(
 )
 $ErrorActionPreference='Stop'
 $projectRoot=Split-Path $PSScriptRoot -Parent
-$destination=Join-Path $projectRoot 'dist\RustSWFStudio'
+$destination=Join-Path $projectRoot 'dist\FlashUniversalStudio'
 if(-not $WorkerPath){$WorkerPath=Join-Path (Split-Path $projectRoot -Parent) 'py_swf_editor\dist\FlashSuiteWorker.exe'}
 $WorkerPath=(Resolve-Path -LiteralPath $WorkerPath).Path
 $ExpectedWorkerSha256=$ExpectedWorkerSha256.ToLowerInvariant()
@@ -20,7 +20,7 @@ function Copy-Verified([string]$Source,[string]$Target,[string]$Expected){
     Assert-Hash $Target $Expected
 }
 # Refuse a stale main/CLI or an incomplete previous package before replacing workers.
-foreach($name in @('FlashUniversalStudio.exe','RustSWFStudio.exe')){Assert-Hash (Join-Path $destination $name) $ExpectedMainSha256}
+Assert-Hash (Join-Path $destination 'FlashUniversalStudio.exe') $ExpectedMainSha256
 Assert-Hash (Join-Path $destination 'rustswf.exe') $ExpectedRustCliSha256
 Assert-Hash $WorkerPath $ExpectedWorkerSha256
 $mainVersion=[Diagnostics.FileVersionInfo]::GetVersionInfo((Join-Path $destination 'FlashUniversalStudio.exe')).ProductVersion
@@ -34,7 +34,7 @@ $workerManifestPath=Join-Path $destination 'licenses\flash-suite-python\worker-m
 $workerManifest=Get-Content -LiteralPath $workerManifestPath -Raw | ConvertFrom-Json
 $workerManifest.sha256=$ExpectedWorkerSha256
 $workerManifest | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $workerManifestPath -Encoding utf8
-$packageNames=@('FlashUniversalStudio.exe','RustSWFStudio.exe','rustswf.exe','FlashSuiteWorker.exe','PySWF.exe','pyswf.ps1','WebView2Loader.dll','LICENSE','THIRD_PARTY_NOTICES.md','README.md','RELEASE-0.3.0.md','SUITE_CLI.md','rustswf-capabilities.json')
+$packageNames=@('FlashUniversalStudio.exe','rustswf.exe','FlashSuiteWorker.exe','PySWF.exe','pyswf.ps1','WebView2Loader.dll','LICENSE','THIRD_PARTY_NOTICES.md','README.md','RELEASE-0.3.0.md','SUITE_CLI.md','rustswf-capabilities.json')
 $packagePaths=@($packageNames | ForEach-Object {Join-Path $destination $_})
 $licensePath=Join-Path $destination 'licenses'
 $hashFiles=@($packagePaths | ForEach-Object {Get-Item -LiteralPath $_}) + @(Get-ChildItem -LiteralPath $licensePath -File -Recurse)
@@ -43,13 +43,11 @@ $manifest.artifacts=@($hashFiles | Sort-Object FullName | ForEach-Object {
 })
 $manifest.verification_scope='Repack worker assets; unchanged main/Rust CLI verified by pinned hashes; no GUI launched'
 $manifest | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $destination 'release-manifest.json') -Encoding utf8
-$packagePaths+=Join-Path $destination 'release-manifest.json'
-$packagePaths+=$licensePath
-$historicalZip=Join-Path $projectRoot 'dist\RustSWFStudio-portable.zip'
 $portableZip=Join-Path $projectRoot 'dist\FlashUniversalStudio-portable.zip'
-Compress-Archive -LiteralPath $packagePaths -DestinationPath $historicalZip -Force
-$zipSha256=(Get-FileHash -LiteralPath $historicalZip -Algorithm SHA256).Hash.ToLowerInvariant()
-Copy-Verified $historicalZip $portableZip $zipSha256
+if(Test-Path -LiteralPath $portableZip){Remove-Item -LiteralPath $portableZip -Force}
+& (Join-Path $env:SystemRoot "System32\tar.exe") -a -c -f $portableZip -C $destination @($packageNames+@('release-manifest.json','licenses'))
+if($LASTEXITCODE -ne 0){throw "tar.exe falló: $LASTEXITCODE"}
+$zipSha256=(Get-FileHash -LiteralPath $portableZip -Algorithm SHA256).Hash.ToLowerInvariant()
 Assert-Hash (Join-Path $destination 'FlashUniversalStudio.exe') $ExpectedMainSha256
 Assert-Hash (Join-Path $destination 'rustswf.exe') $ExpectedRustCliSha256
 @{version=$ExpectedVersion;worker_sha256=$ExpectedWorkerSha256;rust_cli_sha256=$ExpectedRustCliSha256;main_sha256=$ExpectedMainSha256;portable_sha256=$zipSha256;verification_scope='Worker assets repack; main and Rust CLI unchanged; no GUI launch'} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $projectRoot 'reports\release-artifact-hashes.json') -Encoding utf8

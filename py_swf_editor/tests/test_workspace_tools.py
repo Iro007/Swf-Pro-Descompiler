@@ -21,7 +21,7 @@ def test_project_source_and_command_candidates_are_distinct(tmp_path):
     _write(tmp_path, 'py_swf_editor/py_swf/cli.py', b'# fixture')
     _write(tmp_path, 'py_swf_editor/.venv/Scripts/python.exe')
     _write(tmp_path, 'RUST SWF/Cargo.toml')
-    rust = _write(tmp_path, 'RUST SWF/dist/RustSWFStudio/rustswf.exe', b'rust')
+    rust = _write(tmp_path, 'RUST SWF/dist/FlashUniversalStudio/rustswf.exe', b'rust')
     _write(tmp_path, 'jpexs-decompiler-master/build.xml')
     report = discover_workspace_tools(tmp_path)
     tools = _tools(report)

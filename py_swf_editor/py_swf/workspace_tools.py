@@ -170,7 +170,7 @@ def discover_workspace_tools(root=None) -> dict:
                 continue
             if low in _CLI_NAMES:
                 engine = _CLI_NAMES[low]
-                rust_cli = workspace / 'RUST SWF' / 'dist' / 'RustSWFStudio' / 'rustswf.exe'
+                rust_cli = workspace / 'RUST SWF' / 'dist' / 'FlashUniversalStudio' / 'rustswf.exe'
                 configured = engine == 'rust' and path == rust_cli
                 jar = path.parent / 'ffdec.jar'
                 if engine == 'jpexs' and low != 'ffdec.jar' and not (_safe(jar, workspace) and jar.is_file()):

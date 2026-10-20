@@ -214,7 +214,7 @@ def test_protocol_mismatch_and_deadline_discard_transport():
 
 
 ROOT = Path(__file__).resolve().parents[1]
-RUST_EXE = ROOT.parent / "RUST SWF/dist/RustSWFStudio/rustswf.exe"
+RUST_EXE = ROOT.parent / "RUST SWF/dist/FlashUniversalStudio/rustswf.exe"
 
 
 @pytest.mark.skipif(os.name != "nt" or not RUST_EXE.is_file(), reason="Packaged Rust CLI is unavailable")

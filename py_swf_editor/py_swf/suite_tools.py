@@ -94,7 +94,8 @@ class ToolRegistry:
         packs = ROOT / "toolpacks"
         executable_dir = Path(sys.executable).parent
         candidates = {
-            "rust": [executable_dir / "rustswf.exe", ROOT / "RUST SWF/dist/RustSWFStudio/rustswf.exe"],
+            "rust": [executable_dir / "rustswf.exe", ROOT / "RUST SWF/dist/FlashUniversalStudio/rustswf.exe",
+                     ROOT / "RUST SWF/target/x86_64-pc-windows-gnu/release/rustswf.exe"],
             "jpexs": [packs / "jpexs/ffdec.jar", refs / "ffdec/ffdec.jar"],
             "flex": [packs / "flex/lib/mxmlc.jar"],
             "haxe": list((packs / "haxe").glob("**/haxe.exe")),

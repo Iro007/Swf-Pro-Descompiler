@@ -2,25 +2,7 @@
 # Todas las opciones se entregan como argumentos individuales al worker.
 $ErrorActionPreference = 'Stop'
 $suiteWorkspace = $PSScriptRoot
-$worker = Join-Path $suiteWorkspace 'RUST SWF\dist\FlashUniversalStudio-Flashdec-20261017\FlashSuiteWorker.exe'
-if (-not (Test-Path -LiteralPath $worker -PathType Leaf)) {
-    $worker = Join-Path $suiteWorkspace 'RUST SWF\dist\FlashUniversalStudio-Analysis-20261014\FlashSuiteWorker.exe'
-}
-if (-not (Test-Path -LiteralPath $worker -PathType Leaf)) {
-    $worker = Join-Path $suiteWorkspace 'RUST SWF\dist\FlashUniversalStudio-Parity-20261014\FlashSuiteWorker.exe'
-}
-if (-not (Test-Path -LiteralPath $worker -PathType Leaf)) {
-    $worker = Join-Path $suiteWorkspace 'RUST SWF\dist\FlashUniversalStudio-Engines-20261014\FlashSuiteWorker.exe'
-}
-if (-not (Test-Path -LiteralPath $worker -PathType Leaf)) {
-    $worker = Join-Path $suiteWorkspace 'RUST SWF\dist\FlashUniversalStudio-Engines\FlashSuiteWorker.exe'
-}
-if (-not (Test-Path -LiteralPath $worker -PathType Leaf)) {
-    $worker = Join-Path $suiteWorkspace 'RUST SWF\dist\FlashUniversalStudio-Benchmarks\FlashSuiteWorker.exe'
-}
-if (-not (Test-Path -LiteralPath $worker -PathType Leaf)) {
-    $worker = Join-Path $suiteWorkspace 'RUST SWF\dist\RustSWFStudio\FlashSuiteWorker.exe'
-}
+$worker = Join-Path $suiteWorkspace 'RUST SWF\dist\FlashUniversalStudio\FlashSuiteWorker.exe'
 if (Test-Path -LiteralPath $worker -PathType Leaf) {
     $envBefore = $env:FLASH_SUITE_WORKSPACE
     try {

@@ -8,8 +8,7 @@ import pytest
 import py_swf.benchmark_engines as registry
 
 
-NAMES=('FlashUniversalStudio-Analysis-20261014','FlashUniversalStudio-Parity-20261014',
-       'FlashUniversalStudio-Engines','RustSWFStudio')
+NAMES=('dist/FlashUniversalStudio','target/x86_64-pc-windows-gnu/release')
 
 
 def write(path,contents=b'not an executable; resolution fixture only'):
@@ -18,19 +17,19 @@ def write(path,contents=b'not an executable; resolution fixture only'):
     return path.resolve()
 
 
-@pytest.mark.parametrize('first',range(4))
+@pytest.mark.parametrize('first',range(len(NAMES)))
 def test_source_prefers_current_delivery_then_legacy_fallbacks(tmp_path,monkeypatch,first):
     project=tmp_path/'workspace/py_swf_editor';project.mkdir(parents=True)
     monkeypatch.setattr(registry,'ROOT',project)
     monkeypatch.setattr(registry.sys,'frozen',False,raising=False)
-    candidates=[write(project.parent/'RUST SWF/dist'/name/'rustswf.exe') for name in NAMES[first:]]
+    candidates=[write(project.parent/'RUST SWF'/name/'rustswf.exe') for name in NAMES[first:]]
     assert registry.default_rust_executable()==candidates[0]
 
 
 def test_portable_prefers_peer_outside_the_development_workspace(tmp_path,monkeypatch):
     project=tmp_path/'workspace/py_swf_editor';project.mkdir(parents=True)
     preferred=write(tmp_path/'portable/rustswf.exe')
-    write(project.parent/'RUST SWF/dist'/NAMES[0]/'rustswf.exe')
+    write(project.parent/'RUST SWF'/NAMES[0]/'rustswf.exe')
     monkeypatch.setattr(registry,'ROOT',project)
     monkeypatch.setattr(registry.sys,'frozen',True,raising=False)
     monkeypatch.setattr(registry.sys,'executable',str(tmp_path/'portable/FlashUniversalStudio.exe'))
@@ -40,7 +39,7 @@ def test_portable_prefers_peer_outside_the_development_workspace(tmp_path,monkey
 def test_source_does_not_pick_an_unrelated_interpreter_peer(tmp_path,monkeypatch):
     project=tmp_path/'workspace/py_swf_editor';project.mkdir(parents=True)
     write(tmp_path/'interpreter/rustswf.exe')
-    expected=write(project.parent/'RUST SWF/dist'/NAMES[1]/'rustswf.exe')
+    expected=write(project.parent/'RUST SWF'/NAMES[1]/'rustswf.exe')
     monkeypatch.setattr(registry,'ROOT',project)
     monkeypatch.setattr(registry.sys,'frozen',False,raising=False)
     monkeypatch.setattr(registry.sys,'executable',str(tmp_path/'interpreter/python.exe'))
@@ -51,9 +50,9 @@ def test_source_does_not_pick_an_unrelated_interpreter_peer(tmp_path,monkeypatch
 def test_resolved_candidate_cannot_escape_its_allowed_root(tmp_path,monkeypatch,frozen):
     project=tmp_path/'workspace/py_swf_editor';project.mkdir(parents=True)
     escaped=write(tmp_path/'outside/rustswf.exe')
-    candidate=(tmp_path/'portable/rustswf.exe' if frozen else project.parent/'RUST SWF/dist'/NAMES[0]/'rustswf.exe')
+    candidate=(tmp_path/'portable/rustswf.exe' if frozen else project.parent/'RUST SWF'/NAMES[0]/'rustswf.exe')
     write(candidate)
-    expected=write(project.parent/'RUST SWF/dist'/NAMES[1]/'rustswf.exe')
+    expected=write(project.parent/'RUST SWF'/NAMES[1]/'rustswf.exe')
     monkeypatch.setattr(registry,'ROOT',project)
     monkeypatch.setattr(registry.sys,'frozen',frozen,raising=False)
     monkeypatch.setattr(registry.sys,'executable',str(tmp_path/'portable/FlashUniversalStudio.exe'))
@@ -67,7 +66,7 @@ def test_resolved_candidate_cannot_escape_its_allowed_root(tmp_path,monkeypatch,
 def test_explicit_checked_tool_keeps_precedence_over_default_discovery(tmp_path,monkeypatch):
     from py_swf.benchmarks import command_for
     project=tmp_path/'workspace/py_swf_editor';project.mkdir(parents=True)
-    write(project.parent/'RUST SWF/dist'/NAMES[0]/'rustswf.exe')
+    write(project.parent/'RUST SWF'/NAMES[0]/'rustswf.exe')
     explicit=write(tmp_path/'pins/explicit.exe',b'explicit pinned bytes')
     digest=hashlib.sha256(explicit.read_bytes()).hexdigest()
     manifest=tmp_path/'pins/tools.json'

@@ -58,7 +58,7 @@ $loaderPath=Join-Path (Split-Path $webviewPackage.manifest_path -Parent) 'x64\We
 Copy-Item -LiteralPath $loaderPath -Destination '.\desktop\binaries\WebView2Loader.dll' -Force
 node tools\collect-licenses.mjs
 Check-Exit
-$pythonNotices=Join-Path $PSScriptRoot 'dist\RustSWFStudio\licenses\flash-suite-python'
+$pythonNotices=Join-Path $PSScriptRoot 'dist\FlashUniversalStudio\licenses\flash-suite-python'
 New-Item -ItemType Directory -Force $pythonNotices | Out-Null
 foreach($name in @('LICENSE','requirements.txt','THIRD_PARTY_NOTICES.md')){
     $notice=Join-Path $pythonProject $name
@@ -74,7 +74,7 @@ if((Test-Path -LiteralPath $pythonRuntime -PathType Leaf) -and (Test-Path -Liter
 @{application='Flash Universal Studio';version=$appVersion;engine='PySWF';protocol_version=1;worker='FlashSuiteWorker.exe';cli_alias='PySWF.exe';cli_prefix='cli';sha256=$workerSha256;packaging='onefile'} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $pythonNotices 'worker-manifest.json') -Encoding utf8
 $ruffleAssets=Join-Path $PSScriptRoot 'web\public\ruffle'
 if(Test-Path -LiteralPath $ruffleAssets -PathType Container){
-    $ruffleNotices=Join-Path $PSScriptRoot 'dist\RustSWFStudio\licenses\ruffle-web'
+    $ruffleNotices=Join-Path $PSScriptRoot 'dist\FlashUniversalStudio\licenses\ruffle-web'
     New-Item -ItemType Directory -Force $ruffleNotices | Out-Null
     foreach($name in @('LICENSE_APACHE','LICENSE_MIT','README.md','package.json','PROVENANCE.json')){
         $notice=Join-Path $ruffleAssets $name
@@ -82,11 +82,10 @@ if(Test-Path -LiteralPath $ruffleAssets -PathType Container){
     }
 }
 if($Installer){Push-Location desktop;try{& ..\web\node_modules\.bin\tauri.cmd build --target x86_64-pc-windows-gnu;Check-Exit}finally{Pop-Location}}else{cargo build @cargoMode --release -p rust-swf-studio;Check-Exit}
-$destination=Join-Path $PSScriptRoot 'dist\RustSWFStudio'
+$destination=Join-Path $PSScriptRoot 'dist\FlashUniversalStudio'
 New-Item -ItemType Directory -Force $destination | Out-Null
 $mainPath=Join-Path $PSScriptRoot 'target\x86_64-pc-windows-gnu\release\rust-swf-studio.exe'
 $mainSha256=(Get-FileHash -LiteralPath $mainPath -Algorithm SHA256).Hash.ToLowerInvariant()
-Copy-Verified $mainPath (Join-Path $destination 'RustSWFStudio.exe') $mainSha256
 Copy-Verified $mainPath (Join-Path $destination 'FlashUniversalStudio.exe') $mainSha256
 Copy-Verified $rustCliPath (Join-Path $destination 'rustswf.exe') $rustCliSha256
 Copy-Item -LiteralPath '.\target\x86_64-pc-windows-gnu\release\WebView2Loader.dll' -Destination $destination -Force
@@ -100,7 +99,7 @@ exit $LASTEXITCODE
 '@ | Set-Content -LiteralPath (Join-Path $destination 'pyswf.ps1') -Encoding utf8
 $capabilities | ConvertTo-Json -Depth 20 | Set-Content -LiteralPath (Join-Path $destination 'rustswf-capabilities.json') -Encoding utf8
 # Explicit inputs prevent an old sidecar or unrelated file in dist from entering the ZIP.
-$packageNames=@('FlashUniversalStudio.exe','RustSWFStudio.exe','rustswf.exe','FlashSuiteWorker.exe','PySWF.exe','pyswf.ps1','WebView2Loader.dll','LICENSE','THIRD_PARTY_NOTICES.md','README.md','RELEASE-0.3.0.md','SUITE_CLI.md','rustswf-capabilities.json')
+$packageNames=@('FlashUniversalStudio.exe','rustswf.exe','FlashSuiteWorker.exe','PySWF.exe','pyswf.ps1','WebView2Loader.dll','LICENSE','THIRD_PARTY_NOTICES.md','README.md','RELEASE-0.3.0.md','SUITE_CLI.md','rustswf-capabilities.json')
 $packagePaths=@($packageNames | ForEach-Object {Join-Path $destination $_})
 $licensePath=Join-Path $destination 'licenses'
 $licenseFiles=@(Get-ChildItem -LiteralPath $licensePath -File -Recurse)
@@ -110,11 +109,14 @@ $artifactManifest=@($hashFiles | Sort-Object FullName | ForEach-Object {
     @{path=$_.FullName.Substring((Resolve-Path -LiteralPath $destination).Path.TrimEnd('\').Length+1).Replace('\','/');bytes=$_.Length;sha256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant()}
 })
 @{schema_version=1;application='Flash Universal Studio';version=$appVersion;engines=@('RustSWF','PySWF');protocol_version=1;verification_scope='Build, CLI capabilities and artifact hashes; no GUI launched';artifacts=$artifactManifest} | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $destination 'release-manifest.json') -Encoding utf8
-$packagePaths+=Join-Path $destination 'release-manifest.json'
-$packagePaths+=$licensePath
-Compress-Archive -LiteralPath $packagePaths -DestinationPath '.\dist\RustSWFStudio-portable.zip' -Force
-$zipSha256=(Get-FileHash -LiteralPath '.\dist\RustSWFStudio-portable.zip' -Algorithm SHA256).Hash.ToLowerInvariant()
-Copy-Verified '.\dist\RustSWFStudio-portable.zip' '.\dist\FlashUniversalStudio-portable.zip' $zipSha256
+# Windows' own tar.exe (bsdtar, Windows 10+) writes ZIP from the -a suffix; the
+# explicit System32 path avoids Git's GNU tar on PATH. Compress-Archive
+# fails on these files under Windows PowerShell 5.1.
+$zipPath=Join-Path $PSScriptRoot 'dist\FlashUniversalStudio-portable.zip'
+if(Test-Path -LiteralPath $zipPath){Remove-Item -LiteralPath $zipPath -Force}
+& (Join-Path $env:SystemRoot "System32\tar.exe") -a -c -f $zipPath -C $destination @($packageNames+@('release-manifest.json','licenses'))
+Check-Exit
+$zipSha256=(Get-FileHash -LiteralPath $zipPath -Algorithm SHA256).Hash.ToLowerInvariant()
 @{version=$appVersion;worker_sha256=$workerSha256;rust_cli_sha256=$rustCliSha256;main_sha256=$mainSha256;portable_sha256=$zipSha256;verification_scope='No GUI launch'} | ConvertTo-Json | Set-Content -LiteralPath '.\reports\release-artifact-hashes.json' -Encoding utf8
 Write-Output "Portable: $destination\FlashUniversalStudio.exe"
 

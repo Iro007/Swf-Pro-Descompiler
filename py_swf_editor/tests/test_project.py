@@ -39,3 +39,16 @@ def test_project_archive_rejects_invalid_working_bytes(tmp_path: Path):
         assert "invalid working SWF" in str(exc)
     else:
         raise AssertionError("invalid project must not be archived")
+
+
+def test_identical_snapshots_keep_their_own_names(tmp_path: Path):
+    data = make_synthetic_swf()
+    project = SwfProject("movie.swf", data, data)
+    project.snapshot("before")
+    project.snapshot("after-sources-only")  # same bytes, different snapshot
+    target = tmp_path / "movie.pyswfproj"
+    project.to_archive(target)
+
+    loaded = SwfProject.from_archive(target)
+    assert set(loaded.snapshots) == {"before", "after-sources-only"}
+    assert loaded.snapshots["after-sources-only"].data == data

@@ -20,7 +20,14 @@ from .benchmark_engines import ENGINES, describe_engines, external_command
 
 ROOT = Path(__file__).resolve().parents[1]
 PROFILES = {"smoke": {"warmups": 1, "hot_runs": 3, "cold_runs": 1}, "full": {"warmups": 3, "hot_runs": 30, "cold_runs": 5}}
-SMOKE_FILES = ("as2/as2.swf", "as3_new/bin/as3_new.flex.swf", "as3_new/bin/as3_new.air.swf", "as3_cross_compile/bin/as3_cross_compile.flex.swf", "as2_definefunc_regs/as2_definefunc_regs.swf")
+# Smoke ids for the two supported corpus layouts. Ids absent from the chosen
+# corpus are skipped; tests/test_benchmark_smoke.py keeps the repository list real.
+JPEXS_TESTDATA_SMOKE_FILES = ("as2/as2.swf", "as3_new/bin/as3_new.flex.swf", "as3_new/bin/as3_new.air.swf", "as3_cross_compile/bin/as3_cross_compile.flex.swf", "as2_definefunc_regs/as2_definefunc_regs.swf")
+REPOSITORY_SMOKE_FILES = ("as2_definefunc_regs.swf", "as3_cross_compile.flex.swf", "as3_new.flex.swf",
+                          "parity-20261014/optimized/swf/dev-as2-timeline/release.fws.swf",
+                          "parity-20261014/optimized/swf/dev-as3-classes-namespaces/release.fws.swf",
+                          "parity-20261014/optimized/swf/dev-haxe-application/release.fws.swf")
+SMOKE_FILES = JPEXS_TESTDATA_SMOKE_FILES + REPOSITORY_SMOKE_FILES
 
 
 def sha256(data):
@@ -369,6 +376,16 @@ def match_units(results, canonical_inventory=None):
             'applicable_pair_count': sum(p['applicability'] == 'applicable' for p in pairs)}
 
 
+def readable_swf(data):
+    """Container-level check only: unusual but legal bytecode stays eligible."""
+    from .swf_parser import SWFFile
+    try:
+        SWFFile().read_bytes(data, strict=True)
+        return True
+    except Exception:
+        return False
+
+
 def collect_paths(corpus, profile, limit=None, family_ids=None, case_relatives=None):
     if limit is not None and limit < 1:
         raise ValueError("Benchmark --limit must be positive; cases cannot silently disappear")
@@ -397,7 +414,14 @@ def collect_paths(corpus, profile, limit=None, family_ids=None, case_relatives=N
         paths = sorted(corpus.rglob("*.swf"))
     if profile == "smoke":
         selected = [corpus / relative for relative in SMOKE_FILES if (corpus / relative).is_file()]
-        paths = selected or paths[:5]
+        if not selected:
+            # A smoke run checks that engines work; damaged containers belong to full runs.
+            for path in paths:
+                if readable_swf(path.read_bytes()):
+                    selected.append(path)
+                    if len(selected) == 5:
+                        break
+        paths = selected
     return paths[:limit] if limit is not None else paths
 
 

@@ -199,14 +199,26 @@ class SwfProject:
             if not project.validate(working)["valid"]:
                 raise ValueError("Project contains an invalid working SWF")
             snapshot_meta = {item["name"]: item for item in manifest.get("snapshots", [])}
-            for item in archive.namelist():
-                if not item.startswith("snapshots/") or not item.endswith(".swf"):
+            # to_archive names each entry after its snapshot name, so snapshots
+            # with identical bytes stay distinct. Hash matching remains only for
+            # entries written under another naming scheme.
+            unclaimed = sorted(item for item in names if item.startswith("snapshots/") and item.endswith(".swf"))
+            pending = []
+            for name, meta in snapshot_meta.items():
+                entry = f"snapshots/{hashlib.sha256(name.encode('utf-8')).hexdigest()}.swf"
+                if entry not in names:
+                    pending.append((name, meta))
                     continue
-                data = archive.read(item)
-                for name, meta in snapshot_meta.items():
+                data = archive.read(entry)
+                if meta.get("sha256") != _sha256(data):
+                    raise ValueError("Project snapshot checksum mismatch: " + name)
+                unclaimed.remove(entry)
+                project.snapshots[name] = ProjectSnapshot(name=name, data=data, created_at=meta.get("created_at", _now()))
+            for name, meta in pending:
+                for entry in unclaimed:
+                    data = archive.read(entry)
                     if meta.get("sha256") == _sha256(data):
-                        project.snapshots[name] = ProjectSnapshot(
-                            name=name, data=data, created_at=meta.get("created_at", _now())
-                        )
+                        unclaimed.remove(entry)
+                        project.snapshots[name] = ProjectSnapshot(name=name, data=data, created_at=meta.get("created_at", _now()))
                         break
             return project

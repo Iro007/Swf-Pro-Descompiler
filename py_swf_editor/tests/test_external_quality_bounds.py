@@ -1,4 +1,6 @@
 """Failed tools and packaged reference discovery must retain honest states."""
+import pytest
+
 from py_swf.benchmarks import quality
 
 
@@ -34,6 +36,8 @@ def test_frozen_reference_lookup_uses_existing_workspace(monkeypatch):
     import py_swf.benchmarks as benchmarks
     import py_swf.suite_tools as suite_tools
     project = Path(__file__).resolve().parents[1]
+    if not (project / '.dev-references/toolchain.json').is_file():
+        pytest.skip('Pinned JPEXS reference unavailable')
     monkeypatch.setattr(benchmarks.sys, 'frozen', True, raising=False)
     monkeypatch.setattr(benchmarks, 'ROOT', project / 'missing-extraction-root')
     monkeypatch.setattr(suite_tools, 'PROJECT', project)

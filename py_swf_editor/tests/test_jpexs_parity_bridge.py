@@ -8,7 +8,7 @@ import sys
 
 import pytest
 
-from py_swf.benchmark_process import Worker
+from py_swf.benchmark_process import Worker, WorkerError
 from py_swf.benchmarks import reference_command, source_available_in_scope
 from py_swf.canonical_inventory import build_inventory,attach_observations
 from py_swf.compiler.class_compiler import compile_class_program,class_program_swf
@@ -33,7 +33,7 @@ def bridge_command(kind):
 @pytest.fixture(params=['development','application'])
 def bridge(request):
     try:command=bridge_command(request.param)
-    except (OSError,ValueError):pytest.skip('Pinned JPEXS reference unavailable')
+    except (OSError,ValueError,WorkerError):pytest.skip('Pinned JPEXS reference unavailable')
     with Worker(command,cwd=PROJECT,timeout=90) as worker:yield worker
 
 
@@ -126,6 +126,7 @@ def test_duplicate_function_names_never_match_by_name_or_hide_omitted_spans(brid
 
 
 def test_bridge_build_pins_all_shared_helper_classes_and_moved_paths():
+    if not (PROJECT/'.dev-references/toolchain.json').is_file():pytest.skip('Pinned JPEXS reference unavailable')
     config=json.loads((PROJECT/'.dev-references/toolchain.json').read_text())
     assert str(PROJECT) in config['java'] and str(PROJECT) in config['reference_classpath']
     assert any('ParityBridgeInventory$OffsetWriter.class' in name for name in config['artifact_sha256'])

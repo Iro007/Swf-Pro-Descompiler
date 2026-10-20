@@ -1,0 +1,10 @@
+/target/
+/web/node_modules/
+/web/dist/
+/tools/bootstrap/
+/third_party/ruffle/
+/desktop/binaries/
+/dist/
+/reports/assets/
+*.tmp
+

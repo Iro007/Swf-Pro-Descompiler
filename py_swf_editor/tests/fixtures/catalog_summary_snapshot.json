@@ -1,0 +1,387 @@
+{
+  "schema_version": 1,
+  "catalog_schema_version": 2,
+  "database": "<catalog>",
+  "totals": {
+    "campaigns": 1,
+    "artifacts": 1,
+    "runs": 7,
+    "tools": 2
+  },
+  "unit_totals": {
+    "canonical_units": 0,
+    "unit_observations": 0
+  },
+  "campaigns": [
+    {
+      "id": "e38c6b50c24b49f71cfc4edc425a273da12b93d5088c6f88085f54304cc7bf27",
+      "label": "Catalog summary equivalence fixture",
+      "environment": "local / Windows",
+      "platform": "Windows",
+      "operation": "source",
+      "created_at": "2026-10-13T00:00:00Z",
+      "source_kind": "local_report",
+      "run_count": 7,
+      "artifact_count": 1,
+      "unidentified_artifact_groups": 1
+    }
+  ],
+  "rows": [
+    {
+      "campaign_id": "e38c6b50c24b49f71cfc4edc425a273da12b93d5088c6f88085f54304cc7bf27",
+      "file": "same.swf",
+      "artifact_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "engine": "flasm",
+      "engine_name": "flasm",
+      "version": null,
+      "build_id": "ac8a3d08ea88297ddc757fd237f87e713280d636668a05a832ca1d5ec5328c29",
+      "operation": "disassemble",
+      "environment": "local / Windows",
+      "environment_id": "2b2cb9c13120f35546abc281d3af30823bfb0119b7a0108e82bcbf96786a7a37",
+      "platform": "Windows",
+      "language": null,
+      "phase": "observation",
+      "status": "output_unmapped",
+      "observation_status": "output_unmapped",
+      "run_count": 0,
+      "success_count": 0,
+      "error_count": 0,
+      "timeout_count": 0,
+      "indeterminate_count": 0,
+      "median_ms": null,
+      "median_error_ms": null,
+      "median_timeout_ms": null,
+      "peak_tree_rss_bytes": null,
+      "coverage_percent": null,
+      "source_available": null,
+      "expected_units": 2,
+      "compilation": "not_measured",
+      "behavior": "reported_passed_unverified",
+      "timing_scope": "persistent worker; operation wall time",
+      "memory_scope": "sampled process-tree RSS",
+      "comparison": {
+        "quality_equivalent": false,
+        "scope_metrics": {
+          "method": {
+            "matched": 2
+          }
+        }
+      },
+      "warnings": [],
+      "censored_count": 0,
+      "median_censored_ms": null,
+      "rss_sample_count": 0,
+      "rss_sample_interval_s": [],
+      "rusage_maxrss_kib": null,
+      "adapter_statuses": [],
+      "source_output_file_count": 0,
+      "source_output_bytes": 0,
+      "code_output_file_count": 0,
+      "valid_performance_summary": null,
+      "category": null,
+      "benchmark_role": null,
+      "process_mode": null,
+      "exit_zero_count": 0,
+      "as_error_marker_count": 0,
+      "family_id": null,
+      "split": null,
+      "adapter_mode": null,
+      "inventory_status": null,
+      "canonical_inventory_sha256": null,
+      "scope": null,
+      "include_scope": null,
+      "quality_dimensions": null,
+      "scope_metrics": null,
+      "origin_scope_metrics": null,
+      "disassembly_available": null,
+      "artifact_unit_scope": "file"
+    },
+    {
+      "campaign_id": "e38c6b50c24b49f71cfc4edc425a273da12b93d5088c6f88085f54304cc7bf27",
+      "file": "same.swf",
+      "artifact_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "engine": "native",
+      "engine_name": "PySWF",
+      "version": "0.3.0",
+      "build_id": "f6277d8d906c28c1108284b04235e8119f6e9efe552c7eb10c345548c0ab6da6",
+      "operation": "source",
+      "environment": "local / Windows",
+      "environment_id": "2b2cb9c13120f35546abc281d3af30823bfb0119b7a0108e82bcbf96786a7a37",
+      "platform": "Windows",
+      "language": null,
+      "phase": "cold",
+      "status": "success",
+      "observation_status": "measured",
+      "run_count": 1,
+      "success_count": 1,
+      "error_count": 0,
+      "timeout_count": 0,
+      "indeterminate_count": 0,
+      "median_ms": 105.0,
+      "median_error_ms": null,
+      "median_timeout_ms": null,
+      "peak_tree_rss_bytes": 4096,
+      "coverage_percent": 50.0,
+      "source_available": 1,
+      "expected_units": 2,
+      "compilation": "not_measured",
+      "behavior": "not_measured",
+      "timing_scope": "exact fixture scope",
+      "memory_scope": "sampled tree RSS",
+      "comparison": {
+        "quality_equivalent": false,
+        "scope_metrics": {
+          "method": {
+            "matched": 2
+          }
+        }
+      },
+      "warnings": [],
+      "censored_count": 0,
+      "median_censored_ms": null,
+      "rss_sample_count": 3,
+      "rss_sample_interval_s": [
+        0.02
+      ],
+      "rusage_maxrss_kib": 20,
+      "adapter_statuses": [],
+      "source_output_file_count": 0,
+      "source_output_bytes": 0,
+      "code_output_file_count": 0,
+      "valid_performance_summary": false,
+      "category": null,
+      "benchmark_role": null,
+      "process_mode": null,
+      "exit_zero_count": 1,
+      "as_error_marker_count": 0,
+      "family_id": "owned-project",
+      "split": "development",
+      "adapter_mode": "exact",
+      "inventory_status": "verified",
+      "canonical_inventory_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "scope": null,
+      "include_scope": [
+        "method"
+      ],
+      "quality_dimensions": {
+        "behavior": "not_run"
+      },
+      "scope_metrics": {
+        "method": {
+          "canonical_denominator": 2,
+          "disassembly_available": null,
+          "identity_verified": 2,
+          "source_available": 1
+        }
+      },
+      "origin_scope_metrics": {
+        "application": {
+          "method": {
+            "canonical_denominator": 1,
+            "disassembly_available": null,
+            "identity_verified": 1,
+            "source_available": 1
+          }
+        }
+      },
+      "disassembly_available": null,
+      "artifact_unit_scope": null
+    },
+    {
+      "campaign_id": "e38c6b50c24b49f71cfc4edc425a273da12b93d5088c6f88085f54304cc7bf27",
+      "file": "same.swf",
+      "artifact_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "engine": "native",
+      "engine_name": "PySWF",
+      "version": "0.3.0",
+      "build_id": "f6277d8d906c28c1108284b04235e8119f6e9efe552c7eb10c345548c0ab6da6",
+      "operation": "source",
+      "environment": "local / Windows",
+      "environment_id": "2b2cb9c13120f35546abc281d3af30823bfb0119b7a0108e82bcbf96786a7a37",
+      "platform": "Windows",
+      "language": null,
+      "phase": "hot",
+      "status": "mixed",
+      "observation_status": "measured",
+      "run_count": 5,
+      "success_count": 2,
+      "error_count": 1,
+      "timeout_count": 1,
+      "indeterminate_count": 1,
+      "median_ms": 2.0,
+      "median_error_ms": 7.0,
+      "median_timeout_ms": 8.0,
+      "peak_tree_rss_bytes": 1000,
+      "coverage_percent": 50.0,
+      "source_available": 1,
+      "expected_units": 2,
+      "compilation": "not_measured",
+      "behavior": "not_measured",
+      "timing_scope": "exact fixture scope",
+      "memory_scope": "sampled tree RSS",
+      "comparison": {
+        "quality_equivalent": false,
+        "scope_metrics": {
+          "method": {
+            "matched": 2
+          }
+        }
+      },
+      "warnings": [
+        "Conflicting execution flags or exit code; execution result is indeterminate",
+        "ActionScript error markers were reported; exit zero does not prove valid source"
+      ],
+      "censored_count": 1,
+      "median_censored_ms": 10.0,
+      "rss_sample_count": 2,
+      "rss_sample_interval_s": [
+        0.01,
+        0.02
+      ],
+      "rusage_maxrss_kib": 77,
+      "adapter_statuses": [
+        [
+          "indeterminate",
+          null
+        ],
+        {
+          "stage": "generation",
+          "status": "complete"
+        }
+      ],
+      "source_output_file_count": 2,
+      "source_output_bytes": 30,
+      "code_output_file_count": 3,
+      "valid_performance_summary": false,
+      "category": null,
+      "benchmark_role": null,
+      "process_mode": null,
+      "exit_zero_count": 3,
+      "as_error_marker_count": 2,
+      "family_id": "owned-project",
+      "split": "development",
+      "adapter_mode": "exact",
+      "inventory_status": "verified",
+      "canonical_inventory_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "scope": null,
+      "include_scope": [
+        "method"
+      ],
+      "quality_dimensions": {
+        "behavior": "not_run"
+      },
+      "scope_metrics": {
+        "method": {
+          "canonical_denominator": 2,
+          "disassembly_available": null,
+          "identity_verified": 2,
+          "source_available": 1
+        }
+      },
+      "origin_scope_metrics": {
+        "application": {
+          "method": {
+            "canonical_denominator": 1,
+            "disassembly_available": null,
+            "identity_verified": 1,
+            "source_available": 1
+          }
+        }
+      },
+      "disassembly_available": null,
+      "artifact_unit_scope": null
+    },
+    {
+      "campaign_id": "e38c6b50c24b49f71cfc4edc425a273da12b93d5088c6f88085f54304cc7bf27",
+      "file": "unidentified.swf",
+      "artifact_sha256": null,
+      "engine": "native",
+      "engine_name": "PySWF",
+      "version": "0.3.0",
+      "build_id": "f6277d8d906c28c1108284b04235e8119f6e9efe552c7eb10c345548c0ab6da6",
+      "operation": "source",
+      "environment": "local / Windows",
+      "environment_id": "2b2cb9c13120f35546abc281d3af30823bfb0119b7a0108e82bcbf96786a7a37",
+      "platform": "Windows",
+      "language": null,
+      "phase": "hot",
+      "status": "indeterminate",
+      "observation_status": "indeterminate",
+      "run_count": 1,
+      "success_count": 0,
+      "error_count": 0,
+      "timeout_count": 0,
+      "indeterminate_count": 1,
+      "median_ms": null,
+      "median_error_ms": null,
+      "median_timeout_ms": null,
+      "peak_tree_rss_bytes": null,
+      "coverage_percent": null,
+      "source_available": null,
+      "expected_units": null,
+      "compilation": "not_measured",
+      "behavior": "not_measured",
+      "timing_scope": "persistent worker; operation wall time",
+      "memory_scope": "sampled process-tree RSS",
+      "comparison": {},
+      "warnings": [],
+      "censored_count": 0,
+      "median_censored_ms": null,
+      "rss_sample_count": 0,
+      "rss_sample_interval_s": [],
+      "rusage_maxrss_kib": null,
+      "adapter_statuses": [
+        "unknown"
+      ],
+      "source_output_file_count": 0,
+      "source_output_bytes": 0,
+      "code_output_file_count": 0,
+      "valid_performance_summary": null,
+      "category": null,
+      "benchmark_role": null,
+      "process_mode": null,
+      "exit_zero_count": 0,
+      "as_error_marker_count": 0,
+      "family_id": null,
+      "split": null,
+      "adapter_mode": null,
+      "inventory_status": null,
+      "canonical_inventory_sha256": null,
+      "scope": null,
+      "include_scope": null,
+      "quality_dimensions": null,
+      "scope_metrics": null,
+      "origin_scope_metrics": null,
+      "disassembly_available": null,
+      "artifact_unit_scope": null
+    }
+  ],
+  "tools": [
+    {
+      "id": "flasm",
+      "name": "flasm",
+      "metadata": {}
+    },
+    {
+      "id": "native",
+      "name": "PySWF",
+      "metadata": {
+        "id": "native",
+        "name": "Python nativo",
+        "version": "0.3.0"
+      }
+    }
+  ],
+  "claims": {
+    "parity": false,
+    "superiority": false,
+    "performance_winner": null
+  },
+  "truncated": false,
+  "warnings": [
+    "Execution success does not prove source equivalence",
+    "Coverage remains null without a verified mapping",
+    "Medians retain campaign, build, operation, environment and phase boundaries",
+    "Peak RSS is sampled and can miss short peaks"
+  ]
+}

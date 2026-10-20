@@ -1,0 +1,1 @@
+function factory(base) { return function(step) { return base + step; }; } var add = factory(7); trace("PARITY_CAPTURE_" + add(5));

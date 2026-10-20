@@ -1,6 +1,0 @@
-{
-  "name": "PySW Web SWF Decompiler & Editor",
-  "description": "A comprehensive web-based Flash SWF Decompiler, Resource Inspector, Hex Editor, and ActionScript Editor inspired by JPEXS FFDEC. It includes binary SWF/CWS parsing, vector shape visualization, audio & image asset playback, and Gemini-powered ActionScript 3 (AVM2) decompilation and code modernizer.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}

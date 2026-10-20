@@ -1,0 +1,1 @@
+package { import flash.display.Sprite; public class Main extends Sprite { public function Main(){ super(); var values:Vector.<int>=new <int>[2,4,6];trace("PARITY_HOLDOUT_AS3_"+reduce(values)); } private function reduce(values:Vector.<int>):int{var total:int=0;for each(var n:int in values){if(n%4==0){continue;}total+=n;}return total;} } }

@@ -1,0 +1,5 @@
+[toolchain]
+channel = "1.99.0-x86_64-pc-windows-gnu"
+profile = "minimal"
+components = ["rustfmt", "clippy"]
+

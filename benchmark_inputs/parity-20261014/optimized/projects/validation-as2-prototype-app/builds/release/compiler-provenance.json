@@ -1,0 +1,24 @@
+{
+  "status": "compiled",
+  "compiler": "rascal",
+  "debug": false,
+  "command": [
+    "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\py_swf_editor\\.dev-references\\extra-tools\\rascal-profile-0.3.5\\bin\\rascal-profile.exe",
+    "--profile",
+    "release",
+    "--source",
+    "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\optimized\\projects\\validation-as2-prototype-app\\Main.as",
+    "--output",
+    "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\optimized\\projects\\validation-as2-prototype-app\\builds\\release\\compiler.swf",
+    "--swf-version",
+    "15",
+    "--frame-rate",
+    "30"
+  ],
+  "log": "Rascal 0.3.5 profile=release fold_constants=true promote_variables_to_registers=true\n",
+  "binary_sha256": "8ff62ebfbf3efea5d7ac0fcd71b01f8c5b1829fe5f7fce041c34e87ec7a30471",
+  "compiler_output_sha256": "9db097ebae21660a289d03e7111f5fbcf1ec21f5d7069d0c3930f9f9f280de6e",
+  "behavior": "not_run",
+  "source_equivalence": "not_verified",
+  "debug_mode": "explicit independent compiler profile: release"
+}

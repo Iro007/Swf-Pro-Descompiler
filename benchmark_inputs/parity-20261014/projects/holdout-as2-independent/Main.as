@@ -1,0 +1,1 @@
+var records = [{name:"red",value:3},{name:"blue",value:7}]; var output = ""; for (var i = 0; i < records.length; i++) { if(records[i].value > 4) { output += records[i].name; } } trace("PARITY_HOLDOUT_AS2_" + output);

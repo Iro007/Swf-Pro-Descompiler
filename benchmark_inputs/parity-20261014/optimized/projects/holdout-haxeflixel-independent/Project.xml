@@ -1,0 +1,1 @@
+<project><meta title="Parity holdout" package="parity.holdout" version="1.0.0" company="Local authored corpus"/><app main="Main" file="ParityGame" path="export"/><window width="320" height="240" fps="30"/><source path="source"/><haxelib name="flixel" version="6.2.0"/><haxedef name="FLX_NO_GAMEPAD"/><haxedef name="FLX_NO_MOUSE_ADVANCED"/></project>

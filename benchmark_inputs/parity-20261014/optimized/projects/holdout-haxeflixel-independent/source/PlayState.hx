@@ -1,0 +1,1 @@
+import flixel.FlxState; import flixel.FlxSprite; class PlayState extends FlxState { override public function create(){super.create();var tile=new FlxSprite(20,20).makeGraphic(40,40,0xff33aa11);add(tile);var points=[2,3,5];var sum=0;for(p in points){sum+=p*p;}trace("PARITY_HOLDOUT_"+sum);} }

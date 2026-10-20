@@ -1,0 +1,1 @@
+package app { public class Board { private var rows:Array=[3,4,8]; public function Board(){} public function total():int{var sum:int=0;for each(var row:int in rows){sum+=row;}return sum;} } }

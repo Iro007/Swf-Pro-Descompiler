@@ -1,0 +1,1633 @@
+{
+  "schema_version": 1,
+  "relative_path_base": "flash-benchmark directory",
+  "repositories": {
+    "ruffle": {
+      "repository": "ruffle-rs/ruffle",
+      "commit": "2372a4e148a67d68efd796f4477b3cddd4f880cd"
+    },
+    "jpexs": {
+      "repository": "jindrapetrik/jpexs-decompiler",
+      "commit": "de7efbf4754865f46c1c5bd36c9db9cc4ef2fa0b"
+    }
+  },
+  "support_files": [
+    {
+      "path": "corpus/provenance/ruffle/LICENSE.md",
+      "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/LICENSE.md",
+      "sha256": "e39a2fa3dfd7238f0924f568fabb659ee1a9d95ea6460dbae4bc9b67017a1c71"
+    },
+    {
+      "path": "corpus/provenance/ruffle/README.md",
+      "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/README.md",
+      "sha256": "d0f2dd68f65db7ea22506a758696a1b33993214b3d32dde536960e66c356fbac"
+    },
+    {
+      "path": "corpus/provenance/ruffle/tests/README.md",
+      "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/README.md",
+      "sha256": "273951a4c2b10cab0378d663e8fcc6cd30772267f020578432e95c3a6f015301"
+    },
+    {
+      "path": "corpus/provenance/jpexs/license.txt",
+      "source_url": "https://raw.githubusercontent.com/jindrapetrik/jpexs-decompiler/de7efbf4754865f46c1c5bd36c9db9cc4ef2fa0b/license.txt",
+      "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903"
+    },
+    {
+      "path": "corpus/provenance/jpexs/README.md",
+      "source_url": "https://raw.githubusercontent.com/jindrapetrik/jpexs-decompiler/de7efbf4754865f46c1c5bd36c9db9cc4ef2fa0b/README.md",
+      "sha256": "9996ff860e36c1027d5611a51c91507528645873272b6adb2e1cd3c27b17b0f4"
+    },
+    {
+      "path": "corpus/provenance/jpexs/libsrc/ffdec_lib/license.txt",
+      "source_url": "https://raw.githubusercontent.com/jindrapetrik/jpexs-decompiler/de7efbf4754865f46c1c5bd36c9db9cc4ef2fa0b/libsrc/ffdec_lib/license.txt",
+      "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "ruffle_avm1_array_enumerate",
+      "path": "corpus/ruffle/avm1/array_enumerate/test.swf",
+      "bytes": 264,
+      "sha256": "04743f03b86884ce5a9bd3dfea5bc48c2697028ae3597b8a00b9d05d2488c547",
+      "compression": "FWS",
+      "swf_version": 15,
+      "uncompressed_bytes": 264,
+      "canonical_uncompressed_sha256": "04743f03b86884ce5a9bd3dfea5bc48c2697028ae3597b8a00b9d05d2488c547",
+      "avm": "AVM1",
+      "avm_classification_basis": "DoAction/DoInitAction tags",
+      "tag_counts": {
+        "0": 1,
+        "1": 1,
+        "9": 1,
+        "12": 1,
+        "69": 1
+      },
+      "tag_count": 5,
+      "avm1_action_payload_bytes": 222,
+      "category": "valid_micro",
+      "benchmark_role": "primary",
+      "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/array_enumerate/test.swf",
+      "source_commit": "2372a4e148a67d68efd796f4477b3cddd4f880cd",
+      "source_repository": "ruffle-rs/ruffle",
+      "case_family": "enumeration_loop",
+      "expected_output_path": "corpus/ruffle/avm1/array_enumerate/output.txt",
+      "runtime_config_path": "corpus/ruffle/avm1/array_enumerate/test.toml",
+      "source_paths": [
+        "corpus/ruffle/avm1/array_enumerate/test.as"
+      ],
+      "source_known": true,
+      "source_availability": "actionscript_and_optional_fla",
+      "source_records": [
+        {
+          "path": "corpus/ruffle/avm1/array_enumerate/test.swf",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/array_enumerate/test.swf",
+          "sha256": "04743f03b86884ce5a9bd3dfea5bc48c2697028ae3597b8a00b9d05d2488c547"
+        },
+        {
+          "path": "corpus/ruffle/avm1/array_enumerate/test.as",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/array_enumerate/test.as",
+          "sha256": "c968826f780aa294fd3b5844dbe0f1a947fcabad5013c2757f84617fa9452825"
+        },
+        {
+          "path": "corpus/ruffle/avm1/array_enumerate/output.txt",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/array_enumerate/output.txt",
+          "sha256": "f60a093e8cb74b17c74c1597f82719c28eec13fb65697795bef57d72d11ba3fe"
+        },
+        {
+          "path": "corpus/ruffle/avm1/array_enumerate/test.toml",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/array_enumerate/test.toml",
+          "sha256": "af82b17ce710fd25297d6d50432d123eb3113372572d14861319763762a165da"
+        }
+      ],
+      "license_provenance": {
+        "repository_declared_license": "MIT OR Apache-2.0",
+        "scope_note": "Original Ruffle avm1/avm2 regression tests selected; imported from_avmplus/from_gnash/from_shumway collections excluded. No per-case license override found in selected files. Repository declaration retained; no independent authorship audit.",
+        "license_paths": [
+          "corpus/provenance/ruffle/LICENSE.md"
+        ]
+      },
+      "operation_eligibility": {
+        "parse": true,
+        "decompile": true,
+        "valid_performance_summary": true,
+        "robustness": false,
+        "runtime_semantic_fixture_available": true,
+        "semantic_equivalence_measured": false,
+        "recompilation_measured": false
+      }
+    },
+    {
+      "id": "ruffle_avm1_closure_scope",
+      "path": "corpus/ruffle/avm1/closure_scope/test.swf",
+      "bytes": 875,
+      "sha256": "805de67a0fb68633167e74668017b51eab8ab67171a8dad1ba03248e7059cc82",
+      "compression": "FWS",
+      "swf_version": 7,
+      "uncompressed_bytes": 875,
+      "canonical_uncompressed_sha256": "805de67a0fb68633167e74668017b51eab8ab67171a8dad1ba03248e7059cc82",
+      "avm": "AVM1",
+      "avm_classification_basis": "DoAction/DoInitAction tags",
+      "tag_counts": {
+        "0": 2,
+        "1": 6,
+        "2": 2,
+        "9": 1,
+        "12": 6,
+        "26": 3,
+        "39": 1,
+        "56": 4,
+        "63": 1,
+        "64": 1
+      },
+      "tag_count": 27,
+      "avm1_action_payload_bytes": 545,
+      "category": "valid_micro",
+      "benchmark_role": "primary",
+      "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/closure_scope/test.swf",
+      "source_commit": "2372a4e148a67d68efd796f4477b3cddd4f880cd",
+      "source_repository": "ruffle-rs/ruffle",
+      "case_family": "closure_scope",
+      "expected_output_path": "corpus/ruffle/avm1/closure_scope/output.txt",
+      "runtime_config_path": "corpus/ruffle/avm1/closure_scope/test.toml",
+      "source_paths": [
+        "corpus/ruffle/avm1/closure_scope/test.fla"
+      ],
+      "source_known": true,
+      "source_availability": "fla_only",
+      "source_records": [
+        {
+          "path": "corpus/ruffle/avm1/closure_scope/test.swf",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/closure_scope/test.swf",
+          "sha256": "805de67a0fb68633167e74668017b51eab8ab67171a8dad1ba03248e7059cc82"
+        },
+        {
+          "path": "corpus/ruffle/avm1/closure_scope/test.fla",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/closure_scope/test.fla",
+          "sha256": "16e963bcea3d4a6f06143c72e4122747a26dac4e2f83c6c1a284ad605bb5be97"
+        },
+        {
+          "path": "corpus/ruffle/avm1/closure_scope/output.txt",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/closure_scope/output.txt",
+          "sha256": "e8bae85d369e832d6c071b7558c54884014ce4f2efabf55e712188fd205d9a07"
+        },
+        {
+          "path": "corpus/ruffle/avm1/closure_scope/test.toml",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/closure_scope/test.toml",
+          "sha256": "fe734646f8be2bbcf0b290423d22f56f5831da49c402e33fd85308432e3e9afd"
+        }
+      ],
+      "license_provenance": {
+        "repository_declared_license": "MIT OR Apache-2.0",
+        "scope_note": "Original Ruffle avm1/avm2 regression tests selected; imported from_avmplus/from_gnash/from_shumway collections excluded. No per-case license override found in selected files. Repository declaration retained; no independent authorship audit.",
+        "license_paths": [
+          "corpus/provenance/ruffle/LICENSE.md"
+        ]
+      },
+      "operation_eligibility": {
+        "parse": true,
+        "decompile": true,
+        "valid_performance_summary": true,
+        "robustness": false,
+        "runtime_semantic_fixture_available": true,
+        "semantic_equivalence_measured": false,
+        "recompilation_measured": false
+      }
+    },
+    {
+      "id": "ruffle_avm1_try_catch_finally",
+      "path": "corpus/ruffle/avm1/try_catch_finally/test.swf",
+      "bytes": 1434,
+      "sha256": "98a6c737f66def58991dd0230ea2d6927c51f252d0cc746b11cc4a564e8b7b8d",
+      "compression": "CWS",
+      "swf_version": 15,
+      "uncompressed_bytes": 5607,
+      "canonical_uncompressed_sha256": "d3644bd510554cc73b1617f6624513a77cb1beadd6d8e5a2e52a645f62430b08",
+      "avm": "AVM1",
+      "avm_classification_basis": "DoAction/DoInitAction tags",
+      "tag_counts": {
+        "0": 1,
+        "1": 1,
+        "9": 1,
+        "12": 1,
+        "69": 1,
+        "77": 1
+      },
+      "tag_count": 6,
+      "avm1_action_payload_bytes": 4263,
+      "category": "valid_micro",
+      "benchmark_role": "primary",
+      "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/try_catch_finally/test.swf",
+      "source_commit": "2372a4e148a67d68efd796f4477b3cddd4f880cd",
+      "source_repository": "ruffle-rs/ruffle",
+      "case_family": "try_catch_finally",
+      "expected_output_path": "corpus/ruffle/avm1/try_catch_finally/output.txt",
+      "runtime_config_path": "corpus/ruffle/avm1/try_catch_finally/test.toml",
+      "source_paths": [
+        "corpus/ruffle/avm1/try_catch_finally/test.fla"
+      ],
+      "source_known": true,
+      "source_availability": "fla_only",
+      "source_records": [
+        {
+          "path": "corpus/ruffle/avm1/try_catch_finally/test.swf",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/try_catch_finally/test.swf",
+          "sha256": "98a6c737f66def58991dd0230ea2d6927c51f252d0cc746b11cc4a564e8b7b8d"
+        },
+        {
+          "path": "corpus/ruffle/avm1/try_catch_finally/test.fla",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/try_catch_finally/test.fla",
+          "sha256": "4b5911abe3c969794bc0d29a5867a59ffe66171b7cf7f689c37128e5e1c31bc8"
+        },
+        {
+          "path": "corpus/ruffle/avm1/try_catch_finally/output.txt",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/try_catch_finally/output.txt",
+          "sha256": "1d03842e9fe3ddc523b31b681644d25951bb6e49bdaa2ddb88fbe10bbd893f84"
+        },
+        {
+          "path": "corpus/ruffle/avm1/try_catch_finally/test.toml",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/try_catch_finally/test.toml",
+          "sha256": "fe734646f8be2bbcf0b290423d22f56f5831da49c402e33fd85308432e3e9afd"
+        }
+      ],
+      "license_provenance": {
+        "repository_declared_license": "MIT OR Apache-2.0",
+        "scope_note": "Original Ruffle avm1/avm2 regression tests selected; imported from_avmplus/from_gnash/from_shumway collections excluded. No per-case license override found in selected files. Repository declaration retained; no independent authorship audit.",
+        "license_paths": [
+          "corpus/provenance/ruffle/LICENSE.md"
+        ]
+      },
+      "operation_eligibility": {
+        "parse": true,
+        "decompile": true,
+        "valid_performance_summary": true,
+        "robustness": false,
+        "runtime_semantic_fixture_available": true,
+        "semantic_equivalence_measured": false,
+        "recompilation_measured": false
+      }
+    },
+    {
+      "id": "ruffle_avm1_timeline_function_def",
+      "path": "corpus/ruffle/avm1/timeline_function_def/test.swf",
+      "bytes": 648,
+      "sha256": "5dbf50b6aed265527255f66bb2af0481b39fdaa251f2290a717d05540ae7f771",
+      "compression": "FWS",
+      "swf_version": 7,
+      "uncompressed_bytes": 648,
+      "canonical_uncompressed_sha256": "5dbf50b6aed265527255f66bb2af0481b39fdaa251f2290a717d05540ae7f771",
+      "avm": "AVM1",
+      "avm_classification_basis": "DoAction/DoInitAction tags",
+      "tag_counts": {
+        "0": 2,
+        "1": 6,
+        "2": 2,
+        "9": 1,
+        "12": 6,
+        "26": 2,
+        "39": 1,
+        "56": 1,
+        "63": 1,
+        "64": 1
+      },
+      "tag_count": 23,
+      "avm1_action_payload_bytes": 392,
+      "category": "valid_micro",
+      "benchmark_role": "primary",
+      "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/timeline_function_def/test.swf",
+      "source_commit": "2372a4e148a67d68efd796f4477b3cddd4f880cd",
+      "source_repository": "ruffle-rs/ruffle",
+      "case_family": "timeline_function_definition",
+      "expected_output_path": "corpus/ruffle/avm1/timeline_function_def/output.txt",
+      "runtime_config_path": "corpus/ruffle/avm1/timeline_function_def/test.toml",
+      "source_paths": [
+        "corpus/ruffle/avm1/timeline_function_def/test.fla"
+      ],
+      "source_known": true,
+      "source_availability": "fla_only",
+      "source_records": [
+        {
+          "path": "corpus/ruffle/avm1/timeline_function_def/test.swf",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/timeline_function_def/test.swf",
+          "sha256": "5dbf50b6aed265527255f66bb2af0481b39fdaa251f2290a717d05540ae7f771"
+        },
+        {
+          "path": "corpus/ruffle/avm1/timeline_function_def/test.fla",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/timeline_function_def/test.fla",
+          "sha256": "df361f433a6f8540e6fa2fce30012f98094bad7d9a3b3b7df3b869f71de32ec0"
+        },
+        {
+          "path": "corpus/ruffle/avm1/timeline_function_def/output.txt",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/timeline_function_def/output.txt",
+          "sha256": "f45e74a9a62e48633637967f7cd4dc72c767b7e9f0c833461ef7629e14848487"
+        },
+        {
+          "path": "corpus/ruffle/avm1/timeline_function_def/test.toml",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/timeline_function_def/test.toml",
+          "sha256": "e2fa789d5b69d60c59d98946ce5db3e682e114b2ac83a001b24ca2232df12437"
+        }
+      ],
+      "license_provenance": {
+        "repository_declared_license": "MIT OR Apache-2.0",
+        "scope_note": "Original Ruffle avm1/avm2 regression tests selected; imported from_avmplus/from_gnash/from_shumway collections excluded. No per-case license override found in selected files. Repository declaration retained; no independent authorship audit.",
+        "license_paths": [
+          "corpus/provenance/ruffle/LICENSE.md"
+        ]
+      },
+      "operation_eligibility": {
+        "parse": true,
+        "decompile": true,
+        "valid_performance_summary": true,
+        "robustness": false,
+        "runtime_semantic_fixture_available": true,
+        "semantic_equivalence_measured": false,
+        "recompilation_measured": false
+      }
+    },
+    {
+      "id": "ruffle_avm1_as2_super_via_manual_prototype",
+      "path": "corpus/ruffle/avm1/as2_super_via_manual_prototype/test.swf",
+      "bytes": 3552,
+      "sha256": "23c8eef64d37ee8ed9df002b0c0daa2b7dd7dda451b62e423fb7a39250b4ba14",
+      "compression": "FWS",
+      "swf_version": 14,
+      "uncompressed_bytes": 3552,
+      "canonical_uncompressed_sha256": "23c8eef64d37ee8ed9df002b0c0daa2b7dd7dda451b62e423fb7a39250b4ba14",
+      "avm": "AVM1",
+      "avm_classification_basis": "DoAction/DoInitAction tags",
+      "tag_counts": {
+        "0": 4,
+        "1": 1,
+        "9": 1,
+        "12": 1,
+        "39": 3,
+        "56": 3,
+        "59": 3,
+        "69": 1
+      },
+      "tag_count": 17,
+      "avm1_action_payload_bytes": 3375,
+      "category": "valid_micro",
+      "benchmark_role": "primary",
+      "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/as2_super_via_manual_prototype/test.swf",
+      "source_commit": "2372a4e148a67d68efd796f4477b3cddd4f880cd",
+      "source_repository": "ruffle-rs/ruffle",
+      "case_family": "prototype_inheritance_super",
+      "expected_output_path": "corpus/ruffle/avm1/as2_super_via_manual_prototype/output.txt",
+      "runtime_config_path": "corpus/ruffle/avm1/as2_super_via_manual_prototype/test.toml",
+      "source_paths": [
+        "corpus/ruffle/avm1/as2_super_via_manual_prototype/Base.as",
+        "corpus/ruffle/avm1/as2_super_via_manual_prototype/Extended.as",
+        "corpus/ruffle/avm1/as2_super_via_manual_prototype/ExtendedFurther.as",
+        "corpus/ruffle/avm1/as2_super_via_manual_prototype/test.as"
+      ],
+      "source_known": true,
+      "source_availability": "actionscript_and_optional_fla",
+      "source_records": [
+        {
+          "path": "corpus/ruffle/avm1/as2_super_via_manual_prototype/test.swf",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/as2_super_via_manual_prototype/test.swf",
+          "sha256": "23c8eef64d37ee8ed9df002b0c0daa2b7dd7dda451b62e423fb7a39250b4ba14"
+        },
+        {
+          "path": "corpus/ruffle/avm1/as2_super_via_manual_prototype/Base.as",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/as2_super_via_manual_prototype/Base.as",
+          "sha256": "47e6fe7f9a501e2503d70b8725e8181dd4ebeb579fea74ddbea77c3aa395fa7d"
+        },
+        {
+          "path": "corpus/ruffle/avm1/as2_super_via_manual_prototype/Extended.as",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/as2_super_via_manual_prototype/Extended.as",
+          "sha256": "7f61518aa1207be48a4176e16fda268dcc87ff2a15999c61db7dd5a963931a8e"
+        },
+        {
+          "path": "corpus/ruffle/avm1/as2_super_via_manual_prototype/ExtendedFurther.as",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/as2_super_via_manual_prototype/ExtendedFurther.as",
+          "sha256": "8bde715c0bf399e8fabff9088d545aa68efa140caa120a1b28f1b76026a7ce53"
+        },
+        {
+          "path": "corpus/ruffle/avm1/as2_super_via_manual_prototype/test.as",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/as2_super_via_manual_prototype/test.as",
+          "sha256": "fab194cc695623238f91c53ce1897f03a9d01812d8e583cefba7015c2a549b23"
+        },
+        {
+          "path": "corpus/ruffle/avm1/as2_super_via_manual_prototype/output.txt",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/as2_super_via_manual_prototype/output.txt",
+          "sha256": "ec91438e821d0b69f2d7e9ac30a109fd9b7d7b2b31a650afc4c3b2bbf0ba5b66"
+        },
+        {
+          "path": "corpus/ruffle/avm1/as2_super_via_manual_prototype/test.toml",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/as2_super_via_manual_prototype/test.toml",
+          "sha256": "308a6b32377e8e50225afd889d5d6f2cf3b00f69e250f4ca323a78f6865f926b"
+        }
+      ],
+      "license_provenance": {
+        "repository_declared_license": "MIT OR Apache-2.0",
+        "scope_note": "Original Ruffle avm1/avm2 regression tests selected; imported from_avmplus/from_gnash/from_shumway collections excluded. No per-case license override found in selected files. Repository declaration retained; no independent authorship audit.",
+        "license_paths": [
+          "corpus/provenance/ruffle/LICENSE.md"
+        ]
+      },
+      "operation_eligibility": {
+        "parse": true,
+        "decompile": true,
+        "valid_performance_summary": true,
+        "robustness": false,
+        "runtime_semantic_fixture_available": true,
+        "semantic_equivalence_measured": false,
+        "recompilation_measured": false
+      }
+    },
+    {
+      "id": "ruffle_avm1_string_coercion",
+      "path": "corpus/ruffle/avm1/string_coercion/test.swf",
+      "bytes": 3165,
+      "sha256": "576afdf6bc8575c659b3f4e63b59c5ed2ec54f9c8f1d6c073029e1fbfae8bae2",
+      "compression": "FWS",
+      "swf_version": 7,
+      "uncompressed_bytes": 3165,
+      "canonical_uncompressed_sha256": "576afdf6bc8575c659b3f4e63b59c5ed2ec54f9c8f1d6c073029e1fbfae8bae2",
+      "avm": "AVM1",
+      "avm_classification_basis": "DoAction/DoInitAction tags",
+      "tag_counts": {
+        "0": 2,
+        "1": 4,
+        "2": 1,
+        "9": 1,
+        "12": 4,
+        "26": 1,
+        "39": 1,
+        "56": 1,
+        "63": 1,
+        "64": 1
+      },
+      "tag_count": 17,
+      "avm1_action_payload_bytes": 2975,
+      "category": "valid_micro",
+      "benchmark_role": "primary",
+      "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/string_coercion/test.swf",
+      "source_commit": "2372a4e148a67d68efd796f4477b3cddd4f880cd",
+      "source_repository": "ruffle-rs/ruffle",
+      "case_family": "string_coercion",
+      "expected_output_path": "corpus/ruffle/avm1/string_coercion/output.txt",
+      "runtime_config_path": "corpus/ruffle/avm1/string_coercion/test.toml",
+      "source_paths": [
+        "corpus/ruffle/avm1/string_coercion/test.fla"
+      ],
+      "source_known": true,
+      "source_availability": "fla_only",
+      "source_records": [
+        {
+          "path": "corpus/ruffle/avm1/string_coercion/test.swf",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/string_coercion/test.swf",
+          "sha256": "576afdf6bc8575c659b3f4e63b59c5ed2ec54f9c8f1d6c073029e1fbfae8bae2"
+        },
+        {
+          "path": "corpus/ruffle/avm1/string_coercion/test.fla",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/string_coercion/test.fla",
+          "sha256": "e19a70e94e4340bb8ca8cdd9b9235d659031a278b89b47c2601bc86732a2ae29"
+        },
+        {
+          "path": "corpus/ruffle/avm1/string_coercion/output.txt",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/string_coercion/output.txt",
+          "sha256": "01a7df5d11945d9e3a9d714e70c1313c2a46a9128293d47fa81c4644a9fee8a5"
+        },
+        {
+          "path": "corpus/ruffle/avm1/string_coercion/test.toml",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/string_coercion/test.toml",
+          "sha256": "fe734646f8be2bbcf0b290423d22f56f5831da49c402e33fd85308432e3e9afd"
+        }
+      ],
+      "license_provenance": {
+        "repository_declared_license": "MIT OR Apache-2.0",
+        "scope_note": "Original Ruffle avm1/avm2 regression tests selected; imported from_avmplus/from_gnash/from_shumway collections excluded. No per-case license override found in selected files. Repository declaration retained; no independent authorship audit.",
+        "license_paths": [
+          "corpus/provenance/ruffle/LICENSE.md"
+        ]
+      },
+      "operation_eligibility": {
+        "parse": true,
+        "decompile": true,
+        "valid_performance_summary": true,
+        "robustness": false,
+        "runtime_semantic_fixture_available": true,
+        "semantic_equivalence_measured": false,
+        "recompilation_measured": false
+      }
+    },
+    {
+      "id": "ruffle_avm2_function_call_arguments_enumerate",
+      "path": "corpus/ruffle/avm2/function_call_arguments_enumerate/test.swf",
+      "bytes": 813,
+      "sha256": "b6a30c16434852b7f5c321539ef5b79b3fde0326623e14fd7677b7a5fed96804",
+      "compression": "CWS",
+      "swf_version": 43,
+      "uncompressed_bytes": 1269,
+      "canonical_uncompressed_sha256": "50e5b7e78e3132fcbfcbee98ab08c222049d4c44d12bd03a1403a0c2e0d438b9",
+      "avm": "AVM2",
+      "avm_classification_basis": "DoABC/DoABCDefine tags",
+      "tag_counts": {
+        "0": 1,
+        "1": 1,
+        "9": 1,
+        "64": 1,
+        "69": 1,
+        "76": 1,
+        "82": 1,
+        "86": 1
+      },
+      "tag_count": 8,
+      "abc_payload_bytes": 1140,
+      "category": "valid_micro",
+      "benchmark_role": "primary",
+      "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/function_call_arguments_enumerate/test.swf",
+      "source_commit": "2372a4e148a67d68efd796f4477b3cddd4f880cd",
+      "source_repository": "ruffle-rs/ruffle",
+      "case_family": "arguments_enumeration_loop",
+      "expected_output_path": "corpus/ruffle/avm2/function_call_arguments_enumerate/output.txt",
+      "runtime_config_path": "corpus/ruffle/avm2/function_call_arguments_enumerate/test.toml",
+      "source_paths": [
+        "corpus/ruffle/avm2/function_call_arguments_enumerate/Test.as",
+        "corpus/ruffle/avm2/function_call_arguments_enumerate/test.fla"
+      ],
+      "source_known": true,
+      "source_availability": "actionscript_and_optional_fla",
+      "source_records": [
+        {
+          "path": "corpus/ruffle/avm2/function_call_arguments_enumerate/test.swf",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/function_call_arguments_enumerate/test.swf",
+          "sha256": "b6a30c16434852b7f5c321539ef5b79b3fde0326623e14fd7677b7a5fed96804"
+        },
+        {
+          "path": "corpus/ruffle/avm2/function_call_arguments_enumerate/Test.as",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/function_call_arguments_enumerate/Test.as",
+          "sha256": "a9e2ad5e03b9ecc205d52107baae5fbbfc5dbef95b31055d7f88c7b7ea1801bf"
+        },
+        {
+          "path": "corpus/ruffle/avm2/function_call_arguments_enumerate/test.fla",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/function_call_arguments_enumerate/test.fla",
+          "sha256": "e9cffe213f223f9be539a8002c6a504f37a5430b99ba4b8b908438aa66f63c15"
+        },
+        {
+          "path": "corpus/ruffle/avm2/function_call_arguments_enumerate/output.txt",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/function_call_arguments_enumerate/output.txt",
+          "sha256": "d177e74f9d95b5283a3dce827d1de4ceb9d7f60cd330d0fe953381bb7efc6ea8"
+        },
+        {
+          "path": "corpus/ruffle/avm2/function_call_arguments_enumerate/test.toml",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/function_call_arguments_enumerate/test.toml",
+          "sha256": "fe734646f8be2bbcf0b290423d22f56f5831da49c402e33fd85308432e3e9afd"
+        }
+      ],
+      "license_provenance": {
+        "repository_declared_license": "MIT OR Apache-2.0",
+        "scope_note": "Original Ruffle avm1/avm2 regression tests selected; imported from_avmplus/from_gnash/from_shumway collections excluded. No per-case license override found in selected files. Repository declaration retained; no independent authorship audit.",
+        "license_paths": [
+          "corpus/provenance/ruffle/LICENSE.md"
+        ]
+      },
+      "operation_eligibility": {
+        "parse": true,
+        "decompile": true,
+        "valid_performance_summary": true,
+        "robustness": false,
+        "runtime_semantic_fixture_available": true,
+        "semantic_equivalence_measured": false,
+        "recompilation_measured": false
+      }
+    },
+    {
+      "id": "ruffle_avm2_op_lookupswitch",
+      "path": "corpus/ruffle/avm2/op_lookupswitch/test.swf",
+      "bytes": 765,
+      "sha256": "c5f3513e2035df7c16f231562e55acdcfbe2593795fe0c2feeb9b1149f335b13",
+      "compression": "CWS",
+      "swf_version": 15,
+      "uncompressed_bytes": 1198,
+      "canonical_uncompressed_sha256": "59774113fccb2599675dfa9349bab8d34565004bfcecc3d333b4e00b4d902a82",
+      "avm": "AVM2",
+      "avm_classification_basis": "DoABC/DoABCDefine tags",
+      "tag_counts": {
+        "0": 1,
+        "1": 1,
+        "9": 1,
+        "64": 1,
+        "69": 1,
+        "76": 1,
+        "82": 1,
+        "86": 1
+      },
+      "tag_count": 8,
+      "abc_payload_bytes": 1069,
+      "category": "valid_micro",
+      "benchmark_role": "primary",
+      "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/op_lookupswitch/test.swf",
+      "source_commit": "2372a4e148a67d68efd796f4477b3cddd4f880cd",
+      "source_repository": "ruffle-rs/ruffle",
+      "case_family": "switch_fallthrough",
+      "expected_output_path": "corpus/ruffle/avm2/op_lookupswitch/output.txt",
+      "runtime_config_path": "corpus/ruffle/avm2/op_lookupswitch/test.toml",
+      "source_paths": [
+        "corpus/ruffle/avm2/op_lookupswitch/Test.as",
+        "corpus/ruffle/avm2/op_lookupswitch/test.fla"
+      ],
+      "source_known": true,
+      "source_availability": "actionscript_and_optional_fla",
+      "source_records": [
+        {
+          "path": "corpus/ruffle/avm2/op_lookupswitch/test.swf",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/op_lookupswitch/test.swf",
+          "sha256": "c5f3513e2035df7c16f231562e55acdcfbe2593795fe0c2feeb9b1149f335b13"
+        },
+        {
+          "path": "corpus/ruffle/avm2/op_lookupswitch/Test.as",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/op_lookupswitch/Test.as",
+          "sha256": "f9cc7771e7874d6093ce48b9f1541ace61eab42cfe98a52e98a34b14f7547a7c"
+        },
+        {
+          "path": "corpus/ruffle/avm2/op_lookupswitch/test.fla",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/op_lookupswitch/test.fla",
+          "sha256": "2e2993134f01ef2b4358d80cbd2930dd38c42726cc2ece70e22ea2fe78bf4b7a"
+        },
+        {
+          "path": "corpus/ruffle/avm2/op_lookupswitch/output.txt",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/op_lookupswitch/output.txt",
+          "sha256": "bada20f5b5afcb727a19ebbed2ab0a125493bc023ce493b870b74652bf374dfa"
+        },
+        {
+          "path": "corpus/ruffle/avm2/op_lookupswitch/test.toml",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/op_lookupswitch/test.toml",
+          "sha256": "fe734646f8be2bbcf0b290423d22f56f5831da49c402e33fd85308432e3e9afd"
+        }
+      ],
+      "license_provenance": {
+        "repository_declared_license": "MIT OR Apache-2.0",
+        "scope_note": "Original Ruffle avm1/avm2 regression tests selected; imported from_avmplus/from_gnash/from_shumway collections excluded. No per-case license override found in selected files. Repository declaration retained; no independent authorship audit.",
+        "license_paths": [
+          "corpus/provenance/ruffle/LICENSE.md"
+        ]
+      },
+      "operation_eligibility": {
+        "parse": true,
+        "decompile": true,
+        "valid_performance_summary": true,
+        "robustness": false,
+        "runtime_semantic_fixture_available": true,
+        "semantic_equivalence_measured": false,
+        "recompilation_measured": false
+      }
+    },
+    {
+      "id": "ruffle_avm2_closures",
+      "path": "corpus/ruffle/avm2/closures/test.swf",
+      "bytes": 982,
+      "sha256": "e6dbe6ca2b32b8f6d4cf6b38248b0831316df034eedd858db22003b50ea9fde9",
+      "compression": "CWS",
+      "swf_version": 43,
+      "uncompressed_bytes": 1575,
+      "canonical_uncompressed_sha256": "175bf0d45bcd1dfebe072adff698d5db4c038bcfb3eddae7591f4ebdaed3f5d3",
+      "avm": "AVM2",
+      "avm_classification_basis": "DoABC/DoABCDefine tags",
+      "tag_counts": {
+        "0": 1,
+        "1": 1,
+        "9": 1,
+        "64": 1,
+        "69": 1,
+        "76": 1,
+        "82": 1,
+        "86": 1,
+        "93": 1
+      },
+      "tag_count": 9,
+      "abc_payload_bytes": 1442,
+      "category": "valid_micro",
+      "benchmark_role": "primary",
+      "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/closures/test.swf",
+      "source_commit": "2372a4e148a67d68efd796f4477b3cddd4f880cd",
+      "source_repository": "ruffle-rs/ruffle",
+      "case_family": "nested_closure_capture",
+      "expected_output_path": "corpus/ruffle/avm2/closures/output.txt",
+      "runtime_config_path": "corpus/ruffle/avm2/closures/test.toml",
+      "source_paths": [
+        "corpus/ruffle/avm2/closures/Test.as",
+        "corpus/ruffle/avm2/closures/test.fla"
+      ],
+      "source_known": true,
+      "source_availability": "actionscript_and_optional_fla",
+      "source_records": [
+        {
+          "path": "corpus/ruffle/avm2/closures/test.swf",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/closures/test.swf",
+          "sha256": "e6dbe6ca2b32b8f6d4cf6b38248b0831316df034eedd858db22003b50ea9fde9"
+        },
+        {
+          "path": "corpus/ruffle/avm2/closures/Test.as",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/closures/Test.as",
+          "sha256": "9c7048abb58de587fd52f92444886a4c0d1097cad136c0601ebcced0f263f868"
+        },
+        {
+          "path": "corpus/ruffle/avm2/closures/test.fla",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/closures/test.fla",
+          "sha256": "f3252ba9e961dce33665a5b2ffe156b2fa31f02daffa2f4ef893f92426695a6a"
+        },
+        {
+          "path": "corpus/ruffle/avm2/closures/output.txt",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/closures/output.txt",
+          "sha256": "dfb183a6b07293b4fdec6cfd1e0e11c6435c6631285baf58d7b2386a6ef2fb0d"
+        },
+        {
+          "path": "corpus/ruffle/avm2/closures/test.toml",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/closures/test.toml",
+          "sha256": "fe734646f8be2bbcf0b290423d22f56f5831da49c402e33fd85308432e3e9afd"
+        }
+      ],
+      "license_provenance": {
+        "repository_declared_license": "MIT OR Apache-2.0",
+        "scope_note": "Original Ruffle avm1/avm2 regression tests selected; imported from_avmplus/from_gnash/from_shumway collections excluded. No per-case license override found in selected files. Repository declaration retained; no independent authorship audit.",
+        "license_paths": [
+          "corpus/provenance/ruffle/LICENSE.md"
+        ]
+      },
+      "operation_eligibility": {
+        "parse": true,
+        "decompile": true,
+        "valid_performance_summary": true,
+        "robustness": false,
+        "runtime_semantic_fixture_available": true,
+        "semantic_equivalence_measured": false,
+        "recompilation_measured": false
+      }
+    },
+    {
+      "id": "ruffle_avm2_try_catch",
+      "path": "corpus/ruffle/avm2/try_catch/test.swf",
+      "bytes": 1246,
+      "sha256": "eb92a7da609d7b89bc05fc187bb6d0550b45389c7d5f24a5682646efa9afdac2",
+      "compression": "CWS",
+      "swf_version": 43,
+      "uncompressed_bytes": 2070,
+      "canonical_uncompressed_sha256": "11773f9810f40a71a7dbfb72717a8633fa98ee505c729660962e62983d209ad2",
+      "avm": "AVM2",
+      "avm_classification_basis": "DoABC/DoABCDefine tags",
+      "tag_counts": {
+        "0": 1,
+        "1": 1,
+        "9": 1,
+        "64": 1,
+        "69": 1,
+        "76": 1,
+        "82": 1,
+        "86": 1
+      },
+      "tag_count": 8,
+      "abc_payload_bytes": 1941,
+      "category": "valid_micro",
+      "benchmark_role": "primary",
+      "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/try_catch/test.swf",
+      "source_commit": "2372a4e148a67d68efd796f4477b3cddd4f880cd",
+      "source_repository": "ruffle-rs/ruffle",
+      "case_family": "exceptions_scope_unwinding",
+      "expected_output_path": "corpus/ruffle/avm2/try_catch/output.txt",
+      "runtime_config_path": "corpus/ruffle/avm2/try_catch/test.toml",
+      "source_paths": [
+        "corpus/ruffle/avm2/try_catch/Test.as",
+        "corpus/ruffle/avm2/try_catch/test.fla"
+      ],
+      "source_known": true,
+      "source_availability": "actionscript_and_optional_fla",
+      "source_records": [
+        {
+          "path": "corpus/ruffle/avm2/try_catch/test.swf",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/try_catch/test.swf",
+          "sha256": "eb92a7da609d7b89bc05fc187bb6d0550b45389c7d5f24a5682646efa9afdac2"
+        },
+        {
+          "path": "corpus/ruffle/avm2/try_catch/Test.as",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/try_catch/Test.as",
+          "sha256": "750a7ed3c2079f436ece457e253fe7458e3180309d0394fe5a7d51195e7e8619"
+        },
+        {
+          "path": "corpus/ruffle/avm2/try_catch/test.fla",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/try_catch/test.fla",
+          "sha256": "fc084d3cd5b84510598ec74c2ff87e4cd9745f2af79a63e001f25c33dbaca0f5"
+        },
+        {
+          "path": "corpus/ruffle/avm2/try_catch/output.txt",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/try_catch/output.txt",
+          "sha256": "43b5d1a192ca6c7774bb86007c4602ea69e7fc5788991c78e2ab23dfe780c713"
+        },
+        {
+          "path": "corpus/ruffle/avm2/try_catch/test.toml",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/try_catch/test.toml",
+          "sha256": "fe734646f8be2bbcf0b290423d22f56f5831da49c402e33fd85308432e3e9afd"
+        }
+      ],
+      "license_provenance": {
+        "repository_declared_license": "MIT OR Apache-2.0",
+        "scope_note": "Original Ruffle avm1/avm2 regression tests selected; imported from_avmplus/from_gnash/from_shumway collections excluded. No per-case license override found in selected files. Repository declaration retained; no independent authorship audit.",
+        "license_paths": [
+          "corpus/provenance/ruffle/LICENSE.md"
+        ]
+      },
+      "operation_eligibility": {
+        "parse": true,
+        "decompile": true,
+        "valid_performance_summary": true,
+        "robustness": false,
+        "runtime_semantic_fixture_available": true,
+        "semantic_equivalence_measured": false,
+        "recompilation_measured": false
+      }
+    },
+    {
+      "id": "ruffle_avm2_coerce_to_primitive_side_effects",
+      "path": "corpus/ruffle/avm2/coerce_to_primitive_side_effects/test.swf",
+      "bytes": 974,
+      "sha256": "cd7d3063e6faf7091e95fd6279d0f55317fa4ac03cf69ed917c1dc8995839ce7",
+      "compression": "ZWS",
+      "swf_version": 50,
+      "uncompressed_bytes": 1488,
+      "canonical_uncompressed_sha256": "359e9bbe90b54a9c55e0a7bf87e1bc782ab1c147508e601f961583ee8afb4214",
+      "avm": "AVM2",
+      "avm_classification_basis": "DoABC/DoABCDefine tags",
+      "tag_counts": {
+        "0": 1,
+        "1": 1,
+        "9": 1,
+        "65": 1,
+        "69": 1,
+        "76": 1,
+        "77": 1,
+        "82": 1
+      },
+      "tag_count": 8,
+      "abc_payload_bytes": 1043,
+      "category": "valid_micro",
+      "benchmark_role": "primary",
+      "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/coerce_to_primitive_side_effects/test.swf",
+      "source_commit": "2372a4e148a67d68efd796f4477b3cddd4f880cd",
+      "source_repository": "ruffle-rs/ruffle",
+      "case_family": "primitive_coercion_side_effects",
+      "expected_output_path": "corpus/ruffle/avm2/coerce_to_primitive_side_effects/output.txt",
+      "runtime_config_path": "corpus/ruffle/avm2/coerce_to_primitive_side_effects/test.toml",
+      "source_paths": [
+        "corpus/ruffle/avm2/coerce_to_primitive_side_effects/Test.as"
+      ],
+      "source_known": true,
+      "source_availability": "actionscript_and_optional_fla",
+      "source_records": [
+        {
+          "path": "corpus/ruffle/avm2/coerce_to_primitive_side_effects/test.swf",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/coerce_to_primitive_side_effects/test.swf",
+          "sha256": "cd7d3063e6faf7091e95fd6279d0f55317fa4ac03cf69ed917c1dc8995839ce7"
+        },
+        {
+          "path": "corpus/ruffle/avm2/coerce_to_primitive_side_effects/Test.as",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/coerce_to_primitive_side_effects/Test.as",
+          "sha256": "17bb73ddf42e0ce97fd13fb0d48d5d231d69d10bf07fd9ac2e3558aa50fc7d3d"
+        },
+        {
+          "path": "corpus/ruffle/avm2/coerce_to_primitive_side_effects/output.txt",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/coerce_to_primitive_side_effects/output.txt",
+          "sha256": "6e8ad9a137cbb229e02c72d0fc912ef58b95a857ace3aac0d866bc7ff1534ac4"
+        },
+        {
+          "path": "corpus/ruffle/avm2/coerce_to_primitive_side_effects/test.toml",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/coerce_to_primitive_side_effects/test.toml",
+          "sha256": "fe734646f8be2bbcf0b290423d22f56f5831da49c402e33fd85308432e3e9afd"
+        }
+      ],
+      "license_provenance": {
+        "repository_declared_license": "MIT OR Apache-2.0",
+        "scope_note": "Original Ruffle avm1/avm2 regression tests selected; imported from_avmplus/from_gnash/from_shumway collections excluded. No per-case license override found in selected files. Repository declaration retained; no independent authorship audit.",
+        "license_paths": [
+          "corpus/provenance/ruffle/LICENSE.md"
+        ]
+      },
+      "operation_eligibility": {
+        "parse": true,
+        "decompile": true,
+        "valid_performance_summary": true,
+        "robustness": false,
+        "runtime_semantic_fixture_available": true,
+        "semantic_equivalence_measured": false,
+        "recompilation_measured": false
+      }
+    },
+    {
+      "id": "ruffle_avm2_es4_inheritance",
+      "path": "corpus/ruffle/avm2/es4_inheritance/test.swf",
+      "bytes": 1255,
+      "sha256": "ffe6c29e2b1e19756dc0db9e9aa3ea503a3f66df10654f1437593364d07a83aa",
+      "compression": "CWS",
+      "swf_version": 43,
+      "uncompressed_bytes": 2654,
+      "canonical_uncompressed_sha256": "650455773ce08269eed0cb0a0e686173e7b9aa314db8eec93f3b5a81be4fcf9f",
+      "avm": "AVM2",
+      "avm_classification_basis": "DoABC/DoABCDefine tags",
+      "tag_counts": {
+        "0": 1,
+        "1": 1,
+        "9": 1,
+        "64": 1,
+        "69": 1,
+        "76": 1,
+        "82": 1,
+        "86": 1,
+        "93": 1
+      },
+      "tag_count": 9,
+      "abc_payload_bytes": 2521,
+      "category": "valid_micro",
+      "benchmark_role": "primary",
+      "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/es4_inheritance/test.swf",
+      "source_commit": "2372a4e148a67d68efd796f4477b3cddd4f880cd",
+      "source_repository": "ruffle-rs/ruffle",
+      "case_family": "class_inheritance_super",
+      "expected_output_path": "corpus/ruffle/avm2/es4_inheritance/output.txt",
+      "runtime_config_path": "corpus/ruffle/avm2/es4_inheritance/test.toml",
+      "source_paths": [
+        "corpus/ruffle/avm2/es4_inheritance/Test.as",
+        "corpus/ruffle/avm2/es4_inheritance/test.fla"
+      ],
+      "source_known": true,
+      "source_availability": "actionscript_and_optional_fla",
+      "source_records": [
+        {
+          "path": "corpus/ruffle/avm2/es4_inheritance/test.swf",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/es4_inheritance/test.swf",
+          "sha256": "ffe6c29e2b1e19756dc0db9e9aa3ea503a3f66df10654f1437593364d07a83aa"
+        },
+        {
+          "path": "corpus/ruffle/avm2/es4_inheritance/Test.as",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/es4_inheritance/Test.as",
+          "sha256": "044885a2b211faabf53546ba484cd06b2240ed18cf525144b3f2da05a4958e34"
+        },
+        {
+          "path": "corpus/ruffle/avm2/es4_inheritance/test.fla",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/es4_inheritance/test.fla",
+          "sha256": "0a4a032d446d442011eb35dc4bde01b4cbc889bc6dcfa3c12b024261818d5257"
+        },
+        {
+          "path": "corpus/ruffle/avm2/es4_inheritance/output.txt",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/es4_inheritance/output.txt",
+          "sha256": "b647f19513cff08b1f71a887a689e7da7c0fa6aa3901520e32350e0d2c11621d"
+        },
+        {
+          "path": "corpus/ruffle/avm2/es4_inheritance/test.toml",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/es4_inheritance/test.toml",
+          "sha256": "fe734646f8be2bbcf0b290423d22f56f5831da49c402e33fd85308432e3e9afd"
+        }
+      ],
+      "license_provenance": {
+        "repository_declared_license": "MIT OR Apache-2.0",
+        "scope_note": "Original Ruffle avm1/avm2 regression tests selected; imported from_avmplus/from_gnash/from_shumway collections excluded. No per-case license override found in selected files. Repository declaration retained; no independent authorship audit.",
+        "license_paths": [
+          "corpus/provenance/ruffle/LICENSE.md"
+        ]
+      },
+      "operation_eligibility": {
+        "parse": true,
+        "decompile": true,
+        "valid_performance_summary": true,
+        "robustness": false,
+        "runtime_semantic_fixture_available": true,
+        "semantic_equivalence_measured": false,
+        "recompilation_measured": false
+      }
+    },
+    {
+      "id": "jpexs_as2_definefunc_regs",
+      "path": "corpus/jpexs/as2_definefunc_regs/as2_definefunc_regs.swf",
+      "bytes": 415,
+      "sha256": "fb29bf4617d285eeee2c4a38d17b973191f656dae20591378881a516bf179b30",
+      "compression": "CWS",
+      "swf_version": 6,
+      "uncompressed_bytes": 780,
+      "canonical_uncompressed_sha256": "8c0a3f97dbc440a572efaf6e9f1d7f79c746a98ef29a8d048392b5e17cf61a04",
+      "avm": "AVM1",
+      "avm_classification_basis": "DoAction/DoInitAction tags",
+      "tag_counts": {
+        "0": 2,
+        "1": 1,
+        "9": 1,
+        "12": 1,
+        "39": 1,
+        "56": 1,
+        "59": 1
+      },
+      "tag_count": 8,
+      "avm1_action_payload_bytes": 695,
+      "category": "valid_micro",
+      "benchmark_role": "primary",
+      "source_url": "https://raw.githubusercontent.com/jindrapetrik/jpexs-decompiler/de7efbf4754865f46c1c5bd36c9db9cc4ef2fa0b/libsrc/ffdec_lib/testdata/as2_definefunc_regs/as2_definefunc_regs.swf",
+      "source_commit": "de7efbf4754865f46c1c5bd36c9db9cc4ef2fa0b",
+      "source_repository": "jindrapetrik/jpexs-decompiler",
+      "case_family": "function_register_allocation",
+      "expected_output_path": null,
+      "runtime_config_path": null,
+      "source_paths": [
+        "corpus/jpexs/as2_definefunc_regs/MyClass.as",
+        "corpus/jpexs/as2_definefunc_regs/as2_definefunc_regs.fla"
+      ],
+      "source_known": true,
+      "source_availability": "actionscript_and_optional_fla",
+      "source_records": [
+        {
+          "path": "corpus/jpexs/as2_definefunc_regs/as2_definefunc_regs.swf",
+          "source_url": "https://raw.githubusercontent.com/jindrapetrik/jpexs-decompiler/de7efbf4754865f46c1c5bd36c9db9cc4ef2fa0b/libsrc/ffdec_lib/testdata/as2_definefunc_regs/as2_definefunc_regs.swf",
+          "sha256": "fb29bf4617d285eeee2c4a38d17b973191f656dae20591378881a516bf179b30"
+        },
+        {
+          "path": "corpus/jpexs/as2_definefunc_regs/MyClass.as",
+          "source_url": "https://raw.githubusercontent.com/jindrapetrik/jpexs-decompiler/de7efbf4754865f46c1c5bd36c9db9cc4ef2fa0b/libsrc/ffdec_lib/testdata/as2_definefunc_regs/MyClass.as",
+          "sha256": "3ced1a7a8293b094fb541955f321eed9a821791c68f206888ed3e6a411d0c152"
+        },
+        {
+          "path": "corpus/jpexs/as2_definefunc_regs/as2_definefunc_regs.fla",
+          "source_url": "https://raw.githubusercontent.com/jindrapetrik/jpexs-decompiler/de7efbf4754865f46c1c5bd36c9db9cc4ef2fa0b/libsrc/ffdec_lib/testdata/as2_definefunc_regs/as2_definefunc_regs.fla",
+          "sha256": "d2e8818812aa8e6b331bd5461cbb4bdf6d9027ebe0a2426f253ee594828c22db"
+        },
+        {
+          "path": "corpus/jpexs/as2_definefunc_regs/readme.txt",
+          "source_url": "https://raw.githubusercontent.com/jindrapetrik/jpexs-decompiler/de7efbf4754865f46c1c5bd36c9db9cc4ef2fa0b/libsrc/ffdec_lib/testdata/as2_definefunc_regs/readme.txt",
+          "sha256": "f438f520ac0a49acd7ee2090d871eac775d76a76c09a0f48a086ab3bedd736af"
+        }
+      ],
+      "license_provenance": {
+        "repository_declared_license": "LGPL-3.0 library subtree; GPL-3.0 repository root",
+        "scope_note": "Fixture resides under ffdec_lib/testdata. Library/root license texts retained. No per-fixture license header; exact fixture licensing not independently adjudicated.",
+        "license_paths": [
+          "corpus/provenance/jpexs/license.txt",
+          "corpus/provenance/jpexs/libsrc/ffdec_lib/license.txt"
+        ]
+      },
+      "operation_eligibility": {
+        "parse": true,
+        "decompile": true,
+        "valid_performance_summary": true,
+        "robustness": false,
+        "runtime_semantic_fixture_available": false,
+        "semantic_equivalence_measured": false,
+        "recompilation_measured": false
+      }
+    },
+    {
+      "id": "jpexs_as3_nested_search_loop",
+      "path": "corpus/jpexs/as3_nested_search_loop/bin/as3_nested_search_loop.swf",
+      "bytes": 1006,
+      "sha256": "ddf04b1644ba4e61ec93801f025ddbb31d24d28c2776464592d1bb66bec4e29b",
+      "compression": "ZWS",
+      "swf_version": 43,
+      "uncompressed_bytes": 1471,
+      "canonical_uncompressed_sha256": "4ba143b8cdd971badfc310413de1bc55eeb037c2bdb51b9d8d6163d76bea849c",
+      "avm": "AVM2",
+      "avm_classification_basis": "DoABC/DoABCDefine tags",
+      "tag_counts": {
+        "0": 1,
+        "1": 1,
+        "9": 1,
+        "65": 1,
+        "69": 1,
+        "76": 1,
+        "77": 1,
+        "82": 1
+      },
+      "tag_count": 8,
+      "abc_payload_bytes": 1026,
+      "category": "valid_micro",
+      "benchmark_role": "primary",
+      "source_url": "https://raw.githubusercontent.com/jindrapetrik/jpexs-decompiler/de7efbf4754865f46c1c5bd36c9db9cc4ef2fa0b/libsrc/ffdec_lib/testdata/as3_nested_search_loop/bin/as3_nested_search_loop.swf",
+      "source_commit": "de7efbf4754865f46c1c5bd36c9db9cc4ef2fa0b",
+      "source_repository": "jindrapetrik/jpexs-decompiler",
+      "case_family": "nested_search_continue",
+      "expected_output_path": null,
+      "runtime_config_path": null,
+      "source_paths": [
+        "corpus/jpexs/as3_nested_search_loop/src/Main.as",
+        "corpus/jpexs/as3_nested_search_loop/src/tests_classes/TestNestedSearchContinue.as"
+      ],
+      "source_known": true,
+      "source_availability": "actionscript_and_optional_fla",
+      "source_records": [
+        {
+          "path": "corpus/jpexs/as3_nested_search_loop/bin/as3_nested_search_loop.swf",
+          "source_url": "https://raw.githubusercontent.com/jindrapetrik/jpexs-decompiler/de7efbf4754865f46c1c5bd36c9db9cc4ef2fa0b/libsrc/ffdec_lib/testdata/as3_nested_search_loop/bin/as3_nested_search_loop.swf",
+          "sha256": "ddf04b1644ba4e61ec93801f025ddbb31d24d28c2776464592d1bb66bec4e29b"
+        },
+        {
+          "path": "corpus/jpexs/as3_nested_search_loop/src/Main.as",
+          "source_url": "https://raw.githubusercontent.com/jindrapetrik/jpexs-decompiler/de7efbf4754865f46c1c5bd36c9db9cc4ef2fa0b/libsrc/ffdec_lib/testdata/as3_nested_search_loop/src/Main.as",
+          "sha256": "cf115af346ae66da8b6922655d61af139511982d26d954f881a3be1e99ec8889"
+        },
+        {
+          "path": "corpus/jpexs/as3_nested_search_loop/src/tests_classes/TestNestedSearchContinue.as",
+          "source_url": "https://raw.githubusercontent.com/jindrapetrik/jpexs-decompiler/de7efbf4754865f46c1c5bd36c9db9cc4ef2fa0b/libsrc/ffdec_lib/testdata/as3_nested_search_loop/src/tests_classes/TestNestedSearchContinue.as",
+          "sha256": "2f05fb3509a32a1c87f485bcb64c8affa761f6d7d266c7ccae897f87c1de7f33"
+        },
+        {
+          "path": "corpus/jpexs/as3_nested_search_loop/README.md",
+          "source_url": "https://raw.githubusercontent.com/jindrapetrik/jpexs-decompiler/de7efbf4754865f46c1c5bd36c9db9cc4ef2fa0b/libsrc/ffdec_lib/testdata/as3_nested_search_loop/README.md",
+          "sha256": "fda81b676b60926abe1cc547e21c570217530d59ff3b45989f55beb41fefe48a"
+        }
+      ],
+      "license_provenance": {
+        "repository_declared_license": "LGPL-3.0 library subtree; GPL-3.0 repository root",
+        "scope_note": "Fixture resides under ffdec_lib/testdata. Library/root license texts retained. No per-fixture license header; exact fixture licensing not independently adjudicated.",
+        "license_paths": [
+          "corpus/provenance/jpexs/license.txt",
+          "corpus/provenance/jpexs/libsrc/ffdec_lib/license.txt"
+        ]
+      },
+      "operation_eligibility": {
+        "parse": true,
+        "decompile": true,
+        "valid_performance_summary": true,
+        "robustness": false,
+        "runtime_semantic_fixture_available": false,
+        "semantic_equivalence_measured": false,
+        "recompilation_measured": false
+      }
+    },
+    {
+      "id": "jpexs_as2_long",
+      "path": "corpus/jpexs/as2_long/as2_long.swf",
+      "bytes": 64811,
+      "sha256": "3524755ce3c77540f901a27edba27c1ad5c93c686a31c03f669e40d31ba4060c",
+      "compression": "CWS",
+      "swf_version": 15,
+      "uncompressed_bytes": 330062,
+      "canonical_uncompressed_sha256": "41b70c3b2257c63ba491bb6f2202843502404604c0898d35edee05e35cf6ea97",
+      "avm": "AVM1",
+      "avm_classification_basis": "DoAction/DoInitAction tags",
+      "tag_counts": {
+        "0": 1,
+        "1": 1,
+        "9": 1,
+        "12": 1,
+        "69": 1,
+        "77": 1
+      },
+      "tag_count": 6,
+      "avm1_action_payload_bytes": 328718,
+      "category": "valid_integration",
+      "benchmark_role": "primary",
+      "source_url": "https://raw.githubusercontent.com/jindrapetrik/jpexs-decompiler/de7efbf4754865f46c1c5bd36c9db9cc4ef2fa0b/libsrc/ffdec_lib/testdata/as2_long/as2_long.swf",
+      "source_commit": "de7efbf4754865f46c1c5bd36c9db9cc4ef2fa0b",
+      "source_repository": "jindrapetrik/jpexs-decompiler",
+      "case_family": "large_generated_avm1_script",
+      "expected_output_path": null,
+      "runtime_config_path": null,
+      "source_paths": [
+        "corpus/jpexs/as2_long/as2_long/DOMDocument.xml",
+        "corpus/jpexs/as2_long/as2_long/as2_long.xfl"
+      ],
+      "source_known": true,
+      "source_availability": "xfl_embedded_scripts",
+      "source_records": [
+        {
+          "path": "corpus/jpexs/as2_long/as2_long.swf",
+          "source_url": "https://raw.githubusercontent.com/jindrapetrik/jpexs-decompiler/de7efbf4754865f46c1c5bd36c9db9cc4ef2fa0b/libsrc/ffdec_lib/testdata/as2_long/as2_long.swf",
+          "sha256": "3524755ce3c77540f901a27edba27c1ad5c93c686a31c03f669e40d31ba4060c"
+        },
+        {
+          "path": "corpus/jpexs/as2_long/as2_long/DOMDocument.xml",
+          "source_url": "https://raw.githubusercontent.com/jindrapetrik/jpexs-decompiler/de7efbf4754865f46c1c5bd36c9db9cc4ef2fa0b/libsrc/ffdec_lib/testdata/as2_long/as2_long/DOMDocument.xml",
+          "sha256": "2700d065556b6c55d7fd5f2ca684f521d8986ecbcdf7e7f1e45dd385ca7c9211"
+        },
+        {
+          "path": "corpus/jpexs/as2_long/as2_long/META-INF/metadata.xml",
+          "source_url": "https://raw.githubusercontent.com/jindrapetrik/jpexs-decompiler/de7efbf4754865f46c1c5bd36c9db9cc4ef2fa0b/libsrc/ffdec_lib/testdata/as2_long/as2_long/META-INF/metadata.xml",
+          "sha256": "84200fbcd2e73fbac9ec593e5fefad4154e64a149605d4a4d4734c59948b33a9"
+        },
+        {
+          "path": "corpus/jpexs/as2_long/as2_long/PublishSettings.xml",
+          "source_url": "https://raw.githubusercontent.com/jindrapetrik/jpexs-decompiler/de7efbf4754865f46c1c5bd36c9db9cc4ef2fa0b/libsrc/ffdec_lib/testdata/as2_long/as2_long/PublishSettings.xml",
+          "sha256": "83a9ddf93cd55260e8f6d946437d83a9949ec6f9e0891de902e52cf4b72d85b3"
+        },
+        {
+          "path": "corpus/jpexs/as2_long/as2_long/as2_long.xfl",
+          "source_url": "https://raw.githubusercontent.com/jindrapetrik/jpexs-decompiler/de7efbf4754865f46c1c5bd36c9db9cc4ef2fa0b/libsrc/ffdec_lib/testdata/as2_long/as2_long/as2_long.xfl",
+          "sha256": "29ac2e403620428ee4130686b456aefb0cc6d45e3be6e9c3191af906c1301f38"
+        }
+      ],
+      "license_provenance": {
+        "repository_declared_license": "LGPL-3.0 library subtree; GPL-3.0 repository root",
+        "scope_note": "Fixture resides under ffdec_lib/testdata. Library/root license texts retained. No per-fixture license header; exact fixture licensing not independently adjudicated.",
+        "license_paths": [
+          "corpus/provenance/jpexs/license.txt",
+          "corpus/provenance/jpexs/libsrc/ffdec_lib/license.txt"
+        ]
+      },
+      "operation_eligibility": {
+        "parse": true,
+        "decompile": true,
+        "valid_performance_summary": true,
+        "robustness": false,
+        "runtime_semantic_fixture_available": false,
+        "semantic_equivalence_measured": false,
+        "recompilation_measured": false
+      }
+    },
+    {
+      "id": "jpexs_as3_long",
+      "path": "corpus/jpexs/as3_long/bin/as3_long.air.swf",
+      "bytes": 78880,
+      "sha256": "a37dd1fa25c068a80ae3173b12c8ab6f42417110904f704ca605b236572f8b97",
+      "compression": "CWS",
+      "swf_version": 43,
+      "uncompressed_bytes": 249897,
+      "canonical_uncompressed_sha256": "0f18a53bc1bc9750aaccc3bda06c5d536a4244985370da1bbb030341941e87b2",
+      "avm": "AVM2",
+      "avm_classification_basis": "DoABC/DoABCDefine tags",
+      "tag_counts": {
+        "0": 1,
+        "1": 1,
+        "9": 1,
+        "64": 1,
+        "65": 1,
+        "69": 1,
+        "76": 1,
+        "77": 1,
+        "82": 1
+      },
+      "tag_count": 9,
+      "abc_payload_bytes": 249431,
+      "category": "valid_integration",
+      "benchmark_role": "primary",
+      "source_url": "https://raw.githubusercontent.com/jindrapetrik/jpexs-decompiler/de7efbf4754865f46c1c5bd36c9db9cc4ef2fa0b/libsrc/ffdec_lib/testdata/as3_long/bin/as3_long.air.swf",
+      "source_commit": "de7efbf4754865f46c1c5bd36c9db9cc4ef2fa0b",
+      "source_repository": "jindrapetrik/jpexs-decompiler",
+      "case_family": "large_generated_avm2_script",
+      "expected_output_path": null,
+      "runtime_config_path": null,
+      "source_paths": [
+        "corpus/jpexs/as3_long/src/Main.as",
+        "corpus/jpexs/as3_long/src/tests/TestLongScript.as"
+      ],
+      "source_known": true,
+      "source_availability": "actionscript_and_optional_fla",
+      "source_records": [
+        {
+          "path": "corpus/jpexs/as3_long/bin/as3_long.air.swf",
+          "source_url": "https://raw.githubusercontent.com/jindrapetrik/jpexs-decompiler/de7efbf4754865f46c1c5bd36c9db9cc4ef2fa0b/libsrc/ffdec_lib/testdata/as3_long/bin/as3_long.air.swf",
+          "sha256": "a37dd1fa25c068a80ae3173b12c8ab6f42417110904f704ca605b236572f8b97"
+        },
+        {
+          "path": "corpus/jpexs/as3_long/src/Main.as",
+          "source_url": "https://raw.githubusercontent.com/jindrapetrik/jpexs-decompiler/de7efbf4754865f46c1c5bd36c9db9cc4ef2fa0b/libsrc/ffdec_lib/testdata/as3_long/src/Main.as",
+          "sha256": "26a21f09ae05cbfeca537c0ced44a6de815c73055a2815409dfdb8d640178a24"
+        },
+        {
+          "path": "corpus/jpexs/as3_long/src/tests/TestLongScript.as",
+          "source_url": "https://raw.githubusercontent.com/jindrapetrik/jpexs-decompiler/de7efbf4754865f46c1c5bd36c9db9cc4ef2fa0b/libsrc/ffdec_lib/testdata/as3_long/src/tests/TestLongScript.as",
+          "sha256": "c43655acee621bc1e9facf9f16712a409d51b8afd85c945a3680c948ac8921b9"
+        },
+        {
+          "path": "corpus/jpexs/as3_long/build_air_debug.bat",
+          "source_url": "https://raw.githubusercontent.com/jindrapetrik/jpexs-decompiler/de7efbf4754865f46c1c5bd36c9db9cc4ef2fa0b/libsrc/ffdec_lib/testdata/as3_long/build_air_debug.bat",
+          "sha256": "ba2db9b34c8587b20567eef419295bf285ddb4706acf95e7c3c7788c10d4ec5b"
+        }
+      ],
+      "license_provenance": {
+        "repository_declared_license": "LGPL-3.0 library subtree; GPL-3.0 repository root",
+        "scope_note": "Fixture resides under ffdec_lib/testdata. Library/root license texts retained. No per-fixture license header; exact fixture licensing not independently adjudicated.",
+        "license_paths": [
+          "corpus/provenance/jpexs/license.txt",
+          "corpus/provenance/jpexs/libsrc/ffdec_lib/license.txt"
+        ]
+      },
+      "operation_eligibility": {
+        "parse": true,
+        "decompile": true,
+        "valid_performance_summary": true,
+        "robustness": false,
+        "runtime_semantic_fixture_available": false,
+        "semantic_equivalence_measured": false,
+        "recompilation_measured": false
+      }
+    },
+    {
+      "id": "ruffle_avm1_array_enumerate_cws",
+      "path": "corpus/derived/ruffle_avm1_array_enumerate_cws.swf",
+      "bytes": 202,
+      "sha256": "7d8717eef8ab28c1f135d88106b0bde6eb492bc87f44164f78aef419bec41603",
+      "compression": "CWS",
+      "swf_version": 15,
+      "uncompressed_bytes": 264,
+      "canonical_uncompressed_sha256": "04743f03b86884ce5a9bd3dfea5bc48c2697028ae3597b8a00b9d05d2488c547",
+      "avm": "AVM1",
+      "avm_classification_basis": "DoAction/DoInitAction tags",
+      "tag_counts": {
+        "0": 1,
+        "1": 1,
+        "9": 1,
+        "12": 1,
+        "69": 1
+      },
+      "tag_count": 5,
+      "avm1_action_payload_bytes": 222,
+      "category": "valid_micro",
+      "benchmark_role": "compression_variant",
+      "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/array_enumerate/test.swf",
+      "source_commit": "2372a4e148a67d68efd796f4477b3cddd4f880cd",
+      "source_repository": "ruffle-rs/ruffle",
+      "case_family": "enumeration_loop",
+      "expected_output_path": "corpus/ruffle/avm1/array_enumerate/output.txt",
+      "runtime_config_path": "corpus/ruffle/avm1/array_enumerate/test.toml",
+      "source_paths": [
+        "corpus/ruffle/avm1/array_enumerate/test.as"
+      ],
+      "source_known": true,
+      "source_availability": "actionscript_and_optional_fla",
+      "source_records": [
+        {
+          "path": "corpus/ruffle/avm1/array_enumerate/test.swf",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/array_enumerate/test.swf",
+          "sha256": "04743f03b86884ce5a9bd3dfea5bc48c2697028ae3597b8a00b9d05d2488c547"
+        },
+        {
+          "path": "corpus/ruffle/avm1/array_enumerate/test.as",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/array_enumerate/test.as",
+          "sha256": "c968826f780aa294fd3b5844dbe0f1a947fcabad5013c2757f84617fa9452825"
+        },
+        {
+          "path": "corpus/ruffle/avm1/array_enumerate/output.txt",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/array_enumerate/output.txt",
+          "sha256": "f60a093e8cb74b17c74c1597f82719c28eec13fb65697795bef57d72d11ba3fe"
+        },
+        {
+          "path": "corpus/ruffle/avm1/array_enumerate/test.toml",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/array_enumerate/test.toml",
+          "sha256": "af82b17ce710fd25297d6d50432d123eb3113372572d14861319763762a165da"
+        }
+      ],
+      "license_provenance": {
+        "repository_declared_license": "MIT OR Apache-2.0",
+        "scope_note": "Original Ruffle avm1/avm2 regression tests selected; imported from_avmplus/from_gnash/from_shumway collections excluded. No per-case license override found in selected files. Repository declaration retained; no independent authorship audit.",
+        "license_paths": [
+          "corpus/provenance/ruffle/LICENSE.md"
+        ]
+      },
+      "operation_eligibility": {
+        "parse": true,
+        "decompile": true,
+        "valid_performance_summary": false,
+        "robustness": false,
+        "runtime_semantic_fixture_available": true,
+        "semantic_equivalence_measured": false,
+        "recompilation_measured": false
+      },
+      "parent_id": "ruffle_avm1_array_enumerate",
+      "transform": "Decode parent to FWS; encode CWS using Python stdlib zlib level=9 if compressed. Byte-for-byte canonical FWS equality verified."
+    },
+    {
+      "id": "ruffle_avm2_closures_fws",
+      "path": "corpus/derived/ruffle_avm2_closures_fws.swf",
+      "bytes": 1575,
+      "sha256": "175bf0d45bcd1dfebe072adff698d5db4c038bcfb3eddae7591f4ebdaed3f5d3",
+      "compression": "FWS",
+      "swf_version": 43,
+      "uncompressed_bytes": 1575,
+      "canonical_uncompressed_sha256": "175bf0d45bcd1dfebe072adff698d5db4c038bcfb3eddae7591f4ebdaed3f5d3",
+      "avm": "AVM2",
+      "avm_classification_basis": "DoABC/DoABCDefine tags",
+      "tag_counts": {
+        "0": 1,
+        "1": 1,
+        "9": 1,
+        "64": 1,
+        "69": 1,
+        "76": 1,
+        "82": 1,
+        "86": 1,
+        "93": 1
+      },
+      "tag_count": 9,
+      "abc_payload_bytes": 1442,
+      "category": "valid_micro",
+      "benchmark_role": "compression_variant",
+      "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/closures/test.swf",
+      "source_commit": "2372a4e148a67d68efd796f4477b3cddd4f880cd",
+      "source_repository": "ruffle-rs/ruffle",
+      "case_family": "nested_closure_capture",
+      "expected_output_path": "corpus/ruffle/avm2/closures/output.txt",
+      "runtime_config_path": "corpus/ruffle/avm2/closures/test.toml",
+      "source_paths": [
+        "corpus/ruffle/avm2/closures/Test.as",
+        "corpus/ruffle/avm2/closures/test.fla"
+      ],
+      "source_known": true,
+      "source_availability": "actionscript_and_optional_fla",
+      "source_records": [
+        {
+          "path": "corpus/ruffle/avm2/closures/test.swf",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/closures/test.swf",
+          "sha256": "e6dbe6ca2b32b8f6d4cf6b38248b0831316df034eedd858db22003b50ea9fde9"
+        },
+        {
+          "path": "corpus/ruffle/avm2/closures/Test.as",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/closures/Test.as",
+          "sha256": "9c7048abb58de587fd52f92444886a4c0d1097cad136c0601ebcced0f263f868"
+        },
+        {
+          "path": "corpus/ruffle/avm2/closures/test.fla",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/closures/test.fla",
+          "sha256": "f3252ba9e961dce33665a5b2ffe156b2fa31f02daffa2f4ef893f92426695a6a"
+        },
+        {
+          "path": "corpus/ruffle/avm2/closures/output.txt",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/closures/output.txt",
+          "sha256": "dfb183a6b07293b4fdec6cfd1e0e11c6435c6631285baf58d7b2386a6ef2fb0d"
+        },
+        {
+          "path": "corpus/ruffle/avm2/closures/test.toml",
+          "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/closures/test.toml",
+          "sha256": "fe734646f8be2bbcf0b290423d22f56f5831da49c402e33fd85308432e3e9afd"
+        }
+      ],
+      "license_provenance": {
+        "repository_declared_license": "MIT OR Apache-2.0",
+        "scope_note": "Original Ruffle avm1/avm2 regression tests selected; imported from_avmplus/from_gnash/from_shumway collections excluded. No per-case license override found in selected files. Repository declaration retained; no independent authorship audit.",
+        "license_paths": [
+          "corpus/provenance/ruffle/LICENSE.md"
+        ]
+      },
+      "operation_eligibility": {
+        "parse": true,
+        "decompile": true,
+        "valid_performance_summary": false,
+        "robustness": false,
+        "runtime_semantic_fixture_available": true,
+        "semantic_equivalence_measured": false,
+        "recompilation_measured": false
+      },
+      "parent_id": "ruffle_avm2_closures",
+      "transform": "Decode parent to FWS; encode FWS using Python stdlib zlib level=9 if compressed. Byte-for-byte canonical FWS equality verified."
+    },
+    {
+      "id": "ruffle_avm1_array_enumerate_invalid_signature",
+      "path": "corpus/derived/ruffle_avm1_array_enumerate_invalid_signature.swf",
+      "bytes": 264,
+      "sha256": "5cb921ccb1d44e857bfb0cadc3081040f8cf29e6ced36f20b7112007433a0943",
+      "compression": "invalid",
+      "swf_version": 15,
+      "avm": "AVM1",
+      "avm_classification_basis": "Inherited from validated parent; malformed file is not reclassified",
+      "category": "invalid_robustness",
+      "benchmark_role": "malformed_input",
+      "parent_id": "ruffle_avm1_array_enumerate",
+      "transform": "Replace the first three bytes with ASCII BAD, preserving other bytes",
+      "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/array_enumerate/test.swf",
+      "source_commit": "2372a4e148a67d68efd796f4477b3cddd4f880cd",
+      "case_family": "enumeration_loop",
+      "source_paths": [
+        "corpus/ruffle/avm1/array_enumerate/test.as"
+      ],
+      "source_known": true,
+      "expected_output_path": null,
+      "license_provenance": {
+        "repository_declared_license": "MIT OR Apache-2.0",
+        "scope_note": "Original Ruffle avm1/avm2 regression tests selected; imported from_avmplus/from_gnash/from_shumway collections excluded. No per-case license override found in selected files. Repository declaration retained; no independent authorship audit.",
+        "license_paths": [
+          "corpus/provenance/ruffle/LICENSE.md"
+        ]
+      },
+      "expected_robustness_result": "Controlled rejection/diagnostic; no crash, hang, or silent accepted empty output",
+      "operation_eligibility": {
+        "parse": false,
+        "decompile": false,
+        "valid_performance_summary": false,
+        "robustness": true,
+        "runtime_semantic_fixture_available": false,
+        "semantic_equivalence_measured": false,
+        "recompilation_measured": false
+      }
+    },
+    {
+      "id": "ruffle_avm1_array_enumerate_truncated_half",
+      "path": "corpus/derived/ruffle_avm1_array_enumerate_truncated_half.swf",
+      "bytes": 132,
+      "sha256": "b19293eb072868ed740472acbc3423093708e80bb8e5f9eaa95d8ce350a9bbde",
+      "compression": "FWS",
+      "swf_version": 15,
+      "avm": "AVM1",
+      "avm_classification_basis": "Inherited from validated parent; malformed file is not reclassified",
+      "category": "invalid_robustness",
+      "benchmark_role": "malformed_input",
+      "parent_id": "ruffle_avm1_array_enumerate",
+      "transform": "Keep the first floor(original byte length / 2) bytes; preserve original declared SWF length",
+      "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm1/array_enumerate/test.swf",
+      "source_commit": "2372a4e148a67d68efd796f4477b3cddd4f880cd",
+      "case_family": "enumeration_loop",
+      "source_paths": [
+        "corpus/ruffle/avm1/array_enumerate/test.as"
+      ],
+      "source_known": true,
+      "expected_output_path": null,
+      "license_provenance": {
+        "repository_declared_license": "MIT OR Apache-2.0",
+        "scope_note": "Original Ruffle avm1/avm2 regression tests selected; imported from_avmplus/from_gnash/from_shumway collections excluded. No per-case license override found in selected files. Repository declaration retained; no independent authorship audit.",
+        "license_paths": [
+          "corpus/provenance/ruffle/LICENSE.md"
+        ]
+      },
+      "expected_robustness_result": "Controlled rejection/diagnostic; no crash, hang, or silent accepted empty output",
+      "operation_eligibility": {
+        "parse": false,
+        "decompile": false,
+        "valid_performance_summary": false,
+        "robustness": true,
+        "runtime_semantic_fixture_available": false,
+        "semantic_equivalence_measured": false,
+        "recompilation_measured": false
+      }
+    },
+    {
+      "id": "ruffle_avm2_closures_invalid_signature",
+      "path": "corpus/derived/ruffle_avm2_closures_invalid_signature.swf",
+      "bytes": 982,
+      "sha256": "1e432d9993179b823ae3527fdfdac8fea17c4bcdb3f33a3d145b5de770e70b74",
+      "compression": "invalid",
+      "swf_version": 43,
+      "avm": "AVM2",
+      "avm_classification_basis": "Inherited from validated parent; malformed file is not reclassified",
+      "category": "invalid_robustness",
+      "benchmark_role": "malformed_input",
+      "parent_id": "ruffle_avm2_closures",
+      "transform": "Replace the first three bytes with ASCII BAD, preserving other bytes",
+      "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/closures/test.swf",
+      "source_commit": "2372a4e148a67d68efd796f4477b3cddd4f880cd",
+      "case_family": "nested_closure_capture",
+      "source_paths": [
+        "corpus/ruffle/avm2/closures/Test.as",
+        "corpus/ruffle/avm2/closures/test.fla"
+      ],
+      "source_known": true,
+      "expected_output_path": null,
+      "license_provenance": {
+        "repository_declared_license": "MIT OR Apache-2.0",
+        "scope_note": "Original Ruffle avm1/avm2 regression tests selected; imported from_avmplus/from_gnash/from_shumway collections excluded. No per-case license override found in selected files. Repository declaration retained; no independent authorship audit.",
+        "license_paths": [
+          "corpus/provenance/ruffle/LICENSE.md"
+        ]
+      },
+      "expected_robustness_result": "Controlled rejection/diagnostic; no crash, hang, or silent accepted empty output",
+      "operation_eligibility": {
+        "parse": false,
+        "decompile": false,
+        "valid_performance_summary": false,
+        "robustness": true,
+        "runtime_semantic_fixture_available": false,
+        "semantic_equivalence_measured": false,
+        "recompilation_measured": false
+      }
+    },
+    {
+      "id": "ruffle_avm2_closures_truncated_half",
+      "path": "corpus/derived/ruffle_avm2_closures_truncated_half.swf",
+      "bytes": 491,
+      "sha256": "b4224aab2c14f2edecdf5b794ad85493c832976f478dac71327951ef39b3a9eb",
+      "compression": "CWS",
+      "swf_version": 43,
+      "avm": "AVM2",
+      "avm_classification_basis": "Inherited from validated parent; malformed file is not reclassified",
+      "category": "invalid_robustness",
+      "benchmark_role": "malformed_input",
+      "parent_id": "ruffle_avm2_closures",
+      "transform": "Keep the first floor(original byte length / 2) bytes; preserve original declared SWF length",
+      "source_url": "https://raw.githubusercontent.com/ruffle-rs/ruffle/2372a4e148a67d68efd796f4477b3cddd4f880cd/tests/tests/swfs/avm2/closures/test.swf",
+      "source_commit": "2372a4e148a67d68efd796f4477b3cddd4f880cd",
+      "case_family": "nested_closure_capture",
+      "source_paths": [
+        "corpus/ruffle/avm2/closures/Test.as",
+        "corpus/ruffle/avm2/closures/test.fla"
+      ],
+      "source_known": true,
+      "expected_output_path": null,
+      "license_provenance": {
+        "repository_declared_license": "MIT OR Apache-2.0",
+        "scope_note": "Original Ruffle avm1/avm2 regression tests selected; imported from_avmplus/from_gnash/from_shumway collections excluded. No per-case license override found in selected files. Repository declaration retained; no independent authorship audit.",
+        "license_paths": [
+          "corpus/provenance/ruffle/LICENSE.md"
+        ]
+      },
+      "expected_robustness_result": "Controlled rejection/diagnostic; no crash, hang, or silent accepted empty output",
+      "operation_eligibility": {
+        "parse": false,
+        "decompile": false,
+        "valid_performance_summary": false,
+        "robustness": true,
+        "runtime_semantic_fixture_available": false,
+        "semantic_equivalence_measured": false,
+        "recompilation_measured": false
+      }
+    }
+  ],
+  "scope": {
+    "primary_valid_files": 16,
+    "paired_compression_variants": 2,
+    "malformed_files": 4,
+    "runtime_or_recompilation_executed": false,
+    "selection": "Hand-selected small regression fixtures; not a random or representative sample of Flash content"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "source_revision": "b2ef2d3d3f44291a4bdfa899c986bc39a89fa6aa",
+  "cases": [
+    {
+      "file": "as2_definefunc_regs.swf",
+      "source": "as2_definefunc_regs/as2_definefunc_regs.swf",
+      "sha256": "fb29bf4617d285eeee2c4a38d17b973191f656dae20591378881a516bf179b30",
+      "bytes": 415,
+      "public_corpus": true
+    },
+    {
+      "file": "as3_cross_compile.flex.swf",
+      "source": "as3_cross_compile/bin/as3_cross_compile.flex.swf",
+      "sha256": "82565bd490ad9e81c2db58e234d79c3fa5ac5342d2a34252576e09938cd80ba8",
+      "bytes": 7341,
+      "public_corpus": true
+    },
+    {
+      "file": "as3_new.flex.swf",
+      "source": "as3_new/bin/as3_new.flex.swf",
+      "sha256": "8f114be00ce08038dd478226a34e7a3a27f0d3b6b4289cb59fffb950d63bbdcc",
+      "bytes": 46455,
+      "public_corpus": true
+    }
+  ],
+  "policy": "No personal SWFs; no protected or blocked installers"
+}

@@ -1,0 +1,24 @@
+{
+  "status": "compiled",
+  "compiler": "flex",
+  "debug": false,
+  "command": [
+    "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\py_swf_editor\\.dev-references\\jdk\\jdk-21.0.12.1+1\\bin\\java.exe",
+    "-Xmx1024m",
+    "-jar",
+    "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\lib\\mxmlc.jar",
+    "+flexlib=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\frameworks",
+    "+playerglobalHome=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\frameworks\\libs\\player",
+    "-target-player=32.0",
+    "-debug=false",
+    "-omit-trace-statements=false",
+    "-output=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\holdout-as3-independent\\builds\\release\\compiler.swf",
+    "-source-path=C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\holdout-as3-independent",
+    "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\holdout-as3-independent\\Main.as"
+  ],
+  "log": "Cargando el archivo de configuraci\u00f3n C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\flex\\frameworks\\flex-config.xml\r\nC:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\holdout-as3-independent\\builds\\release\\compiler.swf (833 bytes)\r\n",
+  "binary_sha256": "82051fdab26319d77d20cc0065045d05ec00b3e3d05f44935d7c06b96b621d55",
+  "compiler_output_sha256": "5a9e9a0b16ab4b009cd96e57931b870f5470bf0afe44873142991f395f006654",
+  "behavior": "not_run",
+  "source_equivalence": "not_verified"
+}

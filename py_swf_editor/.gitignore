@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+env/
+.env
+.venv
+venv/
+ENV/
+.venv/
+
+# Virtual environment
+.vscode/
+.idea/
+/.venv
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+
+# Editor settings
+*.swp
+
+# Local files
+GUIDE_es.txt
+
+# Third party large repos
+third_party/
+
+# Generated JPEXS bridge artifacts
+tools/.jpexs-java-build/
+tools/jpexs-java-bridge.jar
+.dev-references/
+Competing_tools/

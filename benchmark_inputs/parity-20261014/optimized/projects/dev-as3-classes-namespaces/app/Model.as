@@ -1,0 +1,1 @@
+package app { public class Model { private var total:int; public function Model(value:int){ total=value; } public function add(n:int):int { total+=n;return total; } localns function label():String{return "model";} public function get value():int{return total;} public function set value(n:int):void{total=n;} } }

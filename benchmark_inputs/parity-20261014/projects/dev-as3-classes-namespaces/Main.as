@@ -1,0 +1,1 @@
+package { import flash.display.Sprite; import app.Model; public class Main extends Sprite { public function Main(){ super(); var model:Model = new Model(4); trace("PARITY_NAMESPACE_"+model.add(3)); }  } }

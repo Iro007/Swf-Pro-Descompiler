@@ -1,0 +1,22 @@
+{
+  "status": "compiled",
+  "compiler": "haxe",
+  "debug": true,
+  "command": [
+    "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\toolpacks\\haxe\\haxe_20250509143529_e0b355c\\haxe.exe",
+    "-cp",
+    "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\dev-haxe-application",
+    "-main",
+    "Main",
+    "--swf",
+    "C:\\Users\\Yoyobastidas\\Desktop\\ig2\\05_Herramientas_y_entornos\\PRO FLASH DESCOMPILER\\benchmark_inputs\\parity-20261014\\projects\\dev-haxe-application\\builds\\debug\\compiler.swf",
+    "--swf-version",
+    "11.8",
+    "--debug"
+  ],
+  "log": "",
+  "binary_sha256": "aeb42dbaafccadfa721d48254410bfaebf777ae3d65537d2b667810b460fee5d",
+  "compiler_output_sha256": "d23a2b5ad94edef6b628e0899cdda14994706870e5d92f11fdf5e30d248990ad",
+  "behavior": "not_run",
+  "source_equivalence": "not_verified"
+}

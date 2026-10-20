@@ -11,7 +11,8 @@ Una suite para descompilar, editar y comparar archivos SWF/Flash (AS1, AS2 y AS3
 | [`flashdec_py/`](flashdec_py) | **flashdec-py**: descompilador híbrido PySWF + JPEXS que conserva el mejor archivo de cada script |
 | [`RUST SWF/crates/flashdec/`](<RUST SWF/crates/flashdec>) | **flashdec-rs**: el mismo descompilador híbrido, con RustSWF + JPEXS |
 | [`benchmark_inputs/`](benchmark_inputs) | Corpus de prueba: proyectos AS2/AS3/Haxe con sus SWF compilados y casos de Ruffle y JPEXS |
-| [`docs/`](docs) | [flashdec](docs/FLASHDEC.md), [benchmarks de código](docs/BENCHMARKS_CODIGO.md) y la [matriz de funciones](docs/funciones_objetivo.json) |
+| [`shared/`](shared) | Contratos que Python y Rust leen por igual, por ahora [las reglas de puntuación](shared/scoring-rules.json) de los scripts descompilados con sus [casos de prueba](shared/scoring-vectors.json) |
+| [`docs/`](docs) | [Hoja de ruta y cómo funciona la suite](docs/HOJA_DE_RUTA.md), [flashdec](docs/FLASHDEC.md), [benchmarks de código](docs/BENCHMARKS_CODIGO.md) y la [matriz de funciones](docs/funciones_objetivo.json) |
 
 ## Uso rápido (Windows, PowerShell)
 

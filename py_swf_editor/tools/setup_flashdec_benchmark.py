@@ -26,7 +26,8 @@ def setup():
     module_root = (WORKSPACE / "flashdec_py").resolve()
     python = (ROOT / ".venv/Scripts/python.exe").resolve()
     if python.is_file() and (module_root / "flashdec/cli.py").is_file():
-        files = [python, *sorted((module_root / "flashdec").glob("*.py"))]
+        files = [python, *sorted((module_root / "flashdec").glob("*.py")),
+                 (WORKSPACE / "shared/scoring-rules.json").resolve()]
         version = (module_root / "flashdec/__init__.py").read_text(encoding="utf-8").split('"')[1]
         manifest["tools"]["flashdec_py"] = {
             "version": version, "license": "GPL-3.0",

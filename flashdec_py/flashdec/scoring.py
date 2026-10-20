@@ -1,38 +1,28 @@
 """Quality score for one decompiled script file.
 
-The same rules are implemented in RUST SWF/crates/flashdec/src/scoring.rs.
-Keep both in sync: a file is judged only by its text, so any engine can be
-compared with any other on the same output path.
+The rules live in shared/scoring-rules.json, which RUST SWF/crates/flashdec
+also embeds; shared/scoring-vectors.json holds the golden cases both check.
+A file is judged only by its text, so any engine can be compared with any
+other on the same output path.
 """
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass, field
+from pathlib import Path
 
-# Each occurrence costs HARD_PENALTY points: the engine admits the code is
-# missing, wrong or replaced by placeholders.
-HARD_MARKERS = (
-    "Decompilation error",
-    "§§",                        # JPEXS unresolved stack / goto placeholders
-    "// no decompilable",        # PySWF method fallback
-    "Native reconstruction incomplete",
-    "retained as P-code",        # PySWF: one per method left as bytecode
-    "Fuente no reconstruida",    # RustSWF
-    "pcode_only",
-    "Error during",
-    "decompilation timeout",
-    "//unresolved jump",
-)
-# Readable but suspicious constructs.
-SOFT_MARKERS = (
-    "// Unsupported",
-    "/* unsupported",
-    "unknown_opcode",
-    "Code may be obfuscated",
-)
-HARD_PENALTY = 30
-SOFT_PENALTY = 5
-UNBALANCED_PENALTY = 40
-MAX_MARKER_HITS = 10
+RULES_PATH = Path(__file__).resolve().parents[2] / "shared" / "scoring-rules.json"
+RULES = json.loads(RULES_PATH.read_text(encoding="utf-8"))
+
+# Hard markers: the engine admits the code is missing, wrong or replaced by
+# placeholders. Soft markers: readable but suspicious constructs.
+HARD_MARKERS = tuple(RULES["hard_markers"])
+SOFT_MARKERS = tuple(RULES["soft_markers"])
+BASE_SCORE = RULES["base_score"]
+HARD_PENALTY = RULES["hard_penalty"]
+SOFT_PENALTY = RULES["soft_penalty"]
+UNBALANCED_PENALTY = RULES["unbalanced_penalty"]
+MAX_MARKER_HITS = RULES["max_marker_hits"]
 
 
 @dataclass
@@ -87,7 +77,7 @@ def score(text: str | None) -> Score | None:
     """None means the engine produced nothing for this path."""
     if text is None or not text.strip():
         return None
-    result = Score(100)
+    result = Score(BASE_SCORE)
     for marker in HARD_MARKERS:
         hits = min(text.count(marker), MAX_MARKER_HITS)
         if hits:

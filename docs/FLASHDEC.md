@@ -49,7 +49,7 @@ Los recursos se copian de JPEXS cuando terminó sin error (TTF, MP3, PNG/JPEG, S
 
 Las rutas de ambos motores siguen la convención de exportación de JPEXS, así que el mismo script se compara directamente. Los manejadores de botones y `onClipEvent` se emparejan por carpeta contenedora y orden de aparición.
 
-Cada texto empieza con 100 puntos (`scoring.py` y `scoring.rs` aplican reglas idénticas, con pruebas en ambos lenguajes):
+Las reglas están en [`shared/scoring-rules.json`](../shared/scoring-rules.json): `scoring.py` las lee y `scoring.rs` las incrusta al compilar. Los dos comprueban los mismos casos de [`shared/scoring-vectors.json`](../shared/scoring-vectors.json). Cada texto empieza con 100 puntos:
 
 - −30 por marca de fallo: `§§` (pila sin resolver de JPEXS), `Decompilation error`, `retained as P-code`, `Native reconstruction incomplete`, `// no decompilable`, `//unresolved jump`… (máximo 10 por marca)
 - −5 por marca dudosa (`Code may be obfuscated`, opcodes desconocidos)

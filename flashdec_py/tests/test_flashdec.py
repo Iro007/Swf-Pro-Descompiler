@@ -15,17 +15,16 @@ from flashdec.scoring import balanced, score  # noqa: E402
 CORPUS = ROOT.parent / "benchmark_inputs" / "parity-20261014" / "swf"
 
 
-def test_score_clean_and_markers():
-    assert score("var a = 1;").value == 100
-    assert score(None) is None and score("  \n") is None
-    assert score("§§push(1);").value == 70
-    assert score("// Incomplete function f(); original method:1 retained as P-code").value == 70
-    assert score("function f() {").value == 60  # unbalanced
+VECTORS = json.loads((ROOT.parent / "shared" / "scoring-vectors.json").read_text(encoding="utf-8"))["cases"]
 
 
-def test_balanced_ignores_strings_and_comments():
-    assert balanced('trace("}"); // {\n/* ( */ var x = [1];')
-    assert not balanced("if (a) { b(;")
+@pytest.mark.parametrize("case", VECTORS, ids=lambda case: repr(case["text"])[:40])
+def test_shared_scoring_vectors(case):
+    """Same golden cases as RUST SWF/crates/flashdec/src/scoring.rs."""
+    result = score(case["text"])
+    assert (None if result is None else result.value) == case["score"]
+    if "balanced" in case:
+        assert balanced(case["text"]) is case["balanced"]
 
 
 def test_merge_prefers_better_score_then_preference():

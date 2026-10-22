@@ -8,20 +8,18 @@ __pycache__/
 .pytest_cache/
 *.egg-info/
 
-# Compilación y entregas: se regeneran con rust_swf/build.ps1 y PyInstaller
-target/
-dist/
+# Compilación y entregas: se regeneran con build.ps1
+/target/
+/dist/
 build/
-rust_swf/reports/
-rust_swf/desktop/binaries/
-rust_swf/tools/bootstrap/
+/ui/dist/
+/src-tauri/binaries/
+/src-tauri/gen/
 
-# Informes, catálogos SQLite y evidencias de benchmarks (varios GB; se regeneran)
-/reports/
-py_swf_editor/reports/
-
-# Herramientas de terceros: binarios, instaladores y SDK con licencias propias.
-# El código las busca en estas mismas rutas; README.md explica cómo instalarlas.
+# Toolchains que descargan los bootstrap (MinGW, Go...) y copias de terceros
+/tools/bootstrap/
+*/tools/bootstrap/
+/third_party/
 /jpexs-decompiler-master/
 /toolpacks/
 /as3sorcerer_setup/
@@ -29,17 +27,19 @@ py_swf_editor/reports/
 /swfdec/
 /flare06doswin/
 /flash_decompiler.exe
-py_swf_editor/.dev-references/
+.dev-references/
+
+# Informes y resultados de benchmarks (se regeneran)
+reports/
+
+# Binarios compilados de los motores propios
+Go_swf/dist/
+Asm_swf/dist/
+Js_swf/dist/
 
 # Configuración local de editores y agentes
 .claude/
 .vscode/
 .idea/
 *.log
-
-# Toolchains descargadas por los bootstrap de los motores (Go, MinGW...) y binarios compilados
-*/tools/bootstrap/
-Go_swf/dist/
-Asm_swf/dist/
-Js_swf/dist/
-Js_swf/node_modules/
+*.tmp

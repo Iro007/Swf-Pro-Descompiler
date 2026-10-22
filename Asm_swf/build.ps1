@@ -1,11 +1,11 @@
 $ErrorActionPreference = "Stop"
 $Root = Split-Path -Parent $MyInvocation.MyCommand.Path
 $RepoRoot = Split-Path -Parent $Root
-$MinGWBin = Join-Path $RepoRoot "rust_swf\tools\bootstrap\mingw\mingw64\bin"
+$MinGWBin = Join-Path $RepoRoot "tools\bootstrap\mingw\mingw64\bin"
 $GccExe = Join-Path $MinGWBin "gcc.exe"
 
 if (-not (Test-Path $GccExe)) {
-    throw "MinGW gcc.exe not found at $GccExe. Run rust_swf\bootstrap.ps1 first."
+    throw "MinGW gcc.exe not found at $GccExe. Run bootstrap.ps1 first."
 }
 
 $env:PATH = "$MinGWBin;$env:PATH"

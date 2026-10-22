@@ -2,7 +2,7 @@
 # Todas las opciones se entregan como argumentos individuales al worker.
 $ErrorActionPreference = 'Stop'
 $suiteWorkspace = $PSScriptRoot
-$worker = Join-Path $suiteWorkspace 'rust_swf\dist\FlashUniversalStudio\FlashSuiteWorker.exe'
+$worker = Join-Path $suiteWorkspace 'dist\FlashUniversalStudio\FlashSuiteWorker.exe'
 if (Test-Path -LiteralPath $worker -PathType Leaf) {
     $envBefore = $env:FLASH_SUITE_WORKSPACE
     try {
@@ -13,8 +13,8 @@ if (Test-Path -LiteralPath $worker -PathType Leaf) {
         $env:FLASH_SUITE_WORKSPACE = $envBefore
     }
 }
-$python = Join-Path $suiteWorkspace 'py_swf_editor\.venv\Scripts\python.exe'
-$entry = Join-Path $suiteWorkspace 'py_swf_editor\tools\flash_suite_cli.py'
+$python = Join-Path $suiteWorkspace 'py_swf\.venv\Scripts\python.exe'
+$entry = Join-Path $suiteWorkspace 'py_swf\tools\flash_suite_cli.py'
 if (-not (Test-Path -LiteralPath $python -PathType Leaf)) {
     throw 'Falta PySWF empaquetado y el entorno .venv del proyecto.'
 }

@@ -15,10 +15,10 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 $workspaceSemantic = $PSScriptRoot
-$projectSemantic = Join-Path $workspaceSemantic 'py_swf_editor'
+$projectSemantic = Join-Path $workspaceSemantic 'py_swf'
 $pythonSemantic = Join-Path $projectSemantic '.venv/Scripts/python.exe'
 if (-not (Test-Path -LiteralPath $pythonSemantic -PathType Leaf)) {
-    throw 'Falta py_swf_editor/.venv. Prepare el entorno virtual del proyecto.'
+    throw 'Falta py_swf/.venv. Prepare el entorno virtual del proyecto.'
 }
 if (-not [IO.Path]::IsPathRooted($Corpus)) { $Corpus = Join-Path $workspaceSemantic $Corpus }
 if (-not [IO.Path]::IsPathRooted($Salida)) { $Salida = Join-Path $workspaceSemantic $Salida }

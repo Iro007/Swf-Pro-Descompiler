@@ -1,0 +1,22 @@
+[workspace]
+members = ["crates/swf-core", "crates/swf-avm", "crates/swf-decompile", "crates/swf-cli", "src-tauri"]
+resolver = "2"
+
+[workspace.package]
+version = "0.3.0"
+edition = "2024"
+license = "GPL-3.0-or-later"
+
+[workspace.dependencies]
+serde = { version = "1", features = ["derive", "rc"] }
+serde_json = "1"
+sha2 = "0.10"
+anyhow = "1"
+swf-core = { path = "crates/swf-core" }
+swf-avm = { path = "crates/swf-avm" }
+swf-decompile = { path = "crates/swf-decompile" }
+
+[profile.release]
+strip = true
+lto = "thin"
+

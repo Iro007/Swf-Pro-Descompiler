@@ -23,7 +23,7 @@ def main():
     if len(args.round) != 8 or not args.round.isdigit():
         parser.error('round must be YYYYMMDD')
     evidence = root / ('reports/decompiler-improvements-' + args.round)
-    old = root / 'RUST SWF/dist/FlashUniversalStudio-Engines'
+    old = root / 'rust_swf/dist/FlashUniversalStudio-Engines'
     target = old.parent / (old.name + '-' + args.round)
     if target.exists():
         raise ValueError('Release already exists; no package overwritten')

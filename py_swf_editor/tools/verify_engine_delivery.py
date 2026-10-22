@@ -25,7 +25,7 @@ def main():
     args = parser.parse_args()
     if len(args.round) != 8 or not args.round.isdigit():
         parser.error('round must be YYYYMMDD')
-    folder = args.release or root / 'RUST SWF/dist/FlashUniversalStudio-Engines'
+    folder = args.release or root / 'rust_swf/dist/FlashUniversalStudio-Engines'
     evidence = root / ('reports/decompiler-improvements-' + args.round)
     payload = json.loads((evidence / 'after-code-payload.json').read_text(encoding='utf-8'))
     worker = folder / 'FlashSuiteWorker.exe'

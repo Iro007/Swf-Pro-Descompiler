@@ -14,7 +14,7 @@ def sha(path):
 def main():
     root=Path(__file__).resolve().parents[2]
     evidence=root/'reports/parity-implementation-20261014'
-    target=root/'RUST SWF/dist/FlashUniversalStudio-Parity-20261014'
+    target=root/'rust_swf/dist/FlashUniversalStudio-Parity-20261014'
     manifest=json.loads((target/'release-manifest.json').read_text())
     for item in manifest['artifacts']:
         if sha(target/item['path'])!=item['sha256']:raise ValueError('Existing release artifact changed')

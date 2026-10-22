@@ -1,10 +1,14 @@
 import json
+from pathlib import Path
 import subprocess
 import sys
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 
 def run_cli(*args, ok=True):
     result = subprocess.run([sys.executable,'-m','py_swf.universal_worker','cli',*map(str,args)],
+                            cwd=PROJECT_ROOT,
                             capture_output=True, text=True, encoding='utf-8', timeout=30,
                             creationflags=getattr(subprocess,'CREATE_NO_WINDOW',0))
     assert (result.returncode == 0) is ok, result.stdout + result.stderr
@@ -60,3 +64,17 @@ def test_console_catalog_names_and_rpc_errors(tmp_path):
     failed = run_cli('rpc','--rpc-operation','nonexistent',ok=False)
     assert not failed['ok'] and 'desconocida' in failed['error']
     assert run_cli('rpc','--rpc-operation','ping')['protocol_version']==1
+
+
+def test_console_utf8_under_cp1252_locale(tmp_path):
+    import os
+    env = {**os.environ, 'PYTHONIOENCODING': 'cp1252'}
+    result = subprocess.run(
+        [sys.executable, '-m', 'py_swf.universal_worker', 'cli', 'rpc', '--rpc-operation', 'nonexistent'],
+        cwd=PROJECT_ROOT,
+        capture_output=True, text=True, encoding='utf-8', timeout=30, env=env,
+        creationflags=getattr(subprocess, 'CREATE_NO_WINDOW', 0),
+    )
+    assert result.returncode != 0
+    payload = json.loads(result.stderr)
+    assert not payload['ok'] and 'Operación' in payload['error']

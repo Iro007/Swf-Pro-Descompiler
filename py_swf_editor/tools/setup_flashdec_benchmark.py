@@ -40,7 +40,7 @@ def setup():
         }
         configured.append("flashdec_py")
 
-    rust = (WORKSPACE / "RUST SWF/target/x86_64-pc-windows-gnu/release/flashdec-rs.exe").resolve()
+    rust = (WORKSPACE / "rust_swf/target/x86_64-pc-windows-gnu/release/flashdec-rs.exe").resolve()
     if rust.is_file():
         manifest["tools"]["flashdec_rs"] = {
             "version": "1.0.0", "license": "GPL-3.0",

@@ -20,7 +20,7 @@ VECTORS = json.loads((ROOT.parent / "shared" / "scoring-vectors.json").read_text
 
 @pytest.mark.parametrize("case", VECTORS, ids=lambda case: repr(case["text"])[:40])
 def test_shared_scoring_vectors(case):
-    """Same golden cases as RUST SWF/crates/flashdec/src/scoring.rs."""
+    """Same golden cases as rust_swf/crates/flashdec/src/scoring.rs."""
     result = score(case["text"])
     assert (None if result is None else result.value) == case["score"]
     if "balanced" in case:

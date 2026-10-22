@@ -38,7 +38,7 @@ pub struct Options {
     pub memory: String,
 }
 
-/// The workspace root is the folder holding py_swf_editor next to RUST SWF.
+/// The workspace root is the folder holding py_swf_editor next to rust_swf.
 pub fn find_workspace() -> Option<PathBuf> {
     if let Ok(root) = std::env::var("FLASHDEC_WORKSPACE") {
         return Some(PathBuf::from(root));

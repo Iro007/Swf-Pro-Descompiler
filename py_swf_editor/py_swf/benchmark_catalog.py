@@ -147,7 +147,7 @@ def _environment(connection, metadata, source_kind):
 def _tool(connection, engine, descriptor, provenance, environment_id):
     engine = str(engine)
     descriptor, provenance = _dict(descriptor), _dict(provenance)
-    defaults = {"native": "PySWF", "rust": "RustSWF", "jpexs": "JPEXS", "pyflashkit": "pyflashkit"}
+    defaults = {"native": "PySWF", "rust": "RustSWF", "js": "JsSWF", "go": "GoSWF", "asm": "AsmSWF (x86_64)", "jpexs": "JPEXS", "pyflashkit": "pyflashkit"}
     name = str(descriptor.get("name") or defaults.get(engine, engine))
     # Native Python here is the local PySWF implementation, never pyflashkit.
     if engine == "native":
@@ -193,8 +193,8 @@ def _quality(record, operation):
     mapped = quality.get("unit_mapping") in ("canonical", "verified", "matched") or record.get("coverage_verified") is True
     if record.get('inventory_status') == 'disagreement':
         mapped = False
-    coverage = 100 * available / expected if operation == "source" and mapped and expected and available is not None and available <= expected else None
-    if not mapped or operation != "source":
+    coverage = 100 * available / expected if operation in ("source", "extract", "xml") and mapped and expected and available is not None and available <= expected else None
+    if not mapped or operation not in ("source", "extract", "xml"):
         available = None
     compilation = _compilation(_pick(record, "independent_compilation_status", "recompilation_status", "compilation", "compilation_sample"))
     behavior = str(_pick(record, "behavior", "behavior_status", "semantic_status", default="not_measured"))
@@ -324,7 +324,9 @@ def import_local_report(database, path):
                     metadata = {k: v for k, v in engine.items() if k not in ("cold_samples", "hot_samples", "warmup_samples", "units", "documents", "unit_observations")}
                     metadata["comparison"] = case.get("comparison", {})
                     validation = _validation(connection, campaign, artifact, build, filename, engine_operation, metadata, [index, engine_index])
-                    import_observations(connection, campaign, validation, engine, canonical)
+                    if engine_operation not in ('extract', 'xml'):
+                        # Resource/tag units are not bytecode units: the summary row carries their counts.
+                        import_observations(connection, campaign, validation, engine, canonical)
                     for phase in ("cold", "hot", "warmup"):
                         for ordinal, sample in enumerate(engine.get(phase + "_samples", [])):
                             _run(connection, campaign, validation, ordinal, phase, sample)

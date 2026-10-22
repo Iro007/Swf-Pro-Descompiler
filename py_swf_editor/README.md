@@ -1,6 +1,6 @@
 # py_swf_editor — SWF Decompiler & Editor (Python)
 
-En la suite compartida **Flash Universal Studio**, este motor se muestra como **PySWF** y el motor Rust como **RustSWF**. Los nombres visibles mantienen los IDs internos y los proyectos existentes. La entrega siguiente 0.3.0 incorpora edición de fuentes aportadas AS/Haxe/Project.xml con hashes y recompilación desde el proyecto guardado, además de edición estructurada de texto, audio, formas y fuentes compatibles. Consulta [seguimiento y pendientes](docs/IMPLEMENTATION_PLAN.md) y el [README de la suite](../RUST%20SWF/README.md). Los apartados siguientes describen también la aplicación Python anterior y su evidencia histórica.
+En la suite compartida **Flash Universal Studio**, este motor se muestra como **PySWF** y el motor Rust como **RustSWF**. Los nombres visibles mantienen los IDs internos y los proyectos existentes. La entrega siguiente 0.3.0 incorpora edición de fuentes aportadas AS/Haxe/Project.xml con hashes y recompilación desde el proyecto guardado, además de edición estructurada de texto, audio, formas y fuentes compatibles. Consulta [seguimiento y pendientes](docs/IMPLEMENTATION_PLAN.md) y el [README de la suite](../rust_swf/README.md). Los apartados siguientes describen también la aplicación Python anterior y su evidencia histórica.
 
 El compilador actual de la suite admite clases AS3 compatibles en varias fuentes, imports internos, herencia, interfaces, overrides y clase de escenario Sprite/MovieClip. El [reporte CLI](reports/native-compiler-cli/verification.json) comprueba seis casos de recorridos, closures, herencia y scopes de excepciones en una VM independiente acotada, sin GUI, navegador ni runtime Flash. Estos avances no convierten al compilador en una implementación general de ActionScript. La [guía de consola](docs/SUITE_CLI.md) documenta los flujos actuales sin interfaz; el [informe consolidado 0.3.0](../reports/headless-verification-0.3.0.json) reúne la verificación y el empaquetado final.
 
@@ -201,12 +201,12 @@ prueba reales (se omite automáticamente si no está).
 - `server/` — API FastAPI (`/api/files/...`, `/api/benchmarks/...`).
 - `tools/` — scripts de desarrollo, benchmarks y configuración de herramientas.
 
-La interfaz gráfica es Flash Universal Studio (`../RUST SWF`).
+La interfaz gráfica es Flash Universal Studio (`../rust_swf`).
 
 ## Página de benchmarks
 
 Está en la pestaña **Benchmarks** de Flash Universal Studio y en la página
-`RUST SWF/web/analysis.html` (servida con la API local). No necesitas abrir un SWF.
+`rust_swf/web/analysis.html` (servida con la API local). No necesitas abrir un SWF.
 La página muestra informes ya medidos; nunca arranca Java desde la interfaz.
 Al volver al editor se conserva el archivo y su historial.
 

@@ -44,7 +44,7 @@ jobs:
   rust:
     runs-on: windows-latest
     env:
-      # Local builds use the pinned GNU toolchain with MinGW (RUST SWF/bootstrap.ps1);
+      # Local builds use the pinned GNU toolchain with MinGW (rust_swf/bootstrap.ps1);
       # CI uses the same Rust version with the runner's MSVC linker.
       RUSTUP_TOOLCHAIN: 1.99.0-x86_64-pc-windows-msvc
       CARGO_BUILD_TARGET: x86_64-pc-windows-msvc
@@ -66,15 +66,15 @@ jobs:
       run: rustup toolchain install 1.99.0-x86_64-pc-windows-msvc --profile minimal
     - name: Test crates
       # The Tauri desktop crate needs the built web UI and sidecar binaries
-      # (RUST SWF/build.ps1); it is built by the release workflow instead.
-      working-directory: RUST SWF
+      # (rust_swf/build.ps1); it is built by the release workflow instead.
+      working-directory: rust_swf
       run: cargo test --workspace --exclude rust-swf-studio --locked
 
   suite-web:
     runs-on: windows-latest
     defaults:
       run:
-        working-directory: RUST SWF/web
+        working-directory: rust_swf/web
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4

@@ -7,7 +7,7 @@ from xml.etree import ElementTree
 
 PROJECT = Path(__file__).resolve().parents[1]
 WORKSPACE = PROJECT.parent
-RUST = WORKSPACE / 'RUST SWF'
+RUST = WORKSPACE / 'rust_swf'
 
 
 def load(path):

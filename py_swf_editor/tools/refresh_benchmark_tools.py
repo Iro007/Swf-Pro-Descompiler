@@ -60,7 +60,7 @@ def refresh(output, *, measure=False):
     # measuring an older default executable. The live default is left intact.
     frozen=json.loads((ROOT/'reports/parity-implementation-20261014/freeze.json').read_text(encoding='utf-8'))
     rust=frozen['binaries']['rust']
-    rust_path=ROOT/'RUST SWF/dist/FlashUniversalStudio-Parity-20261014/rustswf.exe'
+    rust_path=ROOT/'rust_swf/dist/FlashUniversalStudio-Parity-20261014/rustswf.exe'
     if digest(rust_path)!=rust['sha256']:
         raise ValueError('Parity Rust executable changed; supply a newly audited frozen probe')
     provenance['tools']['rust']={'version':'Parity-20261014','executable':str(rust_path),

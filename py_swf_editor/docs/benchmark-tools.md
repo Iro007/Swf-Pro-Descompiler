@@ -215,7 +215,7 @@ programas disponibles. No inicia instaladores ni descarga herramientas.
 `docs/funciones_objetivo.json` (raíz del repositorio) registra el conjunto de funciones buscado y los límites
 actuales; una función parcial o pendiente sigue identificada así.
 
-RustSWF usa el CLI portable de `RUST SWF/dist/RustSWFStudio/rustswf.exe`, con SHA-256
+RustSWF usa el CLI portable de `rust_swf/dist/RustSWFStudio/rustswf.exe`, con SHA-256
 verificado antes del arranque. Cada petición abre una copia nueva del SWF y
 pagina las unidades y el P-code. Las unidades solo se emparejan si coinciden
 ubicación, lenguaje, tamaño y hash del bytecode; los casos sin correspondencia

@@ -51,7 +51,7 @@ Primero, desde py_swf_editor:
 
     .venv\Scripts\python.exe -m PyInstaller packaging\suite_worker.spec --noconfirm
 
-Después, desde RUST SWF:
+Después, desde rust_swf:
 
     .\build.ps1
 

@@ -23,12 +23,12 @@ $pythonProjectFlash = Join-Path $workspaceFlash 'py_swf_editor'
 $pythonFlash = Join-Path $pythonProjectFlash '.venv/Scripts/python.exe'
 # 'Python' y 'Rust' abren la misma aplicación: PySWF y RustSWF forman parte de la suite.
 if ($Accion -eq 'Suite' -or $Accion -eq 'Rust' -or $Accion -eq 'Python') {
-    # Entrega única de RUST SWF/build.ps1; si no existe, la compilación de desarrollo.
-    $suiteFlash = Join-Path $workspaceFlash 'RUST SWF/dist/FlashUniversalStudio/FlashUniversalStudio.exe'
+    # Entrega única de rust_swf/build.ps1; si no existe, la compilación de desarrollo.
+    $suiteFlash = Join-Path $workspaceFlash 'rust_swf/dist/FlashUniversalStudio/FlashUniversalStudio.exe'
     if (-not (Test-Path -LiteralPath $suiteFlash -PathType Leaf)) {
-        $suiteFlash = Join-Path $workspaceFlash 'RUST SWF/target/x86_64-pc-windows-gnu/release/rust-swf-studio.exe'
+        $suiteFlash = Join-Path $workspaceFlash 'rust_swf/target/x86_64-pc-windows-gnu/release/rust-swf-studio.exe'
     }
-    if (-not (Test-Path -LiteralPath $suiteFlash -PathType Leaf)) { throw 'Falta el ejecutable de la suite. Ejecute RUST SWF/build.ps1.' }
+    if (-not (Test-Path -LiteralPath $suiteFlash -PathType Leaf)) { throw 'Falta el ejecutable de la suite. Ejecute rust_swf/build.ps1.' }
     $suiteWorkspaceBeforeFlash = $env:FLASH_SUITE_WORKSPACE
     try {
         $env:FLASH_SUITE_WORKSPACE = $workspaceFlash

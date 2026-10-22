@@ -191,10 +191,30 @@ def flashdec_observations(canonical,report,output):
     return rows
 
 
+def resource_operation(engine,config,data,operation):
+    """Tag-level resource extraction or XML round trip (benchmark_resource_tools)."""
+    from .benchmark_resource_tools import extract, xml_roundtrip
+    start=time.perf_counter()
+    units,cli_ms=(extract if operation=="extract" else xml_roundtrip)(config["executable"],data)
+    generate_ms=(time.perf_counter()-start)*1000
+    available=sum(u["generation"]=="available" for u in units)
+    if not units:
+        return {"ok":True,"status":"not_applicable","units":[],"eligible_units":0,"operation":operation,
+                "diagnostic":"No resource tags to extract" if operation=="extract" else "Empty SWF"}
+    return {"ok":True,"status":"measured","operation":operation,"units":units,"unit_observations":units,
+            "eligible_units":len(units),"available_units":available,"generate_ms":generate_ms,"external_cli_ms":cli_ms,
+            "temporary_io_and_catalogue_ms":max(0,generate_ms-cli_ms),"time_scope":TIME_SCOPE,"native_returncode":0,
+            "tool_fingerprint":{"version":config.get("version"),"executable_sha256":config.get("artifact_sha256",{}).get(config["executable"]),"license":config.get("license")},
+            "output_summary":{"units":len(units),"available":available,"operation":operation},
+            "process_mode":"CLI starts on every unit; hot excludes adapter startup, not CLI startup"}
+
+
 def perform(engine,config,data,operation,include_source=False):
     operation = "source" if operation == "decompile" else operation
     if operation not in ENGINES[engine].operations:
         return {"ok":True,"status":"not_applicable","units":[],"eligible_units":0,"diagnostic":"Operation is outside this tool's capabilities"}
+    if operation in ("extract","xml"):
+        return resource_operation(engine,config,data,operation)
     start=time.perf_counter()
     movie=SWFFile()
     movie.read_bytes(data)
@@ -369,7 +389,7 @@ def perform(engine,config,data,operation,include_source=False):
 
 def main():
     parser=argparse.ArgumentParser()
-    parser.add_argument("--engine",choices=("flare","flasm","rabcdasm","pyflashkit","flex_swfdump","flashdec_py","flashdec_rs"),required=True)
+    parser.add_argument("--engine",choices=("flare","flasm","rabcdasm","pyflashkit","flex_swfdump","flashdec_py","flashdec_rs","swfmill","swfextract"),required=True)
     parser.add_argument("--config",required=True)
     args=parser.parse_args()
     config=checked_tool(args.engine,args.config)

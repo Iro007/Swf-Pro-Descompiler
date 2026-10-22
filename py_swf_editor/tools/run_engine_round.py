@@ -25,7 +25,7 @@ def main():
     evidence = root / ('reports/decompiler-improvements-' + args.round)
     snapshot = evidence / (args.stage + '-binaries')
     snapshot.mkdir(parents=True, exist_ok=True)
-    release = root / 'RUST SWF/dist/FlashUniversalStudio-Engines'
+    release = root / 'rust_swf/dist/FlashUniversalStudio-Engines'
     for candidate in sorted(release.parent.glob('FlashUniversalStudio-Engines-*'), reverse=True):
         date = candidate.name.removeprefix('FlashUniversalStudio-Engines-')
         if candidate.is_dir() and len(date) == 8 and date.isdigit() and (candidate / 'release-manifest.json').is_file():
@@ -34,7 +34,7 @@ def main():
     sources = ({name: release / name for name in ('FlashSuiteWorker.exe', 'rustswf.exe')}
                if args.stage == 'before' else {
                    'FlashSuiteWorker.exe': root / 'py_swf_editor/dist/FlashSuiteWorker.exe',
-                   'rustswf.exe': root / 'RUST SWF/target/x86_64-pc-windows-gnu/release/rustswf.exe'})
+                   'rustswf.exe': root / 'rust_swf/target/x86_64-pc-windows-gnu/release/rustswf.exe'})
     fingerprints = []
     saved_manifest_path = evidence / (args.stage + '-manifest.json')
     saved_manifest = json.loads(saved_manifest_path.read_text(encoding='utf-8')) if saved_manifest_path.exists() else None

@@ -26,7 +26,7 @@ WORKSPACE = PROJECT.parent
 sys.path.insert(0, str(PROJECT))
 sys.path.insert(0, str(PROJECT / "tools"))
 
-from py_swf.benchmark_engines import ENGINES, checked_tool, default_rust_executable
+from py_swf.benchmark_engines import ENGINES, checked_tool, default_peer_executable, default_rust_executable
 from py_swf.benchmark_process import Worker
 from py_swf.benchmarks import implementation_digest, reference_command
 from py_swf.canonical_inventory import build_inventory
@@ -38,7 +38,7 @@ from py_swf.validation import validate_swf_bytes
 from run_ruffle_trace_probe import bounded_run, probe
 from verify_parity_source_semantics import compile_shared_project, generated_project
 
-SOURCE_ENGINES = ("native", "rust", "jpexs", "pyflashkit", "flare")
+SOURCE_ENGINES = ("native", "rust", "js", "go", "asm", "jpexs", "flashdec_py", "flashdec_rs", "pyflashkit", "flare")
 REFERENCE_ENGINES = ("rabcdasm", "flasm", "flex_swfdump")
 ALL_ENGINES = SOURCE_ENGINES + REFERENCE_ENGINES
 SCHEMA_VERSION = 1
@@ -118,8 +118,8 @@ def discover_pins(args):
         try:
             if name == "native":
                 record = {"implementation_sha256": pins["implementation_sha256"]}
-            elif name == "rust":
-                binary = args.rust_executable or default_rust_executable()
+            elif name in ("rust", "js", "go", "asm"):
+                binary = args.rust_executable if name == "rust" and args.rust_executable else default_peer_executable(name)
                 record = file_pin(binary)
             elif name == "jpexs":
                 command = reference_command(args.reference_config)
@@ -250,6 +250,17 @@ def external_output(engine, data, pins, folder):
     config = dict(pins["config"])
     config["evidence_root"] = str(folder / "raw")
     result = perform(engine, config, data, "source" if engine in SOURCE_ENGINES else "disassemble", True)
+    write_json(folder / "raw-source-response.json", result)
+    return result
+
+
+def peer_output(engine, data, pins, folder):
+    from py_swf.benchmark_rust_worker import RustWorker, perform
+    worker = RustWorker(pins["path"], pins["sha256"], timeout=110, engine=engine)
+    try:
+        result = perform(worker, data, "source", include_source=True)
+    finally:
+        worker.close()
     write_json(folder / "raw-source-response.json", result)
     return result
 
@@ -399,7 +410,7 @@ def complete_as2_sources(suite, engine, response, data):
     for unit in roots:
         if unit.diagnostic:
             raise ValueError("Original contains an unparsed AVM1 action container")
-        if engine == "jpexs":
+        if response is not None:
             selected = [record for record in response.get("units", []) if record.get("document_id") == unit.document_id]
             result = selected[0] if len(selected) == 1 else {}
             source = result.get("source") if result.get("generation") == "available" and result.get("identity_verified") is True else None
@@ -477,6 +488,8 @@ def evaluate_job(request):
         response = None
         if engine == "rust":
             suite.registry.tools["rust"] = {"path": source_pin["path"], "sha256": source_pin["sha256"]}
+        elif engine in ("js", "go", "asm"):
+            response = peer_output(engine, data, source_pin, folder)
         elif engine == "jpexs":
             response = reference_output(data, source_pin, folder)
         elif engine not in ("native", "rust"):

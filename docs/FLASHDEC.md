@@ -5,7 +5,7 @@ Dos descompiladores de línea de órdenes que convierten un SWF entero en una ca
 | Herramienta | Motor propio | Motor externo | Código |
 |---|---|---|---|
 | `flashdec-py` | PySWF (`py_swf_editor/py_swf`) | JPEXS 26.3 (`ffdec-cli.jar`) | `flashdec_py/flashdec/` |
-| `flashdec-rs` | RustSWF (crates `swf-core`, `swf-avm`, `swf-decompile`) | JPEXS 26.3 | `RUST SWF/crates/flashdec/` |
+| `flashdec-rs` | RustSWF (crates `swf-core`, `swf-avm`, `swf-decompile`) | JPEXS 26.3 | `rust_swf/crates/flashdec/` |
 
 JPEXS se ejecuta en paralelo con el motor propio, en un proceso aparte y con límite de tiempo. Si JPEXS no está disponible, la herramienta sigue funcionando solo con el motor propio.
 
@@ -71,5 +71,5 @@ cd py_swf_editor
 
 ```powershell
 cd flashdec_py; ..\py_swf_editor\.venv\Scripts\python.exe -m pytest tests
-cd "RUST SWF"; . .\tools\env.ps1; cargo test --release -p flashdec
+cd "rust_swf"; . .\tools\env.ps1; cargo test --release -p flashdec
 ```

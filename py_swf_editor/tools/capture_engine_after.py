@@ -23,7 +23,7 @@ def main():
     assert all(sha(inputs / record['path']) == record['sha256'] for record in manifest['inputs'])
     fingerprints = []
     sources = {'FlashSuiteWorker.exe': root / 'py_swf_editor/dist/FlashSuiteWorker.exe',
-               'rustswf.exe': root / 'RUST SWF/target/x86_64-pc-windows-gnu/release/rustswf.exe'}
+               'rustswf.exe': root / 'rust_swf/target/x86_64-pc-windows-gnu/release/rustswf.exe'}
     for name, source in sources.items():
         destination = snapshot / name
         if destination.exists() and sha(destination) != sha(source):

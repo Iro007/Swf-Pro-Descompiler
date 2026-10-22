@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "Quality score for one decompiled script file. Read by flashdec_py/flashdec/scoring.py and RUST SWF/crates/flashdec/src/scoring.rs; scoring-vectors.json holds the golden cases both test suites check. A score detects declared failures only: it does not prove recompilation or equal behavior.",
+  "description": "Quality score for one decompiled script file. Read by flashdec_py/flashdec/scoring.py and rust_swf/crates/flashdec/src/scoring.rs; scoring-vectors.json holds the golden cases both test suites check. A score detects declared failures only: it does not prove recompilation or equal behavior.",
   "base_score": 100,
   "hard_penalty": 30,
   "soft_penalty": 5,

@@ -39,5 +39,5 @@
 .aa-chart-card.aa-compilation h2>i{background:#9755ef}.aa-chart-card.aa-behavior h2>i{background:#2da653}.aa-chart-card.aa-emitted h2>i{background:#bd9959}
 .aa-chart-card.aa-emitted{background:#fffefa}
 .aa-quality-cell{max-width:240px;min-width:180px;white-space:normal}
-.aa-analysis .aa-quality-cell small{line-height:1.5;color:#788171}
+.aa-analysis .aa-quality-cell small{line-height:1.5;color:#788171}.aa-health-matrix{margin:24px 0 18px;padding:18px;border:1px solid #e2ead8;border-radius:7px;background:#fcfdfb}
 @media(max-width:700px){.aa-quality-selector{gap:8px}.aa-quality-selector label{flex-wrap:wrap}.aa-quality-counts li{grid-template-columns:75px minmax(0,1fr)}}

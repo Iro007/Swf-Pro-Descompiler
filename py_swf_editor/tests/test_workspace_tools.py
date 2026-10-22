@@ -20,8 +20,8 @@ def _tools(report):
 def test_project_source_and_command_candidates_are_distinct(tmp_path):
     _write(tmp_path, 'py_swf_editor/py_swf/cli.py', b'# fixture')
     _write(tmp_path, 'py_swf_editor/.venv/Scripts/python.exe')
-    _write(tmp_path, 'RUST SWF/Cargo.toml')
-    rust = _write(tmp_path, 'RUST SWF/dist/FlashUniversalStudio/rustswf.exe', b'rust')
+    _write(tmp_path, 'rust_swf/Cargo.toml')
+    rust = _write(tmp_path, 'rust_swf/dist/FlashUniversalStudio/rustswf.exe', b'rust')
     _write(tmp_path, 'jpexs-decompiler-master/build.xml')
     report = discover_workspace_tools(tmp_path)
     tools = _tools(report)
@@ -79,7 +79,7 @@ def test_symlink_to_outside_workspace_is_not_discovered(tmp_path):
 
 
 def test_skipped_build_trees_and_missing_workspace(tmp_path):
-    _write(tmp_path, 'RUST SWF/target/debug/ffdec.jar')
+    _write(tmp_path, 'rust_swf/target/debug/ffdec.jar')
     _write(tmp_path, 'node_modules/ffdec.jar')
     tools = _tools(discover_workspace_tools(tmp_path))
     assert tools['jpexs']['status'] == 'missing'
@@ -122,7 +122,7 @@ def test_isolated_pyflashkit_and_ruffle_assets_are_discovered_without_running(tm
     _write(tmp_path, 'py_swf_editor/.dev-references/extra-tools/pyflashkit-1.3.0/.venv/Scripts/python.exe')
     _write(tmp_path, 'py_swf_editor/.dev-references/extra-tools/pyflashkit-1.3.0/.venv/Lib/site-packages/flashkit/workspace/__init__.py')
     _write(tmp_path, 'py_swf_editor/.dev-references/extra-tools/ruffle-source-test/Cargo.toml')
-    _write(tmp_path, 'RUST SWF/web/public/ruffle/ruffle.js')
+    _write(tmp_path, 'rust_swf/web/public/ruffle/ruffle.js')
     tools = _tools(discover_workspace_tools(tmp_path))
     assert tools['pyflashkit']['status']=='portable_cli' and not tools['pyflashkit']['configured']
     assert {c['kind'] for c in tools['ruffle']['candidates']}=={'source_checkout','support_files'}

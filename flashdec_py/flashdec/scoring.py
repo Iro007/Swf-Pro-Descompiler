@@ -1,6 +1,6 @@
 """Quality score for one decompiled script file.
 
-The rules live in shared/scoring-rules.json, which RUST SWF/crates/flashdec
+The rules live in shared/scoring-rules.json, which rust_swf/crates/flashdec
 also embeds; shared/scoring-vectors.json holds the golden cases both check.
 A file is judged only by its text, so any engine can be compared with any
 other on the same output path.

@@ -14,7 +14,7 @@ PROJECT = Path(__file__).resolve().parents[1]
 ROOT = PROJECT.parent
 sys.path.insert(0, str(PROJECT))
 EVIDENCE = ROOT / 'reports/benchmark-refresh-20261014'
-TARGET = ROOT / 'RUST SWF/dist/FlashUniversalStudio-Analysis-20261014'
+TARGET = ROOT / 'rust_swf/dist/FlashUniversalStudio-Analysis-20261014'
 
 def sha(path):
     with Path(path).open('rb') as stream:
@@ -25,23 +25,23 @@ def save(path, value):
 
 def snapshot():
     from py_swf.benchmarks import implementation_digest
-    inputs = [*list((ROOT/'RUST SWF/crates').rglob('*.rs')),
-              *list((ROOT/'RUST SWF/web/src').rglob('*')),
-              *list((ROOT/'RUST SWF/web/dist').rglob('*'))]
+    inputs = [*list((ROOT/'rust_swf/crates').rglob('*.rs')),
+              *list((ROOT/'rust_swf/web/src').rglob('*')),
+              *list((ROOT/'rust_swf/web/dist').rglob('*'))]
     return {'python_implementation_sha256': implementation_digest(),
             'source_files': {p.relative_to(ROOT).as_posix(): sha(p) for p in inputs if p.is_file()}}
 
 def stage():
     if TARGET.exists():
         raise ValueError('New release already exists; previous or staged output is never overwritten')
-    previous = ROOT/'RUST SWF/dist/FlashUniversalStudio-Parity-20261014'
+    previous = ROOT/'rust_swf/dist/FlashUniversalStudio-Parity-20261014'
     TARGET.mkdir(parents=True)
     for name in ('WebView2Loader.dll','LICENSE','THIRD_PARTY_NOTICES.md','pyswf.ps1','SUITE_CLI.md'):
         shutil.copy2(previous/name, TARGET/name)
     shutil.copytree(previous/'licenses', TARGET/'licenses')
     binaries = {'FlashSuiteWorker.exe': EVIDENCE/'portable-binaries/FlashSuiteWorker.exe',
                 'PySWF.exe': EVIDENCE/'portable-binaries/FlashSuiteWorker.exe',
-                'rustswf.exe': ROOT/'RUST SWF/target/x86_64-pc-windows-gnu/release/rustswf.exe',
+                'rustswf.exe': ROOT/'rust_swf/target/x86_64-pc-windows-gnu/release/rustswf.exe',
                 'FlashUniversalStudio.exe': EVIDENCE/'portable-binaries/FlashUniversalStudio.exe'}
     for name, source in binaries.items():
         shutil.copy2(source, TARGET/name)
@@ -54,15 +54,15 @@ def stage():
     for source, destination in ((PROJECT/'py_swf',source_root/'py_swf'),
             (PROJECT/'tests',source_root/'python-tests'),(PROJECT/'tools',source_root/'python-tools'),
             (PROJECT/'packaging',source_root/'python-packaging'),
-            (ROOT/'RUST SWF/crates',source_root/'rust/crates'),
-            (ROOT/'RUST SWF/desktop',source_root/'rust/desktop'),
-            (ROOT/'RUST SWF/web',source_root/'rust/web'),
-            (ROOT/'RUST SWF/.cargo',source_root/'rust/.cargo')):
+            (ROOT/'rust_swf/crates',source_root/'rust/crates'),
+            (ROOT/'rust_swf/desktop',source_root/'rust/desktop'),
+            (ROOT/'rust_swf/web',source_root/'rust/web'),
+            (ROOT/'rust_swf/.cargo',source_root/'rust/.cargo')):
         shutil.copytree(source,destination,ignore=shutil.ignore_patterns('__pycache__','*.pyc','node_modules','target','dist','binaries','.cache','.build-staging'))
     for name in ('pyproject.toml','requirements.txt','requirements-dev.txt'):
         if (PROJECT/name).is_file(): shutil.copy2(PROJECT/name,source_root/name)
     for name in ('Cargo.toml','Cargo.lock','LICENSE','THIRD_PARTY_NOTICES.md'):
-        shutil.copy2(ROOT/'RUST SWF'/name,source_root/'rust'/name)
+        shutil.copy2(ROOT/'rust_swf'/name,source_root/'rust'/name)
     pins={'schema_version':1,'created_at':datetime.now(timezone.utc).isoformat(),
           'snapshot':snapshot(),'binaries':{name:{'sha256':sha(TARGET/name),'bytes':(TARGET/name).stat().st_size} for name in binaries},
           'status':'staged_for_GUI_validation','claims':{'parity':False,'performance_winner':None}}

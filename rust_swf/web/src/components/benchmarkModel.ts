@@ -6,11 +6,11 @@ export type Catalog={schema_version:1;database:string;available?:boolean;truncat
 export type Filters={dataset:string;operation:string;scope:string;origin:string;family:string;split:string;language:string;environment:string;phase:string;mode:string;compiler:string;query:string;common:boolean};
 export type QualityCount={total:number|null;passed:number;evaluated:number;failed:number;unknown:number;unsupported:number;ineligible:number;unknownProjects:number;percent:number|null;complete:boolean;contextKey:string|null;reason:string};
 export type ObservedRow=CatalogRow&{value:number|null;denominator:number|null;verified:boolean;qualityIdentity:boolean;sourceCount:number|null;fileKey:string;timestamp:number;selected_scope:string;selected_compiler:string;code_origin:string;compilationQuality:QualityCount;behaviorQuality:QualityCount};
-export type ToolScore={id:string;name:string;color:string;coverage:number|null;compilation:number|null;behavior:number|null;emitted:number|null;time:number|null;memory:number|null;files:number;verifiedFiles:number;source:number;units:number;failures:number;rows:ObservedRow[];chartRows:ObservedRow[];qualityRows:ObservedRow[];fullEligible:boolean;compilationCount:QualityCount;behaviorCount:QualityCount;performanceReason:string};
+export type ToolScore={id:string;name:string;color:string;coverage:number|null;compilation:number|null;behavior:number|null;emitted:number|null;time:number|null;memory:number|null;observedTime:number|null;observedMemory:number|null;files:number;verifiedFiles:number;source:number;units:number;failures:number;rows:ObservedRow[];chartRows:ObservedRow[];qualityRows:ObservedRow[];fullEligible:boolean;compilationCount:QualityCount;behaviorCount:QualityCount;performanceReason:string};
 export const finite=(value:unknown):value is number=>typeof value==='number'&&Number.isFinite(value);
 export const scopeNames:Record<string,string>={method:'Métodos AS3',action:'Acciones AS2',function:'Funciones anidadas',class:'Clases',script:'Scripts',legacy:'Recuento histórico'};
-export const engineNames:Record<string,string>={native:'PySWF',python:'PySWF',rust:'RustSWF',jpexs:'JPEXS',pyflashkit:'pyflashkit',rabcdasm:'RABCDAsm',flasm:'Flasm',flex_swfdump:'Flex SWFDump',swfdump:'SWFTools',flare:'Flare',flashdec_py:'flashdec-py',flashdec_rs:'flashdec-rs'};
-export const colors:Record<string,string>={native:'#c98263',python:'#c98263',rust:'#f57918',jpexs:'#2da653',pyflashkit:'#7867cf',rabcdasm:'#2546cf',flasm:'#008ded',flex_swfdump:'#20aaa8',flare:'#b2609a',flashdec_py:'#2f8f6f',flashdec_rs:'#d8622a'};
+export const engineNames:Record<string,string>={native:'PySWF',python:'PySWF',rust:'RustSWF',js:'JsSWF',go:'GoSWF',asm:'AsmSWF (x86_64)',jpexs:'JPEXS',pyflashkit:'pyflashkit',rabcdasm:'RABCDAsm',flasm:'Flasm',flex_swfdump:'Flex SWFDump',swfdump:'SWFTools',flare:'Flare',flashdec_py:'flashdec-py',flashdec_rs:'flashdec-rs'};
+export const colors:Record<string,string>={native:'#c98263',python:'#c98263',rust:'#f57918',js:'#e5a00d',go:'#00add8',asm:'#8c42d6',jpexs:'#2da653',pyflashkit:'#7867cf',rabcdasm:'#2546cf',flasm:'#008ded',flex_swfdump:'#20aaa8',flare:'#b2609a',flashdec_py:'#2f8f6f',flashdec_rs:'#d8622a'};
 export const toolName=(id:string,fallback?:string)=>engineNames[id]??fallback??id;
 export const toolColor=(id:string)=>colors[id]??'#53616c';
 export const languageOf=(value:string|null|undefined)=>/^(avm1|as1|as2)$/i.test(value??'')?'as2':/^(avm2|as3)$/i.test(value??'')?'as3':value;
@@ -19,7 +19,7 @@ const blocked=new Set(['failed','error','timeout','output_unmapped','comparison_
 export const badMapping=(row:CatalogRow)=>blocked.has(row.status)||blocked.has(row.observation_status??'')||row.inventory_status==='disagreement';
 const median=(numbers:number[])=>{const sorted=[...numbers].sort((a,b)=>a-b);const n=sorted.length;return n?(n%2?sorted[(n-1)/2]:(sorted[n/2-1]+sorted[n/2])/2):null;};
 export const phaseName=(s:string)=>({hot:'Operación caliente',cold:'Proceso frío',warmup:'Calentamiento',observation:'Observación',summary:'Resumen',heap_probe:'Memoria'}[s]??s);
-export const defaults:Filters={dataset:'canonical',operation:'source',scope:'method',origin:'all',family:'all',split:'all',language:'all',environment:'auto',phase:'hot',mode:'auto',compiler:'auto',query:'',common:true};
+export const defaults:Filters={dataset:'canonical',operation:'source',scope:'method',origin:'all',family:'all',split:'all',language:'all',environment:'auto',phase:'hot',mode:'auto',compiler:'auto',query:'',common:false};
 export const environmentKey=(row:CatalogRow)=>row.environment_id??row.environment;
 const record=(value:unknown):Record<string,unknown>=>value&&typeof value==='object'&&!Array.isArray(value)?value as Record<string,unknown>:{};
 const array=(value:unknown):Record<string,unknown>[]=>Array.isArray(value)?value.map(record):[];
@@ -133,13 +133,39 @@ export function observe(row:CatalogRow,filters:Filters,timestamp=0):ObservedRow{
   const quality=qualityOf(row,filters.compiler);
   const qualityIdentity=hasQualityIdentity(row);
   return {...row,value,denominator:denominator??null,sourceCount:finite(count)?count:null,verified,qualityIdentity,selected_scope:filters.scope,selected_compiler:filters.compiler,code_origin:filters.origin,compilationQuality:quality.compilation,behaviorQuality:quality.behavior,
-    fileKey:qualityIdentity?[row.artifact_sha256,'complete_project',filters.origin].join('|'):[row.artifact_sha256??row.file,row.canonical_inventory_sha256??'historical',filters.scope,filters.origin].join('|'),timestamp};
+    fileKey:sha(row.artifact_sha256)?[row.artifact_sha256,filters.origin].join('|'):qualityIdentity?[row.artifact_sha256,'complete_project',filters.origin].join('|'):[row.artifact_sha256??row.file,row.canonical_inventory_sha256??'historical',filters.scope,filters.origin].join('|'),timestamp};
 }
 export function selectRows(catalog:Catalog,filters:Filters):ObservedRow[]{
   const dates=new Map(catalog.campaigns.map(c=>[c.id,Date.parse(c.created_at??'')||0]));
   const qualityCampaigns=catalog.rows.filter(row=>hasQualityIdentity(row));
   const newestQuality=filters.dataset==='canonical'?qualityCampaigns.map(row=>row.campaign_id).sort((a,b)=>(dates.get(b)??0)-(dates.get(a)??0))[0]:undefined;
-  let rows=catalog.rows.filter(row=>(filters.dataset==='canonical'?newestQuality?row.campaign_id===newestQuality:Boolean(row.family_id&&row.canonical_inventory_sha256):row.campaign_id===filters.dataset)
+  const qualityByKey=new Map<string,CatalogRow>();
+  const unitByKey=new Map<string,CatalogRow>();
+  if(filters.dataset==='canonical'){
+    for(const row of catalog.rows){
+      if(!sha(row.artifact_sha256))continue;
+      const key=row.engine+'|'+row.artifact_sha256;
+      if(newestQuality&&row.campaign_id===newestQuality)qualityByKey.set(key,row);
+      if(row.canonical_inventory_sha256&&row.scope_metrics&&row.operation===filters.operation&&(row.phase??'observation')===filters.phase){
+        const prior=unitByKey.get(key);
+        if(!prior||(dates.get(row.campaign_id)??0)>=(dates.get(prior.campaign_id)??0))unitByKey.set(key,row);
+      }
+    }
+  }
+  const sourceRows=filters.dataset==='canonical'?catalog.rows.map(row=>{
+    if(!sha(row.artifact_sha256))return row;
+    const key=row.engine+'|'+row.artifact_sha256;
+    const unitRow=unitByKey.get(key),qRow=qualityByKey.get(key);
+    if(newestQuality&&row.campaign_id===newestQuality&&unitRow&&!row.scope_metrics){
+      return {...row,scope_metrics:unitRow.scope_metrics,origin_scope_metrics:unitRow.origin_scope_metrics,canonical_inventory_sha256:unitRow.canonical_inventory_sha256,inventory_status:unitRow.inventory_status,disassembly_available:unitRow.disassembly_available,median_ms:row.median_ms??unitRow.median_ms,peak_tree_rss_bytes:row.peak_tree_rss_bytes??unitRow.peak_tree_rss_bytes};
+    }
+    if(row.canonical_inventory_sha256&&qRow&&!hasQualityIdentity(row)){
+      const qe=record(qRow.quality_evaluation),ctx=record(qe.context);
+      return {...row,family_id:row.family_id??qRow.family_id,split:row.split??qRow.split,quality_evaluation:{...qe,context:{...ctx,build_id:row.build_id,environment_id:environmentKey(row)}}};
+    }
+    return row;
+  }):catalog.rows;
+  let rows=sourceRows.filter(row=>(filters.dataset==='canonical'?Boolean(newestQuality&&row.campaign_id===newestQuality||row.canonical_inventory_sha256):row.campaign_id===filters.dataset)
     &&(row.operation===filters.operation||filters.operation==='source'&&record(row.quality_evaluation).role==='disassembly_reference')&&((row.phase??'observation')===filters.phase||hasQualityIdentity(row)&&filters.phase===defaults.phase)
     &&(filters.family==='all'||row.family_id===filters.family)&&(filters.split==='all'||row.split===filters.split)
     &&(filters.language==='all'||languageOf(row.language)===filters.language)&&(filters.environment==='all'||filters.environment==='auto'||environmentKey(row)===filters.environment)
@@ -156,11 +182,11 @@ export function selectRows(catalog:Catalog,filters:Filters):ObservedRow[]{
     const modes=new Map<string,{name:string;timestamp:number}>();
     const rank=(name:string)=>name==='api_all_abc'?'0'+name:'1'+name;
     for(const row of rows){const key=row.engine+'|'+environmentKey(row),name=row.adapter_mode??'unknown',timestamp=dates.get(row.campaign_id)??0,old=modes.get(key);if(!old||timestamp>old.timestamp||timestamp===old.timestamp&&rank(name)<rank(old.name))modes.set(key,{name,timestamp});}
-    rows=rows.filter(row=>(row.adapter_mode??'unknown')===modes.get(row.engine+'|'+environmentKey(row))?.name);
+    rows=rows.filter(row=>(row.adapter_mode??'unknown')===modes.get(row.engine+'|'+environmentKey(row))?.name||filters.dataset==='canonical'&&hasQualityIdentity(row));
   }
   // Choose a build by recorded time, never by score. Keep all projects of that
   // build and one observation per tool/input/operation/phase.
-  const context=(row:CatalogRow)=>[row.engine,environmentKey(row),row.adapter_mode??'unknown'].join('|');
+  const context=(row:CatalogRow)=>filters.dataset==='canonical'?[row.engine,environmentKey(row)].join('|'):[row.engine,environmentKey(row),row.adapter_mode??'unknown'].join('|');
   const builds=new Map<string,{id:string;timestamp:number}>();
   for(const row of rows){const timestamp=dates.get(row.campaign_id)??0;const old=builds.get(context(row));if(!old||timestamp>old.timestamp)builds.set(context(row),{id:row.build_id??'',timestamp});}
   // Pick a recorded compiler by route count, never by successful outcomes.
@@ -168,17 +194,17 @@ export function selectRows(catalog:Catalog,filters:Filters):ObservedRow[]{
   for(const row of rows)for(const route of array(record(row.quality_evaluation).compilations)){const name=text(route.compiler);if(name)compilerCounts.set(name,(compilerCounts.get(name)??0)+1);}
   const compiler=filters.compiler==='auto'?[...compilerCounts].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]))[0]?.[0]??'auto':filters.compiler;
   const unique=new Map<string,ObservedRow>();
-  for(const row of rows){if((row.build_id??'')!==builds.get(context(row))?.id)continue;const current=observe(row,{...filters,compiler},dates.get(row.campaign_id)??0);const key=context(row)+'|'+current.fileKey;const prior=unique.get(key);if(!prior||current.timestamp>prior.timestamp)unique.set(key,current);}
+  for(const row of rows){if(filters.dataset!=='canonical'&&(row.build_id??'')!==builds.get(context(row))?.id)continue;const current=observe(row,{...filters,compiler},dates.get(row.campaign_id)??0);const key=context(row)+'|'+current.fileKey;const prior=unique.get(key);if(!prior||current.timestamp>prior.timestamp||current.verified&&!prior.verified)unique.set(key,current);}
   return [...unique.values()];
 }
 export function scoreTools(rows:ObservedRow[],engines:string[],common:boolean):{tools:ToolScore[];sharedFiles:number;allFiles:number;contextIssues:string[]}{
   const selected=rows.filter(r=>engines.includes(r.engine));
   const contextIssues:string[]=[];
   if(new Set(selected.map(environmentKey)).size>1)contextIssues.push('La selección mezcla entornos. Selecciona uno para agregar resultados.');
-  if(new Set(selected.map(row=>row.selected_compiler)).size>1)contextIssues.push('La selección mezcla compiladores. Compara un compilador de validación a la vez.');
+  if(new Set(selected.map(row=>row.selected_compiler).filter(c=>c&&c!=='auto')).size>1)contextIssues.push('La selección mezcla compiladores. Compara un compilador de validación a la vez.');
   for(const id of engines){const own=selected.filter(r=>r.engine===id);if(new Set(own.map(row=>row.adapter_mode??'unknown')).size>1)contextIssues.push(toolName(id)+': hay varios modos de adaptador; selecciona uno.');if(new Set(own.map(row=>row.build_id??'unknown')).size>1)contextIssues.push(toolName(id)+': hay varios builds; selecciona una campaña.');}
   const homogeneous=contextIssues.length===0;
-  const sets=engines.map(id=>new Set(selected.filter(r=>r.engine===id&&(r.verified||r.qualityIdentity)).map(r=>r.fileKey)));
+  const sets=engines.map(id=>new Set(selected.filter(r=>r.engine===id&&(r.verified||r.qualityIdentity)).map(r=>r.fileKey))).filter(s=>s.size>0);
   const shared=new Set(sets[0]??[]);for(const set of sets.slice(1))for(const key of shared)if(!set.has(key))shared.delete(key);
   // Speed bars describe equivalent validated work on a shared corpus. Raw
   // historical timings remain visible even when this comparative set is empty.
@@ -189,19 +215,23 @@ export function scoreTools(rows:ObservedRow[],engines:string[],common:boolean):{
     if(new Set(group.map(row=>row.behaviorQuality.contextKey)).size===1)performanceKeys.add(key);
   }
   const tools=engines.map(id=>{
-    const own=selected.filter(r=>r.engine===id);const qualityRows=homogeneous?own.filter(r=>!common||shared.has(r.fileKey)):[];
+    const own=selected.filter(r=>r.engine===id);const qualityRows=own.filter(r=>!common||!shared.size||shared.has(r.fileKey));
     const usable=qualityRows.filter(r=>finite(r.value));
     const times=qualityRows.filter(r=>performanceKeys.has(r.fileKey));
+    const observedRows=own.filter(r=>r.success_count>0&&!badMapping(r)&&finite(r.median_ms)&&r.median_ms>=0);
+    const observedTime=median(observedRows.map(r=>r.median_ms!));
+    const observedMemory=median(observedRows.map(r=>r.peak_tree_rss_bytes).filter(finite).map(v=>v/1048576));
     const projects=new Map<string,number[]>();for(const row of usable){const key=row.family_id??row.fileKey;projects.set(key,[...(projects.get(key)??[]),row.value!]);}
     const averages=[...projects.values()].map(values=>values.reduce((sum,value)=>sum+value,0)/values.length);
     const compilationCount=sumQuality(qualityRows,'compilationQuality'),behaviorCount=sumQuality(qualityRows,'behaviorQuality');
     return {id,name:toolName(id,own[0]?.engine_name),color:toolColor(id),coverage:compilationCount.percent,compilation:compilationCount.percent,behavior:behaviorCount.percent,emitted:averages.length?averages.reduce((a,v)=>a+v,0)/averages.length:null,
       time:median(times.map(r=>r.median_ms!)),memory:median(times.map(r=>r.peak_tree_rss_bytes).filter(finite).map(v=>v/1048576)),
+      observedTime,observedMemory,
       files:own.length,verifiedFiles:usable.length,source:usable.reduce((a,r)=>a+(r.sourceCount??0),0),units:usable.reduce((a,r)=>a+(r.denominator??0),0),
-      failures:own.reduce((a,r)=>a+(r.error_count??0)+(r.timeout_count??0),0),rows:own,chartRows:times,qualityRows,compilationCount,behaviorCount,
-      fullEligible:times.length>0,performanceReason:times.length?'Mismos proyectos, compilación completa y escenarios acotados coincidentes':!common?'Selecciona la misma base de archivos para comparar rendimiento':'Sin proyectos comunes con calidad, contexto y perfil full equivalentes'} satisfies ToolScore;
+      failures:own.reduce((a,r)=>a+(r.error_count??0)+(r.timeout_count??0),0),rows:own,chartRows:times.length?times:observedRows,qualityRows,compilationCount,behaviorCount,
+      fullEligible:times.length>0,performanceReason:times.length?'Mismos proyectos, compilación completa y escenarios acotados coincidentes':observedRows.length?'Mediana observada sobre ejecuciones exitosas verificadas (sin equivalencia semántica completa común)':!common?'Selecciona la misma base de archivos para comparar rendimiento':'Sin proyectos comunes con calidad, contexto y perfil full equivalentes'} satisfies ToolScore;
   });
-  return {tools,sharedFiles:homogeneous?shared.size:0,allFiles:new Set(selected.map(r=>r.fileKey)).size,contextIssues};
+  return {tools,sharedFiles:shared.size,allFiles:new Set(selected.map(r=>r.fileKey)).size,contextIssues};
 }
 export function csv(rows:ObservedRow[]):string{
   const columns=['engine','family_id','file','artifact_sha256','canonical_inventory_sha256','campaign_id','environment','environment_id','build_id','operation','phase','adapter_mode','selected_scope','code_origin','value','sourceCount','denominator','verified','status','median_ms','peak_tree_rss_bytes','compilation','behavior','compilationQuality','behaviorQuality','quality_evaluation'];

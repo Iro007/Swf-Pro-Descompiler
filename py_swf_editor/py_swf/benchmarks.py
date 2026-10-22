@@ -78,18 +78,20 @@ def command_for(engine, config_path=None, tool_config=None):
         return [sys.executable, "-m", "py_swf.benchmark_worker"]
     if engine == "jpexs":
         return reference_command(config_path)
-    if engine == "rust":
-        from .benchmark_engines import checked_tool, tools_config
-        if tool_config and tools_config(tool_config).get("rust"):
-            config = checked_tool("rust", tool_config)
+    if engine in ("rust", "js", "go", "asm"):
+        from .benchmark_engines import checked_tool, tools_config, default_peer_executable, default_rust_executable
+        if tool_config and tools_config(tool_config).get(engine):
+            config = checked_tool(engine, tool_config)
             digest = config["artifact_sha256"][config["executable"]]
             executable = Path(config["executable"]).resolve()
         else:
-            from .benchmark_engines import default_rust_executable
-            executable = default_rust_executable()
+            executable = default_rust_executable() if engine == "rust" else default_peer_executable(engine)
             digest = sha256(executable.read_bytes())
-        return [sys.executable, "-m", "py_swf.benchmark_rust_worker", "--executable", str(executable), "--sha256", digest]
-    if engine in ("flasm","flare","rabcdasm","pyflashkit","flex_swfdump","flashdec_py","flashdec_rs"):
+        cmd = [sys.executable, "-m", "py_swf.benchmark_rust_worker", "--executable", str(executable), "--sha256", digest]
+        if engine != "rust":
+            cmd.extend(["--engine", engine])
+        return cmd
+    if engine in ("flasm","flare","rabcdasm","pyflashkit","flex_swfdump","flashdec_py","flashdec_rs","swfmill","swfextract"):
         return external_command(engine,tool_config)
     if engine in ("sothink","trillix","as3_sorcerer","asv"):
         raise WorkerError("Licensed installation and reproducible GUI/CLI adapter not available; no result measured")
@@ -138,6 +140,13 @@ def disassembly_available_in_scope(unit):
 
 
 def quality(response):
+    if response.get("operation") in ("extract", "xml") and response.get("status") == "measured":
+        # Tag-level operations: every unit is a resource/tag of the input.
+        return {"expected_units_reported": response.get("eligible_units"), "source_available": response.get("available_units"),
+                "disassembly_available": None, "pcode": None, "represented_by_document": None,
+                "failed": response.get("eligible_units", 0) - response.get("available_units", 0),
+                "syntax_native_subset_supported": 0, "compiled_verified": 0, "behavior_verified": 0,
+                "semantic_parity": "not_established", "unit_mapping": "matched"}
     units = response.get("units", [])
     units = [u for u in units if u.get('scope', 'method') in ('method', 'action', 'function', 'diagnostic')]
     unmapped=not response or response.get("status") in ('output_unmapped','not_configured','failed','not_measured','not_applicable') or response.get('inventory_status') == 'disagreement' or (response.get("ok") is False and not units)
@@ -254,7 +263,8 @@ def run_engine(engine, data, profile, *, config_path=None, tool_config=None, ope
                   diagnostic=observed.get("diagnostic"),artifacts=observed.get("artifacts",[]),warnings=observed.get("warnings",[]),
                   process_mode=observed.get("process_mode","persistent worker; fresh parse every operation"))
     for key in ("time_scope", "tool_fingerprint", "native_returncode", "failure_origin", "failure_stage", "output_summary",
-                "canonical_inventory", "canonical_inventory_sha256", "inventory_status", "inventory_cross_validation", "adapter_mode", "include_scope", "artifact_unit_scope"):
+                "canonical_inventory", "canonical_inventory_sha256", "inventory_status", "inventory_cross_validation", "adapter_mode", "include_scope", "artifact_unit_scope",
+                "available_units"):
         if key in observed:
             result[key] = observed[key]
     result['unit_observations'] = result['units']
@@ -481,7 +491,7 @@ def run_benchmark(corpus, *, profile="smoke", engines=("native", "jpexs"), outpu
     paths = collect_paths(corpus, profile, limit, family_ids, case_relatives)
     if not paths:
         raise ValueError("No SWF files in the selected corpus")
-    if operation not in ("source","disassemble") or profile not in PROFILES or not engines or len(set(engines)) != len(engines) or any(e not in ENGINES for e in engines):
+    if operation not in ("source","disassemble","extract","xml") or profile not in PROFILES or not engines or len(set(engines)) != len(engines) or any(e not in ENGINES for e in engines):
         raise ValueError("Invalid benchmark profile or engine list")
     output = Path(output or ROOT / "reports/decompiler-benchmark")
     output.mkdir(parents=True, exist_ok=True)
@@ -514,6 +524,13 @@ def run_benchmark(corpus, *, profile="smoke", engines=("native", "jpexs"), outpu
             rust = next((r for r in results if r['engine'] == 'rust'), None)
             inventory['cross_validation'] = rust.get('inventory_cross_validation', 'not_run') if rust else 'not_run'
             for result in results:
+                if operation in ('extract', 'xml'):
+                    # Units are resources/tags, not bytecode: no canonical method/class mapping.
+                    result.pop('unit_observations', None)
+                    result['include_scope'] = sorted({u['scope'] for u in result.get('units', []) if u.get('scope')})
+                    result.update(canonical_inventory_sha256=inventory['sha256'], family_id=case['family_id'], split=case['split'])
+                    result['quality'] = quality(result)
+                    continue
                 result['units'] = attach_observations(inventory, result.get('units', []), engine=result['engine'], adapter_mode=result.get('adapter_mode', 'legacy'))
                 # Preserve the historical array without serializing a second
                 # identical copy or four identical canonical inventories.

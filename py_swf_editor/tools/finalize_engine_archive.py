@@ -17,7 +17,7 @@ def main():
     args = parser.parse_args()
     if len(args.round) != 8 or not args.round.isdigit():
         parser.error('round must be YYYYMMDD')
-    target = root / ('RUST SWF/dist/FlashUniversalStudio-Engines-' + args.round)
+    target = root / ('rust_swf/dist/FlashUniversalStudio-Engines-' + args.round)
     manifest = json.loads((target / 'release-manifest.json').read_text(encoding='utf-8'))
     for entry in manifest['artifacts']:
         file = (target / entry['path']).resolve()

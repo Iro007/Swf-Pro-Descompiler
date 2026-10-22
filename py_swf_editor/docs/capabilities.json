@@ -66,7 +66,7 @@
       "npm run lint",
       "npm run build"
     ],
-    "rust_report": "../../RUST SWF/reports/rustswf-source-only-summary.json",
+    "rust_report": "../../rust_swf/reports/rustswf-source-only-summary.json",
     "python_cli_report": "../reports/native-compiler-cli/verification.json",
     "source_and_resource_tests": [
       "tests/test_suite_saved_sources.py",

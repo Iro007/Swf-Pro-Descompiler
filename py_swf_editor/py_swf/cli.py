@@ -210,7 +210,7 @@ def build_parser() -> argparse.ArgumentParser:
     benchmark.add_argument("corpus", type=Path)
     benchmark.add_argument("--profile", choices=("smoke", "full"), default="smoke")
     benchmark.add_argument("--engines", default="native,jpexs")
-    benchmark.add_argument("--operation",choices=("source","disassemble"),default="source")
+    benchmark.add_argument("--operation",choices=("source","disassemble","extract","xml"),default="source")
     benchmark.add_argument("--tool-config",type=Path)
     benchmark.add_argument("--output", type=Path)
     benchmark.add_argument("--limit", type=int)

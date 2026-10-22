@@ -14,7 +14,7 @@ import zipfile
 def main():
     root = Path(__file__).resolve().parents[2]
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--folder', type=Path, default=root / 'RUST SWF/dist/FlashUniversalStudio-Benchmarks')
+    parser.add_argument('--folder', type=Path, default=root / 'rust_swf/dist/FlashUniversalStudio-Benchmarks')
     args = parser.parse_args()
     folder = args.folder.resolve(strict=True)
     archive_path = folder.parent / 'FlashUniversalStudio-Benchmarks-portable.zip'

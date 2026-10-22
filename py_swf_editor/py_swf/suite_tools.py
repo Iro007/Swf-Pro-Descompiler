@@ -94,15 +94,15 @@ class ToolRegistry:
         packs = ROOT / "toolpacks"
         executable_dir = Path(sys.executable).parent
         candidates = {
-            "rust": [executable_dir / "rustswf.exe", ROOT / "RUST SWF/dist/FlashUniversalStudio/rustswf.exe",
-                     ROOT / "RUST SWF/target/x86_64-pc-windows-gnu/release/rustswf.exe"],
+            "rust": [executable_dir / "rustswf.exe", ROOT / "rust_swf/dist/FlashUniversalStudio/rustswf.exe",
+                     ROOT / "rust_swf/target/x86_64-pc-windows-gnu/release/rustswf.exe"],
             "jpexs": [packs / "jpexs/ffdec.jar", refs / "ffdec/ffdec.jar"],
             "flex": [packs / "flex/lib/mxmlc.jar"],
             "haxe": list((packs / "haxe").glob("**/haxe.exe")),
             "haxeflixel": list((packs / "haxe").glob("**/haxelib.exe")),
             "rabcdasm": [refs / "extra-tools/rabcdasm-1.18-complete/rabcdasm.exe"],
             "flasm": [refs / "extra-tools/flasm-1.62/flasm.exe"],
-            "ruffle": [ROOT / "RUST SWF/web/public/ruffle/ruffle.js"],
+            "ruffle": [ROOT / "rust_swf/web/public/ruffle/ruffle.js"],
         }
         for key in DEFINITIONS:
             if key == "python":

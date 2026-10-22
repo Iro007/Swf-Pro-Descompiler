@@ -166,7 +166,7 @@ def verify(fixtures,assets,output,timeout=90, *, load_mode="url"):
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,default=ROOT/'reports/ruffle-runtime-final');parser.add_argument('--timeout',type=int,default=90);parser.add_argument('--load-mode',choices=('data','url'),default='url');args=parser.parse_args()
-    assets=ROOT.parent/'RUST SWF/web/public/ruffle'
+    assets=ROOT.parent/'rust_swf/web/public/ruffle'
     haxe,flex=external_fixtures(args.output)
     fixtures=[('haxe',haxe,'SUITE_HAXE_OK'),('flex',flex,'SUITE_AS3_OK'),('haxeflixel',ROOT/'reports/suite-integration/haxeflixel-fixture.swf','SUITE_FLIXEL_OK'),('native',native_fixture(args.output),'SUITE_NATIVE_OK'),('native-linked',linked_fixture(args.output),'SUITE_NATIVE_LINKED_OK')]
     result=verify(fixtures,assets,args.output,args.timeout,load_mode=args.load_mode)

@@ -112,7 +112,7 @@ def discover_workspace_tools(root=None) -> dict:
         if runtime.is_file():
             add('native', runtime, 'portable_cli', True,
                 'Known project Python interpreter; command: python -m py_swf.cli. Runtime not launched by discovery.')
-    rustroot = workspace / 'RUST SWF'
+    rustroot = workspace / 'rust_swf'
     if _safe(rustroot / 'Cargo.toml', workspace) and (rustroot / 'Cargo.toml').is_file():
         add('rust', rustroot, 'source_checkout')
     # Known isolated development runtimes live under intentionally skipped
@@ -170,7 +170,7 @@ def discover_workspace_tools(root=None) -> dict:
                 continue
             if low in _CLI_NAMES:
                 engine = _CLI_NAMES[low]
-                rust_cli = workspace / 'RUST SWF' / 'dist' / 'FlashUniversalStudio' / 'rustswf.exe'
+                rust_cli = workspace / 'rust_swf' / 'dist' / 'FlashUniversalStudio' / 'rustswf.exe'
                 configured = engine == 'rust' and path == rust_cli
                 jar = path.parent / 'ffdec.jar'
                 if engine == 'jpexs' and low != 'ffdec.jar' and not (_safe(jar, workspace) and jar.is_file()):

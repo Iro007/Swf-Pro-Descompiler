@@ -156,7 +156,7 @@ def package(evidence, target):
             raise ValueError('Frozen binary changed')
     if target.exists():
         raise ValueError('Portable release already exists; no overwrite')
-    previous = ROOT / 'RUST SWF/dist/FlashUniversalStudio-Engines-20261014'
+    previous = ROOT / 'rust_swf/dist/FlashUniversalStudio-Engines-20261014'
     target.mkdir(parents=True)
     for name in ('WebView2Loader.dll', 'LICENSE', 'README.md', 'SUITE_CLI.md', 'THIRD_PARTY_NOTICES.md', 'pyswf.ps1'):
         shutil.copy2(previous / name, target / name)
@@ -164,7 +164,7 @@ def package(evidence, target):
     shutil.copy2(pins['binaries']['python']['path'], target / 'FlashSuiteWorker.exe')
     shutil.copy2(pins['binaries']['python']['path'], target / 'PySWF.exe')
     shutil.copy2(pins['binaries']['rust']['path'], target / 'rustswf.exe')
-    shutil.copy2(ROOT / 'RUST SWF/target/x86_64-pc-windows-gnu/release/rust-swf-studio.exe', target / 'FlashUniversalStudio.exe')
+    shutil.copy2(ROOT / 'rust_swf/target/x86_64-pc-windows-gnu/release/rust-swf-studio.exe', target / 'FlashUniversalStudio.exe')
     for name in ('freeze.json', 'package-freeze.json', 'delivery-summary.json', 'regressions.json', 'parity-report.html'):
         if (evidence / name).is_file():
             shutil.copy2(evidence / name, target / name)
@@ -173,21 +173,21 @@ def package(evidence, target):
     # Ship the actual corresponding engine source and build manifests.
     source = target / 'source'; source.mkdir()
     shutil.copytree(PROJECT / 'py_swf', source / 'py_swf', ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
-    shutil.copytree(ROOT / 'RUST SWF/crates', source / 'rust/crates', ignore=shutil.ignore_patterns('target'))
-    shutil.copytree(ROOT / 'RUST SWF/desktop', source / 'rust/desktop', ignore=shutil.ignore_patterns('target'))
-    shutil.copytree(ROOT / 'RUST SWF/web', source / 'rust/web', ignore=shutil.ignore_patterns('node_modules', 'dist', '.cache', '.build-staging'))
-    shutil.copytree(ROOT / 'RUST SWF/.cargo', source / 'rust/.cargo')
+    shutil.copytree(ROOT / 'rust_swf/crates', source / 'rust/crates', ignore=shutil.ignore_patterns('target'))
+    shutil.copytree(ROOT / 'rust_swf/desktop', source / 'rust/desktop', ignore=shutil.ignore_patterns('target'))
+    shutil.copytree(ROOT / 'rust_swf/web', source / 'rust/web', ignore=shutil.ignore_patterns('node_modules', 'dist', '.cache', '.build-staging'))
+    shutil.copytree(ROOT / 'rust_swf/.cargo', source / 'rust/.cargo')
     shutil.copytree(PROJECT / 'packaging', source / 'python-packaging', ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
     shutil.copytree(PROJECT / 'tests', source / 'python-tests', ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
     for name in ('requirements.txt', 'requirements-dev.txt', 'pyproject.toml'):
         if (PROJECT / name).is_file():
             shutil.copy2(PROJECT / name, source / name)
     for name in ('Cargo.toml', 'Cargo.lock', 'LICENSE', 'THIRD_PARTY_NOTICES.md', 'README.md', 'build.ps1'):
-        path = ROOT / 'RUST SWF' / name
+        path = ROOT / 'rust_swf' / name
         if path.is_file():
             shutil.copy2(path, source / 'rust' / name)
     shutil.copytree(PROJECT / 'tools/jpexs_java_bridge', source / 'jpexs_java_bridge')
-    shutil.copytree(ROOT / 'RUST SWF/tools', source / 'rust/tools', ignore=shutil.ignore_patterns('bootstrap', '__pycache__'))
+    shutil.copytree(ROOT / 'rust_swf/tools', source / 'rust/tools', ignore=shutil.ignore_patterns('bootstrap', '__pycache__'))
     for name in ('CODE_PARITY_SUITE.md', 'native-code-parity-contract.md', 'jpexs-identity-bridge.md'):
         if (PROJECT / 'docs' / name).is_file():
             shutil.copy2(PROJECT / 'docs' / name, target / name)

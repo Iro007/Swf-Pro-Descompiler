@@ -7,9 +7,9 @@ Una suite para descompilar, editar y comparar archivos SWF/Flash (AS1, AS2 y AS3
 | Carpeta | Contenido |
 |---|---|
 | [`py_swf_editor/`](py_swf_editor) | **PySWF**: parser, descompilador AVM1/AVM2, compilador del subconjunto admitido, editor de recursos, API web, CLI y arnés de benchmarks |
-| [`RUST SWF/`](<RUST SWF>) | **RustSWF**: crates `swf-core`, `swf-avm`, `swf-decompile` y `swf-cli`, más **Flash Universal Studio**, la aplicación Tauri/React que reúne todos los motores |
+| [`rust_swf/`](rust_swf) | **RustSWF**: crates `swf-core`, `swf-avm`, `swf-decompile` y `swf-cli`, más **Flash Universal Studio**, la aplicación Tauri/React que reúne todos los motores |
 | [`flashdec_py/`](flashdec_py) | **flashdec-py**: descompilador híbrido PySWF + JPEXS que conserva el mejor archivo de cada script |
-| [`RUST SWF/crates/flashdec/`](<RUST SWF/crates/flashdec>) | **flashdec-rs**: el mismo descompilador híbrido, con RustSWF + JPEXS |
+| [`rust_swf/crates/flashdec/`](rust_swf/crates/flashdec) | **flashdec-rs**: el mismo descompilador híbrido, con RustSWF + JPEXS |
 | [`benchmark_inputs/`](benchmark_inputs) | Corpus de prueba: proyectos AS2/AS3/Haxe con sus SWF compilados y casos de Ruffle y JPEXS |
 | [`shared/`](shared) | Contratos que Python y Rust leen por igual, por ahora [las reglas de puntuación](shared/scoring-rules.json) de los scripts descompilados con sus [casos de prueba](shared/scoring-vectors.json) |
 | [`docs/`](docs) | [Hoja de ruta y cómo funciona la suite](docs/HOJA_DE_RUTA.md), [flashdec](docs/FLASHDEC.md), [benchmarks de código](docs/BENCHMARKS_CODIGO.md) y la [matriz de funciones](docs/funciones_objetivo.json) |
@@ -27,8 +27,8 @@ Una suite para descompilar, editar y comparar archivos SWF/Flash (AS1, AS2 y AS3
 
 ## Preparar el entorno
 
-1. **Python**: crea `py_swf_editor/.venv` e instala el proyecto con `pip install -e ".[desktop,build]"`.
-2. **Rust**: ejecuta `RUST SWF/bootstrap.ps1`, que instala el toolchain GNU y MinGW verificados. Después, `RUST SWF/build.ps1` compila la suite completa.
+1. **Python**: crea `py_swf_editor/.venv` e instala el proyecto con `pip install -e ".[dev,build,benchmark]"`.
+2. **Rust**: ejecuta `rust_swf/bootstrap.ps1`, que instala el toolchain GNU y MinGW verificados. Después, `rust_swf/build.ps1` compila la suite completa.
 3. **JPEXS** (opcional, necesario para flashdec y las comparaciones): `py_swf_editor/tools/bootstrap_references.py` descarga y verifica el JDK y JPEXS 26.3 en `py_swf_editor/.dev-references/`.
 4. **Compiladores y referencias opcionales**:
    - `setup_suite_tools.py` instala Flex, Haxe y Ruffle en `toolpacks/`.
@@ -43,7 +43,7 @@ Las herramientas de terceros (JPEXS, JDK, SDK, instaladores de AS3 Sorcerer y AS
 
 ## Benchmarks
 
-Las campañas guardan sus resultados en `reports/` y el catálogo SQLite que muestra la pestaña **Benchmarks** de Flash Universal Studio. También se pueden consultar en la página web `RUST SWF/web/analysis.html`. Las métricas separan tres cosas: fuente emitida, proyectos recompilados y escenarios que coinciden con el original en Ruffle. Emitir texto no demuestra que el código compile ni que se comporte igual. Los detalles están en [docs/BENCHMARKS_CODIGO.md](docs/BENCHMARKS_CODIGO.md) y [py_swf_editor/docs/benchmark-tools.md](py_swf_editor/docs/benchmark-tools.md).
+Las campañas guardan sus resultados en `reports/` y el catálogo SQLite que muestra la pestaña **Benchmarks** de Flash Universal Studio. También se pueden consultar en la página web `rust_swf/web/analysis.html`. Las métricas separan tres cosas: fuente emitida, proyectos recompilados y escenarios que coinciden con el original en Ruffle. Emitir texto no demuestra que el código compile ni que se comporte igual. Los detalles están en [docs/BENCHMARKS_CODIGO.md](docs/BENCHMARKS_CODIGO.md) y [py_swf_editor/docs/benchmark-tools.md](py_swf_editor/docs/benchmark-tools.md).
 
 ## Licencia
 

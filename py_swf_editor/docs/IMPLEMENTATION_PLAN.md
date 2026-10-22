@@ -39,7 +39,7 @@ La campaña 0.3.0 usa comprobaciones de fuente/CLI, sin nuevas ventanas, navegad
 Resultados finales de fuente/CLI, conservando el alcance de cada suite:
 
 - Python: **788 passed, 1 skipped**, en 91,62 s. La omisión corresponde a un corpus público fijado no disponible; se registró un aviso de deprecación de Starlette.
-- RustSWF: **85 pruebas del núcleo y ocho del supervisor aprobadas**; una integración opcional del host permaneció ignorada. Clippy pasó. El [reporte fuente](../../RUST%20SWF/reports/rustswf-source-only-summary.json) también registra tres casos CLI opcionales de namespaces con Flex; corresponde al código probado antes del incremento de versión de empaquetado.
+- RustSWF: **85 pruebas del núcleo y ocho del supervisor aprobadas**; una integración opcional del host permaneció ignorada. Clippy pasó. El [reporte fuente](../../rust_swf/reports/rustswf-source-only-summary.json) también registra tres casos CLI opcionales de namespaces con Flex; corresponde al código probado antes del incremento de versión de empaquetado.
 - SDKs: **5/5**, Haxe, Haxe desde fuentes guardadas, Flex, HaxeFlixel y HaxeFlixel desde fuentes guardadas, en [suite-integration/verification.json](../reports/suite-integration/verification.json). Compilación y validación no acreditan comportamiento de runtime.
 - Módulos: **8/8**, AS2 PySWF/JPEXS, RABCDAsm y exportaciones de recursos, scripts, XML, FLA y XFL, en [suite-modules/verification.json](../reports/suite-modules/verification.json). FLA/XFL se produjo sin abrir Animate.
 - Compilador: **6/6** en una VM independiente acotada, en [native-compiler-cli/verification.json](../reports/native-compiler-cli/verification.json); sin GUI, navegador ni runtime Flash.

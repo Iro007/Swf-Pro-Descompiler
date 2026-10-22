@@ -6,7 +6,19 @@ import sys
 MAX_LINE = 8 * 1024 * 1024
 
 
+def utf8_streams():
+    """The protocol and CLI output are UTF-8 whatever the console code page.
+
+    Piped standard streams otherwise use the locale encoding (cp1252 on most
+    Windows installs), which corrupts paths and messages with accents.
+    """
+    for stream in (sys.stdin, sys.stdout, sys.stderr):
+        if stream is not None and hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8")
+
+
 def main():
+    utf8_streams()
     if len(sys.argv) > 1 and sys.argv[1] == "cli":
         from .suite_cli import main as cli_main
         return cli_main(sys.argv[2:])

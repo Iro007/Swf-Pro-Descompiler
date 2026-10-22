@@ -58,9 +58,10 @@ def checked_executable(executable, expected_sha256):
 class RustWorker:
     """Persistent native worker; all requests are correlated and bounded."""
 
-    def __init__(self, executable, expected_sha256, timeout=105):
+    def __init__(self, executable, expected_sha256, timeout=105, engine="rust"):
         if timeout <= 0:
             raise ValueError("Rust worker timeout must be positive")
+        self.engine = engine
         self.fingerprint = checked_executable(executable, expected_sha256)
         self.timeout = timeout
         self.responses = queue.Queue()
@@ -150,19 +151,27 @@ class RustWorker:
         reply = self.exchange("info", {}, time.perf_counter() + self.timeout)
         if "error" not in reply and not isinstance(reply.get("result"), dict):
             raise RustProtocolError("Rust info handshake has no result or error")
-        return {"ok": True, "engine": "rust", "tool_fingerprint": self.fingerprint}
+        return {"ok": True, "engine": getattr(self, "engine", "rust"), "tool_fingerprint": self.fingerprint}
 
     def close(self):
         process = getattr(self, "process", None)
         if process is None:
             return
+        try:
+            if process.stdin:
+                process.stdin.close()
+        except (OSError, ValueError):
+            pass
         if process.poll() is None:
-            process.terminate()
             try:
-                process.wait(timeout=2)
+                process.wait(timeout=0.5)
             except subprocess.TimeoutExpired:
-                process.kill()
-                process.wait(timeout=2)
+                process.terminate()
+                try:
+                    process.wait(timeout=2)
+                except subprocess.TimeoutExpired:
+                    process.kill()
+                    process.wait(timeout=2)
         for stream in (process.stdin, process.stdout, process.stderr):
             try:
                 stream.close()
@@ -321,10 +330,11 @@ def render_unit(worker, metadata, operation, include_source, deadline):
 
 
 def perform(worker, data, operation, include_source=False):
+    engine_id = getattr(worker, "engine", "rust")
     if operation == "source":
         operation = "decompile"
     if operation not in ("decompile", "disassemble"):
-        return {"ok": False, "engine": "rust", "status": "not_applicable", "units": [],
+        return {"ok": False, "engine": engine_id, "status": "not_applicable", "units": [],
                 "compilation": "not_run", "behavior": "not_run",
                 "diagnostic": "Rust supports source reconstruction and disassembly; no ActionScript compiler"}
     if len(data) > MAX_INPUT_BYTES:
@@ -374,11 +384,11 @@ def perform(worker, data, operation, include_source=False):
         generate_ms = (time.perf_counter() - started) * 1000
     mapping_complete = not (unmapped or missing or canonical_error)
     independent_check = cross_validate(byte_inventory, native)
-    byte_inventory['cross_validation'] = {'engine': 'rust', **independent_check}
-    generated = attach_observations(byte_inventory, generated, engine='rust', adapter_mode='rust_jsonl_byte_units')
+    byte_inventory['cross_validation'] = {'engine': engine_id, **independent_check}
+    generated = attach_observations(byte_inventory, generated, engine=engine_id, adapter_mode='rust_jsonl_byte_units')
     mapping_complete = mapping_complete and independent_check['status'] == 'verified'
     return {
-        "ok": True, "engine": "rust", "status": "measured" if mapping_complete else "output_unmapped",
+        "ok": True, "engine": engine_id, "status": "measured" if mapping_complete else "output_unmapped",
         "units": generated, "documents": [], "eligible_units": len(canonical),
         "unit_observations": generated, "canonical_inventory": byte_inventory,
         "canonical_inventory_sha256": byte_inventory['sha256'],
@@ -400,10 +410,14 @@ def perform(worker, data, operation, include_source=False):
 
 
 def main():
+    for stream in (sys.stdin, sys.stdout, sys.stderr):
+        if stream is not None and hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--executable", required=True)
     parser.add_argument("--sha256", required=True)
     parser.add_argument("--timeout", type=float, default=105)
+    parser.add_argument("--engine", default="rust")
     args = parser.parse_args()
     checked_executable(args.executable, args.sha256)
     worker = None
@@ -417,7 +431,7 @@ def main():
                 if not isinstance(request, dict):
                     raise ValueError("JSONL request must be an object")
                 if worker is None:
-                    worker = RustWorker(args.executable, args.sha256, args.timeout)
+                    worker = RustWorker(args.executable, args.sha256, args.timeout, engine=args.engine)
                 if request.get("operation") == "ping":
                     result = worker.ping()
                 else:
@@ -427,7 +441,7 @@ def main():
                     result = perform(worker, data, request.get("operation"), request.get("include_source", False))
                     result["input_decode_ms"] = decode_ms
             except Exception as error:
-                result = {"ok": False, "engine": "rust", "units": [], "diagnostic": str(error)}
+                result = {"ok": False, "engine": args.engine, "units": [], "diagnostic": str(error)}
                 if worker is not None:
                     worker.close()
                     worker = None

@@ -19,7 +19,7 @@ def main():
     evidence = root / 'reports/decompiler-improvements-20261013'
     snapshot = evidence / 'baseline-binaries'
     snapshot.mkdir(parents=True, exist_ok=True)
-    release = root / 'RUST SWF/dist/FlashUniversalStudio-Benchmarks'
+    release = root / 'rust_swf/dist/FlashUniversalStudio-Benchmarks'
     fingerprints = []
     for name in ('FlashSuiteWorker.exe', 'rustswf.exe'):
         if not (snapshot / name).exists():

@@ -19,7 +19,7 @@ def main():
     parser.add_argument('--profile', choices=('smoke', 'full'), default='smoke')
     parser.add_argument('--output', type=Path, default=root / 'reports/benchmark-cloud-matched-windows-20261013')
     parser.add_argument('--corpus', type=Path, default=root / 'benchmark_inputs/cloud-matched-micro-20261013')
-    parser.add_argument('--rust-cli', type=Path, default=root / 'RUST SWF/target/x86_64-pc-windows-gnu/release/rustswf.exe')
+    parser.add_argument('--rust-cli', type=Path, default=root / 'rust_swf/target/x86_64-pc-windows-gnu/release/rustswf.exe')
     args = parser.parse_args()
     if args.output.exists():
         raise ValueError('Selecciona un destino nuevo para conservar la campaña anterior')

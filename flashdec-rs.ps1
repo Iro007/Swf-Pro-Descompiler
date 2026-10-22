@@ -1,7 +1,7 @@
 # Descompilador híbrido Rust (RustSWF + JPEXS). Compila la primera vez.
 # Uso: .\flashdec-rs.ps1 juego.swf [-o salida] [--engine best|native|jpexs] [--help]
 $ErrorActionPreference = 'Stop'
-$project = Join-Path $PSScriptRoot 'RUST SWF'
+$project = Join-Path $PSScriptRoot 'rust_swf'
 $exe = Join-Path $project 'target\x86_64-pc-windows-gnu\release\flashdec-rs.exe'
 if (-not (Test-Path -LiteralPath $exe -PathType Leaf)) {
     $env:PATH = (Join-Path $project 'tools\bootstrap\mingw\mingw64\bin') + ';' + (Join-Path $env:USERPROFILE '.cargo\bin') + ';' + $env:PATH

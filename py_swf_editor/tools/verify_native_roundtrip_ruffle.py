@@ -32,7 +32,7 @@ def main():
     (folder/'decompiled-method.as').write_text(section['source'],encoding='utf-8')
     recompiled=NativePythonEngine().edit_unit(original,unit.metadata(),section['source'],source=True)
     a,b=folder/'original.swf',folder/'recompiled.swf';a.write_bytes(original);b.write_bytes(recompiled)
-    runtime=verify([('roundtrip-original',a,'ROUNDTRIP_OK'),('roundtrip-recompiled',b,'ROUNDTRIP_OK')],ROOT.parent/'RUST SWF/web/public/ruffle',folder,30,load_mode='data')
+    runtime=verify([('roundtrip-original',a,'ROUNDTRIP_OK'),('roundtrip-recompiled',b,'ROUNDTRIP_OK')],ROOT.parent/'rust_swf/web/public/ruffle',folder,30,load_mode='data')
     expected=['ROUNDTRIP_VALUE','14','ROUNDTRIP_OK']
     passed=runtime['passed'] and all(row['traces']==expected for row in runtime['fixtures'])
     report={'passed':passed,'engine':'native','unit':unit.metadata(),'reconstructed_source':section['source'],'original_sha256':hashlib.sha256(original).hexdigest(),'recompiled_sha256':hashlib.sha256(recompiled).hexdigest(),'expected_traces':expected,'runtime':'Ruffle 0.7.1 / Chromium','behavior_verified':passed,'scope':'One authored integer-arithmetic method; whole-document initialization and rendering exercised, no global decompiler parity claim','runtime_report':str((folder/'runtime-report.json').resolve())}

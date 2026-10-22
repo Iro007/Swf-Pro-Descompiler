@@ -25,8 +25,11 @@ class BenchmarkEngine:
 
 
 ENGINES = {
-    "rust": BenchmarkEngine("rust", "RustSWF", "decompiler", ("source", "disassemble"), ("as2", "as3"), "", "#b66a38", "See RUST SWF/LICENSE and THIRD_PARTY_NOTICES.md"),
+    "rust": BenchmarkEngine("rust", "RustSWF", "decompiler", ("source", "disassemble"), ("as2", "as3"), "", "#b66a38", "See rust_swf/LICENSE and THIRD_PARTY_NOTICES.md"),
     "native": BenchmarkEngine("native","PySWF","decompiler",("source","disassemble"),("as2","as3"),"","#167252","GPL-3.0"),
+    "js": BenchmarkEngine("js", "JsSWF", "decompiler", ("source", "disassemble"), ("as2", "as3"), "", "#d4940a", "GPL-3.0; Node.js ESM JSONL worker"),
+    "go": BenchmarkEngine("go", "GoSWF", "decompiler", ("source", "disassemble"), ("as2", "as3"), "", "#00add8", "GPL-3.0; Go native JSONL worker"),
+    "asm": BenchmarkEngine("asm", "AsmSWF (x86_64)", "decompiler", ("source", "disassemble"), ("as2", "as3"), "", "#9b4dca", "GPL-3.0; x86_64 GNU Assembly + C JSONL worker"),
     "jpexs": BenchmarkEngine("jpexs","JPEXS 26.3.0","decompiler",("source",),("as2","as3"),"https://github.com/jindrapetrik/jpexs-decompiler","#7961b6","GPL-3.0 / LGPL-3.0"),
     "pyflashkit": BenchmarkEngine("pyflashkit","pyflashkit 1.3.0","decompiler",("source","disassemble"),("as3",),"https://github.com/bitalizer/pyflashkit","#448899","MIT; isolated development runtime only"),
     "flare": BenchmarkEngine("flare","Flare 0.6","decompiler",("source",),("as2",),"https://www.nowrap.de/flare.html","#ba781c","Copyrighted freeware; not bundled or adapted"),
@@ -73,8 +76,30 @@ def checked_tool(engine, config_path=None):
     return config
 
 
-RUST_EXECUTABLE_CANDIDATES = ('RUST SWF/dist/FlashUniversalStudio/rustswf.exe',
-                              'RUST SWF/target/x86_64-pc-windows-gnu/release/rustswf.exe')
+RUST_EXECUTABLE_CANDIDATES = ('rust_swf/dist/FlashUniversalStudio/rustswf.exe',
+                              'rust_swf/target/x86_64-pc-windows-gnu/release/rustswf.exe')
+
+PEER_EXECUTABLE_CANDIDATES = {
+    "rust": RUST_EXECUTABLE_CANDIDATES,
+    "js": ('Js_swf/dist/jsswf.exe', 'rust_swf/dist/FlashUniversalStudio/jsswf.exe'),
+    "go": ('Go_swf/dist/goswf.exe', 'rust_swf/dist/FlashUniversalStudio/goswf.exe'),
+    "asm": ('Asm_swf/dist/asmswf.exe', 'rust_swf/dist/FlashUniversalStudio/asmswf.exe'),
+}
+
+
+def default_peer_executable(engine="rust"):
+    workspace = ROOT.parent.resolve()
+    candidates = []
+    exe_name = {"rust": "rustswf.exe", "js": "jsswf.exe", "go": "goswf.exe", "asm": "asmswf.exe"}.get(engine, f"{engine}swf.exe")
+    if getattr(sys, 'frozen', False):
+        portable = Path(sys.executable).resolve().parent
+        candidates.append((portable / exe_name, portable))
+    candidates.extend((workspace / relative, workspace) for relative in PEER_EXECUTABLE_CANDIDATES.get(engine, ()))
+    for candidate, allowed in candidates:
+        executable = candidate.resolve()
+        if executable.is_relative_to(allowed) and executable.is_file():
+            return executable
+    raise ValueError(f"{engine.upper()} CLI unavailable in the shared workspace")
 
 
 def default_rust_executable():
@@ -84,18 +109,7 @@ def default_rust_executable():
     portable application may be outside the development workspace, but its
     peer must remain beside that application's executable.
     """
-    workspace=ROOT.parent.resolve()
-    candidates=[]
-    if getattr(sys,'frozen',False):
-        portable=Path(sys.executable).resolve().parent
-        candidates.append((portable / 'rustswf.exe',portable))
-    # The single delivery folder written by RUST SWF/build.ps1, then the dev build.
-    candidates.extend((workspace / relative,workspace) for relative in RUST_EXECUTABLE_CANDIDATES)
-    for candidate,allowed in candidates:
-        executable = candidate.resolve()
-        if executable.is_relative_to(allowed) and executable.is_file():
-            return executable
-    raise ValueError("Rust CLI unavailable in the shared workspace")
+    return default_peer_executable("rust")
 
 
 def describe_engines(config_path=None):
@@ -126,15 +140,15 @@ def describe_engines(config_path=None):
                     record.update(version=metadata['version'], version_authority='Project pyproject.toml; source snapshot is identified separately by implementation_sha256')
             except (OSError, ValueError, KeyError):
                 record['version_authority'] = 'Project version metadata unavailable; no binary version inferred'
-        if engine.id == "rust":
+        if engine.id in ("rust", "js", "go", "asm"):
             try:
-                if config_path and tools_config(config_path).get("rust"):
-                    config = checked_tool("rust", config_path)
+                if config_path and tools_config(config_path).get(engine.id):
+                    config = checked_tool(engine.id, config_path)
                     record.update(configured=True, version=config.get('version'), executable=config["executable"], artifact_sha256=list(config["artifact_sha256"].values()),
                                   version_authority='Pinned executable configuration; local Rust source version is not substituted')
                 else:
-                    executable = default_rust_executable()
-                    record.update(configured=True, executable=str(executable), artifact_sha256=[hashlib.sha256(executable.read_bytes()).hexdigest()])
+                    executable = default_rust_executable() if engine.id == "rust" else default_peer_executable(engine.id)
+                    record.update(configured=True, version="0.3.0", executable=str(executable), artifact_sha256=[hashlib.sha256(executable.read_bytes()).hexdigest()])
                 record["output_scope"] = "Partial method/action source and instruction listings; no ActionScript compiler or verified behavior equivalence"
                 record["binary_source_match"] = "not_verified"
             except (OSError, ValueError, KeyError) as error:
@@ -149,7 +163,7 @@ def describe_engines(config_path=None):
             except (OSError, ValueError, KeyError, WorkerError) as error:
                 record["configured"] = False
                 record["setup_diagnostic"] = str(error)
-        if engine.id in ("flasm","flare","rabcdasm","pyflashkit","flex_swfdump","flashdec_py","flashdec_rs"):
+        if engine.id in ("flasm","flare","rabcdasm","pyflashkit","flex_swfdump","flashdec_py","flashdec_rs","swfmill","swfextract"):
             try:
                 config = checked_tool(engine.id,config_path)
                 record.update(configured=True,version=config.get("version"),artifact_sha256=list(config["artifact_sha256"].values()))
@@ -160,8 +174,10 @@ def describe_engines(config_path=None):
             record["setup_diagnostic"]="Pendiente de licencia y adaptador reproducible. El usuario confirmó que no dispone de una instalación autorizada."
         if engine.id in ("as3_sorcerer","asv"):
             record["setup_diagnostic"]="Candidato con licencia restringida; instalación y automatización aún no verificadas. No hay mediciones."
-        if engine.id in ("swfmill","swfextract","ruffle"):
-            record["setup_diagnostic"]="Referencia de otra operación. No se ejecutó ni se mezcla con la recuperación de fuente ActionScript."
+        if engine.id=="ruffle":
+            record["setup_diagnostic"]="Runtime de referencia: ejecuta originales y recompilados en la campaña semántica (Escenarios coincidentes); no se clasifica contra descompiladores."
+        if engine.id in ("swfmill","swfextract") and not record.get("configured"):
+            record["setup_diagnostic"]="Operación propia (ida y vuelta XML / extracción de recursos). Ejecute tools/setup_swf_utilities.py para instalarla y medirla."
         if engine.id=="trillix":
             record["distribution_aliases"]=["https://flash-swf-decompiler.uptodown.com/windows"]
             record["alias_note"]="Uptodown lists Eltima Software's Flash SWF Decompiler; do not count a distribution portal as an independent engine."

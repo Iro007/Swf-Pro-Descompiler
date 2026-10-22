@@ -189,6 +189,9 @@ def handle(request):
 
 
 def main():
+    for stream in (sys.stdin, sys.stdout, sys.stderr):
+        if stream is not None and hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8")
     protocol = sys.stdout
     sys.stdout = sys.stderr
     for line in sys.stdin:

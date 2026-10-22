@@ -18,8 +18,8 @@
       "rust": "implemented_reading_and_wrapper_roundtrip",
       "evidence": [
         "py_swf_editor/py_swf/swf_parser.py",
-        "RUST SWF/crates/swf-core/src",
-        "RUST SWF/reports/rustswf-source-only-summary.json"
+        "rust_swf/crates/swf-core/src",
+        "rust_swf/reports/rustswf-source-only-summary.json"
       ]
     },
     {
@@ -30,7 +30,7 @@
       "rust": "implemented_paginated",
       "evidence": [
         "py_swf_editor/py_swf/script_inventory.py",
-        "RUST SWF/crates/swf-avm/src"
+        "rust_swf/crates/swf-avm/src"
       ]
     },
     {
@@ -57,7 +57,7 @@
       "rust": "delegated_to_pyswf_in_suite",
       "evidence": [
         "py_swf_editor/py_swf/editing.py",
-        "RUST SWF/README.md"
+        "rust_swf/README.md"
       ],
       "verification": "Fuente aportada con hash del texto y revisión del SWF; recompilación desde fuentes guardadas. Familias AS no compatibles permanecen acotadas."
     },
@@ -126,7 +126,7 @@
       "evidence": [
         "py_swf_editor/tests/test_suite_resource_documents.py",
         "py_swf_editor/tests/test_suite_font_documents.py",
-        "RUST SWF/web/src/components/SuiteResources.tsx"
+        "rust_swf/web/src/components/SuiteResources.tsx"
       ]
     }
   ],

@@ -26,7 +26,7 @@ Este plan explica cómo funciona hoy (Parte 1) y propone una hoja de ruta por fa
 ## Parte 1: cómo funciona hoy
 
 ```
-                 Flash Universal Studio (Tauri + React: RUST SWF/desktop + RUST SWF/web)
+                 Flash Universal Studio (Tauri + React: rust_swf/desktop + rust_swf/web)
                  ┌─────────────────────────────┬──────────────────────────────────────────┐
   Explorador ───▶│ rpc  → rustswf.exe worker    │ suite_rpc → FlashSuiteWorker.exe worker   │◀── Mesa de trabajo
   (App.tsx)      │ (crates swf-core/avm/        │ (= py_swf/universal.py: UniversalSuite)   │   (SuiteWorkbench.tsx)
@@ -42,7 +42,7 @@ Este plan explica cómo funciona hoy (Parte 1) y propone una hoja de ruta por fa
 ```
 
 **Procesos.**
-- **`rustswf.exe`** (`RUST SWF/crates/swf-cli`) alimenta el *Explorador*: árbol de recursos y scripts, código, P-code, hexadecimal y exportación. Solo lee. Tiene un límite fijo de 30 s y una lista de operaciones permitidas.
+- **`rustswf.exe`** (`rust_swf/crates/swf-cli`) alimenta el *Explorador*: árbol de recursos y scripts, código, P-code, hexadecimal y exportación. Solo lee. Tiene un límite fijo de 30 s y una lista de operaciones permitidas.
 - **`FlashSuiteWorker.exe`** es Python congelado y es el **orquestador real**. `UniversalSuite` (`py_swf_editor/py_swf/universal.py`, 1447 líneas) despacha unas 37 operaciones con una cadena de `if`:
   - abrir, descompilar, comparar, editar, deshacer/rehacer, compilar proyecto, editar recursos
   - exportar (FLA/XFL vía JPEXS), timeline, vista previa
@@ -80,7 +80,7 @@ Este plan explica cómo funciona hoy (Parte 1) y propone una hoja de ruta por fa
 | Orquestador | Clase gigante con cadena de `if`; herramientas escritas dentro del código; busca uno a uno en RustSWF (`_rust_unit`) | `universal.py` |
 | Interfaces | Tauri (la buena) + Qt `gui/` + pywebview `desktop.py` + FastAPI `server/` con `py_swf_editor/web/` (con su propia sesión y deshacer) | `py_swf_editor/` |
 | Procesos | El mismo SWF se analiza en dos procesos; dos supervisores y dos protocolos duplicados | `desktop/src/main.rs`, `suite.rs` |
-| Rutas | Cadenas de carpetas con fecha (`FlashUniversalStudio-*-20261014/17`), `.dev-references`, `toolpacks`, `RUST SWF` con espacio (36 archivos), oráculo Ruffle con nombre-hash en `%LOCALAPPDATA%` | launchers, `suite_tools.py`, `benchmark_engines.py`, `run_semantic_benchmarks.py` |
+| Rutas | Cadenas de carpetas con fecha (`FlashUniversalStudio-*-20261014/17`), `.dev-references`, `toolpacks`, la carpeta `RUST SWF` con espacio (36 archivos; ya renombrada a `rust_swf`), oráculo Ruffle con nombre-hash en `%LOCALAPPDATA%` | launchers, `suite_tools.py`, `benchmark_engines.py`, `run_semantic_benchmarks.py` |
 | Benchmarks | Tiempo y memoria casi siempre N/V. No se miden compiladores, ida y vuelta de desensambladores ni exportadores de recursos. "smoke" apunta a archivos inexistentes. El catálogo crece por encima del límite | `benchmarks.py` (`SMOKE_FILES`), `benchmarkModel.ts`, `benchmark_catalog.py` |
 | Calidad propia | RustSWF rechaza closures anónimos, try/finally, switch y bucles complejos (23 códigos `UNSUPPORTED_*`). El compilador AS3 nativo solo admite un subconjunto | `swf-decompile/src/reconstruct.rs`, `py_swf/compiler/` |
 | Repo | CI solo Ubuntu, sin `cargo test` ni Windows. Casi sin tests de web y escritorio. Bug probable: snapshots idénticos se fusionan al reabrir | `.github/workflows/ci.yml`, `project.py:from_archive` |
@@ -98,7 +98,7 @@ Este plan explica cómo funciona hoy (Parte 1) y propone una hoja de ruta por fa
 6. **Una sola carpeta de entrega** `dist/FlashUniversalStudio/`, y en la versión empaquetada ninguna ruta relativa al workspace.
 
 ### Fase 0: red de seguridad y limpieza (S–M)
-- **Fusionar el PR #3.** Después, CI con un job `windows-latest` que ejecute `cargo test --workspace`, ambas suites pytest y `npm run lint && npm run build` de `RUST SWF/web`. Se quita el job de `py_swf_editor/web`.
+- **Fusionar el PR #3.** Después, CI con un job `windows-latest` que ejecute `cargo test --workspace`, ambas suites pytest y `npm run lint && npm run build` de `rust_swf/web`. Se quita el job de `py_swf_editor/web`.
 - **`SMOKE_FILES`** (`py_swf/benchmarks.py`): pasa a ids que existen (los 3 SWF de `benchmark_inputs/` + 3 familias parity). Un test falla si falta alguno, y el "smoke" no admite SWF inválidos.
 - **Bug de snapshots** en `project.from_archive`: mapear por nombre, no por hash. Test con dos snapshots idénticos.
 - **Interfaces viejas.** Crear la etiqueta `legacy-ui-final` y borrar `gui/`, `main.py`, `desktop.py`, `py_swf_editor/web/`, `Dockerfile` y `docker-compose.yml`. Quitar PySide6 y pywebview de `requirements.txt`. `server/` se elimina en la Fase 1, cuando exista su reemplazo.
@@ -106,7 +106,7 @@ Este plan explica cómo funciona hoy (Parte 1) y propone una hoja de ruta por fa
   - `build.ps1` escribe solo `dist/FlashUniversalStudio/`, y `tar.exe -a` reemplaza `Compress-Archive`.
   - `flash-studio.ps1`, `pyswf.ps1` y `benchmark_engines.default_rust_executable` usan esa ruta, más un fallback de desarrollo.
   - Las carpetas con fecha se archivan a mano.
-- **Renombrar `RUST SWF` → `rust_swf`** en un commit aislado: 36 archivos, y desaparece la junction de windres. `bootstrap.ps1` crea una junction `RUST SWF` opcional para accesos viejos.
+- ✅ **Renombrar `RUST SWF` → `rust_swf`** en un commit aislado (41 archivos). La junction de `tools/env.ps1` se mantiene: windres también falla con los espacios de la ruta del workspace (`PRO FLASH DESCOMPILER`). No se crea un alias `RUST SWF`, así que los accesos directos viejos deben apuntar a `rust_swf`.
 - *Hecho cuando* la CI está en verde en Windows, `pyswf benchmark --profile smoke` corre sobre ids fijos y la app abre desde la ruta única.
 
 ### Fase 1: un solo registro de herramientas (M)
@@ -243,7 +243,7 @@ Este plan explica cómo funciona hoy (Parte 1) y propone una hoja de ruta por fa
 4. ✅ Una sola carpeta de entrega `dist/FlashUniversalStudio` (más la compilación de desarrollo en `target/`) en `build.ps1`, los launchers y la búsqueda de `rustswf.exe`. `tar.exe` sustituye a `Compress-Archive`.
 5. ✅ `shared/scoring-rules.json` + `scoring-vectors.json`, leídos por `flashdec_py` y embebidos por `flashdec-rs`, con los mismos casos de prueba en ambos.
 
-**Siguiente:** renombrar `RUST SWF` → `rust_swf` (tras fusionar el PR) y empezar la Fase 1 (registro único).
+**Siguiente:** la Fase 1 (registro único). El renombrado `RUST SWF` → `rust_swf` ya está hecho.
 
 ---
 
@@ -251,8 +251,8 @@ Este plan explica cómo funciona hoy (Parte 1) y propone una hoja de ruta por fa
 - **Tests**:
   - `py_swf_editor`: `.venv\Scripts\python.exe -m pytest tests` (~621 tests)
   - `flashdec_py`: `pytest tests`
-  - `RUST SWF`: `. .\tools\env.ps1; cargo test --workspace`
-  - `RUST SWF/web`: `npm run lint && npm run build`
+  - `rust_swf`: `. .\tools\env.ps1; cargo test --workspace`
+  - `rust_swf/web`: `npm run lint && npm run build`
   - Todo esto también en la CI de Windows.
 - **App de extremo a extremo**: `build.ps1`, después `flash-studio.ps1`. Abrir `benchmark_inputs/as3_new.flex.swf`, descompilar en "auto", editar y recompilar con Flex, exportar recursos, vista previa en Ruffle.
 - **Benchmarks**: `python -m py_swf.bench run --profile smoke` en las cinco categorías, revisar la pestaña Benchmarks (sin N/V sin motivo) y `bench gate` contra las líneas base.

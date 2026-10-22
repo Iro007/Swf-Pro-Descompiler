@@ -8,13 +8,13 @@ __pycache__/
 .pytest_cache/
 *.egg-info/
 
-# Compilación y entregas: se regeneran con RUST SWF/build.ps1 y PyInstaller
+# Compilación y entregas: se regeneran con rust_swf/build.ps1 y PyInstaller
 target/
 dist/
 build/
-RUST SWF/reports/
-RUST SWF/desktop/binaries/
-RUST SWF/tools/bootstrap/
+rust_swf/reports/
+rust_swf/desktop/binaries/
+rust_swf/tools/bootstrap/
 
 # Informes, catálogos SQLite y evidencias de benchmarks (varios GB; se regeneran)
 /reports/
@@ -36,3 +36,10 @@ py_swf_editor/.dev-references/
 .vscode/
 .idea/
 *.log
+
+# Toolchains descargadas por los bootstrap de los motores (Go, MinGW...) y binarios compilados
+*/tools/bootstrap/
+Go_swf/dist/
+Asm_swf/dist/
+Js_swf/dist/
+Js_swf/node_modules/

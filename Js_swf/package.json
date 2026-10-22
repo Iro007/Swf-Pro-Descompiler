@@ -1,0 +1,13 @@
+{
+  "name": "js-swf-engine",
+  "version": "0.3.0",
+  "description": "JsSWF: Motor nativo en JavaScript (Node.js) para analisis, inventario canonico, desensamblado y descompilacion de SWF (AVM1/AVM2)",
+  "type": "module",
+  "license": "GPL-3.0-or-later",
+  "bin": {
+    "jsswf": "./src/cli.mjs"
+  },
+  "scripts": {
+    "test": "node --test tests/jsswf.test.mjs"
+  }
+}

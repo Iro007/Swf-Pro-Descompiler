@@ -32,6 +32,7 @@ from py_swf import paths
 WORKSPACE = paths.WORKSPACE
 
 from py_swf.benchmark_engines import ENGINES
+from py_swf.closeness import compare
 from py_swf.corpus import read_immutable_manifest
 from py_swf.suite_tools import fingerprint
 from run_ruffle_trace_probe import bounded_run
@@ -104,6 +105,44 @@ def run_job(pins, case, engine, work, timeout):
     return result
 
 
+def documents_of(result):
+    """The generated documents of a finished job, with their text read back from disk."""
+    units = []
+    for document in result.get("source", {}).get("documents", []):
+        text = document.get("source")
+        if text is None and document.get("source_file"):
+            try:
+                text = Path(document["source_file"]).read_text(encoding="utf-8")
+            except OSError:
+                text = None
+        units.append({"document_id": document.get("document_id"), "scope": document.get("scope"),
+                      "bytecode_sha256": document.get("bytecode_sha256"), "unit_ids": document.get("unit_ids"), "source": text})
+    return units
+
+
+def closeness_row(engine_job, reference_job, data):
+    """Fields the table reads: similarity to JPEXS and how much of JPEXS's output the engine covers."""
+    if reference_job is None:
+        return {"jpexs_closeness": None, "jpexs_coverage": None, "jpexs_reason": "JPEXS no se ejecutó para este caso"}
+    reference = documents_of(reference_job)
+    if not any(unit["source"] is not None for unit in reference):
+        why = reference_job.get("diagnostic") or reference_job.get("source", {}).get("diagnostic") or "JPEXS no emitió fuente"
+        return {"jpexs_closeness": None, "jpexs_coverage": None, "jpexs_reason": "JPEXS: " + str(why).strip().splitlines()[-1][:200]}
+    engine = documents_of(engine_job)
+    try:
+        found = compare(engine, reference, data)
+    except Exception as error:
+        return {"jpexs_closeness": None, "jpexs_coverage": None, "jpexs_reason": "comparación fallida: " + str(error)[:160]}
+    return {"jpexs_closeness": found["closeness"], "jpexs_coverage": found["coverage"],
+            "jpexs_weighted": found["weighted"], "jpexs_detail": {k: found[k] for k in ("reference_units", "matched", "excluded")},
+            "jpexs_reason": "" if found["closeness"] is not None else "ninguna unidad verificada coincide con JPEXS"}
+
+
+def mean(values):
+    values = [v for v in values if v is not None]
+    return sum(values) / len(values) if values else None
+
+
 def table(rows):
     """One line per engine; the winner is named only when the lead exceeds the noise."""
     by_engine = defaultdict(list)
@@ -111,10 +150,14 @@ def table(rows):
         by_engine[row["engine"]].append(row)
     lines = []
     for engine, items in by_engine.items():
+        reference = engine == "jpexs"
         lines.append({"engine": engine, "name": ENGINES[engine].name, "cases": len(items),
                       "source": sum(r["source"] for r in items),
                       "recompiles": sum(r["recompiles"] is True for r in items),
                       "same_trace": sum(r["same_trace"] is True for r in items),
+                      "jpexs_closeness": 1.0 if reference else mean(r.get("jpexs_closeness") for r in items),
+                      "jpexs_coverage": 1.0 if reference else mean(r.get("jpexs_coverage") for r in items),
+                      **({"reference": True} if reference else {}),
                       "reasons": sorted({r["reason"] for r in items if r["reason"]})[:3]})
     lines.sort(key=lambda l: (-l["same_trace"], -l["recompiles"], -l["source"]))
     if len(lines) > 1:
@@ -171,17 +214,22 @@ def simple_table(rows, category):
     return {"unit": UNITS[category], "winner": winner, "note": note, "engines": lines}
 
 
+def percent(value):
+    return "—" if value is None else "%.0f%%" % (100 * value)
+
+
 def show(tables):
     for category, data in tables.items():
         print()
         print("== %s ==  (%s)" % (CATEGORIES[category], data["unit"]))
         if category == "decompilers":
-            print("%-12s %5s %8s %10s %11s" % ("motor", "casos", "fuente", "recompila", "misma traza"))
+            print("%-12s %5s %8s %10s %11s %11s %11s" % ("motor", "casos", "fuente", "recompila", "misma traza", "cerca JPEXS", "cubre JPEXS"))
         else:
             print("%-12s %5s %9s" % ("motor", "casos", "correctos"))
         for line in data["engines"]:
             if category == "decompilers":
-                print("%-12s %5d %8d %10d %11d" % (line["engine"], line["cases"], line["source"], line["recompiles"], line["same_trace"]))
+                print("%-12s %5d %8d %10d %11d %11s %11s" % (line["engine"], line["cases"], line["source"], line["recompiles"], line["same_trace"],
+                                                           percent(line.get("jpexs_closeness")), percent(line.get("jpexs_coverage"))))
             else:
                 print("%-12s %5d %9d" % (line["engine"], line["cases"], line["ok"]))
             for reason in line["reasons"]:
@@ -215,21 +263,34 @@ def main():
     tables, all_rows = {}, {}
 
     if "decompilers" in args.only:
-        pins = discover_pins(settings(args.engines, args.job_timeout))
+        runnable = list(args.engines) + ([] if "jpexs" in args.engines else ["jpexs"])
+        pins = discover_pins(settings(runnable, args.job_timeout))
         rows = []
         for case in cases:
-            for engine in args.engines:
+            results, case_rows = {}, {}
+            for engine in runnable:
                 base = {"engine": engine, "family": case["family_id"], "case": case["relative"], "language": case["language"],
                         "source": False, "recompiles": None, "same_trace": None}
                 if pins["source_tools"].get(engine, {}).get("status") == "not_configured":
-                    rows.append({**base, "reason": "no instalado: " + str(pins["source_tools"][engine].get("diagnostic", ""))[:200]})
-                    continue
-                if case["language"] not in ENGINES[engine].languages:
-                    rows.append({**base, "reason": "no lee " + case["language"].upper()})
-                    continue
-                work = folder / "work" / (case["family_id"] + "-" + engine)
-                rows.append(verdict(run_job(pins, case, engine, work, args.job_timeout)))
-                print("descompilador", case["family_id"], engine, rows[-1]["same_trace"], flush=True)
+                    row = {**base, "reason": "no instalado: " + str(pins["source_tools"][engine].get("diagnostic", ""))[:200]}
+                elif case["language"] not in ENGINES[engine].languages:
+                    row = {**base, "reason": "no lee " + case["language"].upper()}
+                else:
+                    work = folder / "work" / (case["family_id"] + "-" + engine)
+                    results[engine] = run_job(pins, case, engine, work, args.job_timeout)
+                    row = verdict(results[engine])
+                    print("descompilador", case["family_id"], engine, row["same_trace"], flush=True)
+                case_rows[engine] = row
+            data = (CORPUS / case["relative"]).read_bytes()
+            for engine in args.engines:
+                row = case_rows[engine]
+                if engine == "jpexs":
+                    row.update(jpexs_closeness=1.0 if "jpexs" in results else None, jpexs_coverage=1.0 if "jpexs" in results else None)
+                elif engine in results:
+                    row.update(closeness_row(results[engine], results.get("jpexs"), data))
+                else:
+                    row.update(jpexs_closeness=None, jpexs_coverage=None)
+                rows.append(row)
         if not args.keep_evidence:
             shutil.rmtree(folder / "work", ignore_errors=True)
         tables["decompilers"], all_rows["decompilers"] = table(rows), rows

@@ -47,3 +47,35 @@ def test_engines_measured_on_different_cases_never_get_a_winner():
     assert same["winner"] == "a"
     skipped = [line for line in same["engines"] if line["engine"] == "x"][0]
     assert skipped["cases"] == 0 and skipped["reasons"] == ["no lee AS2"]
+
+
+def test_closeness_fields_are_means_and_jpexs_is_the_reference():
+    row = lambda engine, close, cover: {"engine": engine, "source": True, "recompiles": True, "same_trace": True,  # noqa: E731
+                                        "reason": "", "jpexs_closeness": close, "jpexs_coverage": cover}
+    result = bench.table([row("native", 0.8, 1.0), row("native", None, None), row("native", 0.6, 0.5),
+                          row("rust", None, None), row("jpexs", None, None)])
+    by = {line["engine"]: line for line in result["engines"]}
+    assert abs(by["native"]["jpexs_closeness"] - 0.7) < 1e-9 and by["native"]["jpexs_coverage"] == 0.75
+    assert by["rust"]["jpexs_closeness"] is None and by["rust"]["jpexs_coverage"] is None
+    assert by["jpexs"]["jpexs_closeness"] == 1.0 and by["jpexs"]["jpexs_coverage"] == 1.0 and by["jpexs"]["reference"] is True
+    assert "reference" not in by["native"]
+
+
+def test_closeness_row_says_why_when_jpexs_is_missing_or_failed():
+    assert bench.closeness_row({}, None, b"")["jpexs_closeness"] is None
+    failed = bench.closeness_row({}, {"status": "failed", "diagnostic": "boom"}, b"")
+    assert failed["jpexs_closeness"] is None and "boom" in failed["jpexs_reason"]
+
+
+def test_percent_prints_a_dash_for_missing_values():
+    assert bench.percent(None) == "—" and bench.percent(0.756) == "76%"
+
+
+def test_closeness_uses_documents_even_when_the_project_was_not_assembled(monkeypatch):
+    reference = {"status": "not_supported", "source": {"status": "not_supported", "documents": [
+        {"document_id": "d", "scope": "class", "bytecode_sha256": "h", "source": "class A {}"}]}}
+    seen = {}
+    monkeypatch.setattr(bench, "compare", lambda e, r, data: seen.update(engine=e, reference=r) or
+                        {"closeness": 0.5, "coverage": 1.0, "weighted": 0.5, "reference_units": 1, "matched": 1, "excluded": {}})
+    row = bench.closeness_row({"source": {"documents": []}}, reference, b"")
+    assert row["jpexs_closeness"] == 0.5 and seen["reference"][0]["source"] == "class A {}"

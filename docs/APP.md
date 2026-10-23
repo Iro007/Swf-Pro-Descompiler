@@ -6,18 +6,22 @@ Suite local de descompilación, edición y compilación SWF/Flash para Windows. 
 
 Ejecuta dist/FlashUniversalStudio/FlashUniversalStudio.exe (la carpeta única que genera build.ps1). El ZIP portable es dist/FlashUniversalStudio-portable.zip: extrae toda la carpeta y conserva FlashSuiteWorker.exe, rustswf.exe, WebView2Loader.dll y licenses junto al programa.
 
-Los motores nativos incluyen su runtime; no necesitan Python, Rust, Node ni Java instalados en el equipo. Windows 10/11 x64 y WebView2 Runtime son los requisitos. Los motores externos conservan sus propios requisitos y se configuran en **Mesa de trabajo → Herramientas**. Desde la carpeta compartida, flash-studio.ps1 abre la suite por defecto.
+Los motores nativos incluyen su runtime; no necesitan Python, Rust, Node ni Java instalados en el equipo. Windows 10/11 x64 y WebView2 Runtime son los requisitos. Los motores externos conservan sus propios requisitos y se configuran en **Herramientas → Motores…**. Desde la carpeta compartida, flash-studio.ps1 abre la suite por defecto.
 
-## Mesa de trabajo
+## Ventana única
 
-- **Editor y comparación:** fuente, P-code exacto y resultados separados de PySWF, RustSWF y JPEXS. Automático utiliza un módulo disponible cuando los motores propios no reconstruyen la unidad. Muestra procedencia, diagnósticos y restricciones.
-- **Recursos:** exploración, extracción, sustitución de imágenes y audio, texto editable, FPS, vértices de formas, glifos y propiedades de fuentes compatibles. La edición vectorial muestra contornos y coordenadas; las formas usan píxeles y los glifos conservan su escala EM.
-- **Proyectos e historial:** original separado, undo/redo, snapshots y .pyswfproj v3. Lee v1/v2 y conserva fuentes, revisiones y toolchains. Permite editar fuentes aportadas AS/Haxe/Project.xml, guardarlas y recompilar el proyecto; los borradores y errores permanecen visibles. El directorio de recuperación se conserva después de cancelar o cerrar.
-- **Compilar:** AS1/AS2 nativo o JPEXS; AS3 nativo o Flex; Haxe y HaxeFlixel. Compilación y reproducción son acciones separadas. Los errores conservan borradores.
-- **Exportación:** paquete ZIP, scripts, SWF XML y FLA/XFL mediante JPEXS. El ZIP de recursos se identifica como tal.
-- **Timeline:** display list y SVG estático por cuadro. **Preview:** Ruffle web local, cargado explícitamente; red y acceso JavaScript de la película desactivados.
-- **Benchmarks:** campañas por corpus, operación, motor y perfil, con hashes, fallos, tiempos y memoria. Fuente disponible y compilación correcta no acreditan equivalencia de comportamiento.
-- **Herramientas:** capacidades/disponibilidad y configuración local. Los proveedores comerciales usan instalaciones del usuario y flujo asistido; los instaladores no cuentan como motores.
+La aplicación es una sola ventana con el aspecto de JPEXS: menú, barra de herramientas, **árbol del SWF** a la izquierda y un **panel de contenido** a la derecha que cambia según el elemento elegido. No hay un explorador aparte ni una mesa de trabajo con estado propio: todo trabaja sobre la misma copia de trabajo de la suite Python (RustSWF sigue disponible como motor).
+
+- **Árbol:** Cabecera, Formas, Formas morf., Sprites (con sus cuadros y etiquetas), Textos, Imágenes, Películas, Sonidos, Botones, Fuentes, Datos binarios, Cuadros, Otros y Scripts. Las carpetas vacías no aparecen. En Scripts, las clases AS3 se agrupan por paquete; AS1/AS2 se agrupa por cuadros, sprites, botones e inicializadores. Si el proyecto conserva fuentes aportadas aparece también *Fuentes del proyecto*. Incluye filtro rápido (Ctrl+F; también encuentra clases por el nombre de un método), expandir/contraer todo y el teclado de un árbol (flechas, Inicio/Fin, Intro). El ancho del árbol se recuerda.
+- **Scripts:** fuente descompilada a la izquierda y P-code (solo lectura) a la derecha, con resaltado de sintaxis. Una clase se muestra completa y sus miembros (constructor, inicializador estático, métodos…) se eligen debajo, como los traits de JPEXS. El selector de motor ofrece *Automático* y los motores configurados; *Comparar motores* enseña la salida de cada uno. El texto es editable cuando el motor lo admite: **Aplicar y validar** valida el candidato y lo incorpora al historial; los borradores se conservan al cambiar de elemento o de motor. Con JPEXS se edita el documento completo de la clase.
+- **Imágenes, formas, sprites, textos y fuentes:** vista previa estática (zoom, tamaño real, fondo claro/oscuro/transparente), propiedades y edición de recursos (sustituir imagen o audio, texto, FPS, vértices de formas y glifos, propiedades de fuentes) y bytes. Para sprites, cuadros y la película completa se ofrece Ruffle bajo petición.
+- **Hex:** páginas de 1 a 64 KiB de cualquier tag, o del archivo completo desde la cabecera.
+- **Cabecera:** firma y compresión, versión, longitud, escenario, velocidad (editable), cuadros, tags, ActionScript 3 y metadatos.
+- **Menús:** *Archivo* (abrir SWF o proyecto, guardar proyecto, guardar SWF como…, exportar, cerrar), *Edición* (deshacer, rehacer, validar), *Ver* (tema del sistema, claro u oscuro), *Herramientas* (compilar, motores, benchmarks, ensamblado ABC) y *Ayuda*. Guardar nunca sobrescribe: el original y los archivos existentes no son destinos.
+- **Compilar:** AS1/AS2 nativo o JPEXS; AS3 nativo o Flex; Haxe y HaxeFlixel; recompilación de las fuentes guardadas del proyecto. Compilación y reproducción son acciones separadas.
+- **Exportar:** paquete ZIP de recursos, scripts, SWF XML y FLA/XFL mediante JPEXS.
+- **Motores:** capacidades, disponibilidad y rutas locales; añade el estado de los motores que solo mide el banco de pruebas. Los proveedores comerciales usan instalaciones del usuario y flujo asistido.
+- **Benchmarks:** campañas de `medir-codigo.ps1`. La tabla de descompiladores añade **% cerca de JPEXS** (parecido medio del texto con el de JPEXS) y **% de unidades de JPEXS** (cuántas unidades de JPEXS emite también el motor); «—» indica que no hay medida. No miden corrección: el ganador se decide solo por comportamiento.
 
 Las ediciones de bytecode y recursos validan y reabren un candidato antes de modificar el historial. Guardar fuentes aportadas modifica el texto del proyecto y deja `source_pending` hasta recompilar; comprueba la revisión del SWF y el hash del texto. Ambos tipos de cambio tienen undo/redo. El original y archivos de salida existentes no son destinos implícitos. Una revisión obsoleta se rechaza sin perder el borrador.
 

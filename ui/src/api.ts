@@ -1,15 +1,31 @@
-import {convertFileSrc,invoke,isTauri} from '@tauri-apps/api/core';
-import {OpenResult,SuitePickKind} from './types';
+/**
+ * The only module that talks to the desktop host (Tauri today, Electron next).
+ * Everything else in the interface calls these small functions, so swapping the
+ * host means rewriting this file and nothing else.
+ */
+import {invoke, isTauri} from '@tauri-apps/api/core';
+import {getCurrentWebview} from '@tauri-apps/api/webview';
+import {SuitePickKind} from './types';
+
+/** True inside the desktop application; false in a plain browser tab. */
 export const native=isTauri();
-export const openDocument=(path?:string)=>invoke<OpenResult|null>('open_document',{path:path??null});
-export const rpc=<T>(sid:string,operation:string,args:Record<string,unknown>={})=>invoke<T>('rpc',{sessionId:sid,operation,args});
-export const cancel=()=>invoke('cancel');
-export const startup=()=>native?invoke<{path:string|null;smoke:boolean}>('startup'):Promise.resolve({path:null,smoke:false});
-export const verified=(evidence:unknown)=>native?invoke('ui_verified',{evidence}):Promise.resolve();
-export const verifyExport=(sid:string,id:string,format:string,kind:string)=>invoke('verify_export',{sessionId:sid,id,format,kind});
-export const assetUrl=(path:string)=>convertFileSrc(path);
-export const exportItem=(sid:string,id:string,format:string,kind:string)=>invoke<{path:string;warning?:string|null}|null>('export_item',{sessionId:sid,id,format,kind});
-export const exportBatch=(sid:string)=>invoke<{path:string;items:number;complete:boolean;warning?:string|null}|null>('export_batch',{sessionId:sid});
+
+/** Run one operation of the Python suite (JSONL protocol v1). */
 export const suiteRpc=<T,>(operation:string,args:Record<string,unknown>={})=>invoke<T>('suite_rpc',{operation,args});
+/** Native file/folder dialogs; resolves to null when the person cancels. */
 export const suitePick=(kind:SuitePickKind)=>invoke<string|null>('suite_pick',{kind});
-export const suiteCancel=()=>invoke('suite_cancel');
+/** Stop the running suite operation; the next one recovers the session from disk. */
+export const suiteCancel=()=>invoke<void>('suite_cancel');
+
+export interface StartupInfo {path:string|null;smoke:boolean}
+/** File passed on the command line (`--open`) and whether a verification report was requested. */
+export const startup=():Promise<StartupInfo>=>native?invoke<StartupInfo>('startup'):Promise.resolve({path:null,smoke:false});
+/** Evidence for tools/verify-release.ps1; ignored outside the desktop application. */
+export const reportVerification=(verification:unknown):Promise<void>=>native?invoke<void>('ui_verified',{evidence:{verification}}):Promise.resolve();
+
+/** Files dropped on the window. Returns the function that stops listening. */
+export const onFileDrop=(handler:(path:string)=>void):(()=>void)=>{
+  if(!native)return()=>undefined;
+  const pending=getCurrentWebview().onDragDropEvent(event=>{if(event.payload.type==='drop'&&event.payload.paths[0])handler(event.payload.paths[0]);});
+  return()=>{void pending.then(unlisten=>unlisten()).catch(()=>undefined);};
+};

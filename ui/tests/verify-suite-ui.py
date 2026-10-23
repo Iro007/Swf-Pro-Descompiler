@@ -1,130 +1,234 @@
-"""Browser contract checks with a controlled Tauri bridge; no SWF/player execution.
+"""Browser contract checks of the single-window shell with a controlled host bridge.
 
-Run with the existing py_swf_editor .venv, while `npm run preview` serves port 4174.
-This checks UI behavior only. Native worker/compiler tests are separate.
+Run with the engines/pyswf .venv (Playwright installed) while `npm run preview -- --port 4174` serves the
+production build. The bridge mock replaces what ui/src/api.ts calls (invoke, isTauri); no SWF is parsed and
+no player or compiler runs here. Native worker, compiler and packaged-app checks are separate.
 """
 import json
-from pathlib import Path
 import re
+from pathlib import Path
 from playwright.sync_api import sync_playwright, expect
 
 OUTPUT = Path(__file__).resolve().parents[2] / "reports"
 OUTPUT.mkdir(exist_ok=True)
+URL = "http://127.0.0.1:4174"
 MOCK = r"""
 window.isTauri = true;
-window.__suiteCalls = [];
+window.__calls = [];
 window.__failEdit = true;
-const initial = {filename:'demo.swf',working_path:'C:/controlled/demo.swf',revision:'a'.repeat(64),dirty:false,script_count:2,history:{undo:false,redo:false}};
-let state = {...initial};
-const catalog = {default_engine:'auto',engines:[
- {id:'python',name:'Python nativo',available:true,version:'controlled',category:'native',path:null,detail:'Controlled bridge fixture',operations:['decompile','edit','assemble','compile_project','resource-bundle','scripts','xml','resources','resource_edit','timeline','benchmark']},
- {id:'rust',name:'Rust',available:true,version:'controlled',category:'native',path:null,detail:'Controlled bridge fixture',operations:['decompile']},
- ...['jpexs','haxe','haxeflixel','flex','mtasc','ruffle'].map(id=>({id,name:id,available:false,version:null,category:'external',path:null,detail:'Not configured in fixture',operations:id==='jpexs'?['decompile','edit','fla','xfl']:id==='ruffle'?['launch']:['compile_project']}))
+const sha = (c) => c.repeat(64);
+let state = {filename:'demo.swf',working_path:'C:/controlled/demo.swf',source_path:'C:/controlled/demo.swf',revision:sha('a'),dirty:false,script_count:2,history:{undo:false,redo:false},signature:'FWS',frame_count:2,validation:{valid:true,errors:[],warnings:[],version:11,tag_count:6,frame_count:2}};
+const node = (id, label, kind, extra={}) => ({id, label, kind, ...extra});
+const tree = () => ({revision: state.revision, filename: 'demo.swf', node_count: 9, truncated: false, limit: 20000, nodes: [
+  node('header','Cabecera','header'),
+  node('folder:shapes','Formas','folder',{folder:'shapes',child_count:1,children:[node('tag:2','DefineShape (1)','tag',{tag_index:2,tag_type:2,tag_name:'DefineShape',character_id:1,bytes:90})]}),
+  node('folder:images','Imágenes','folder',{folder:'images',child_count:1,children:[node('tag:3','DefineBitsLossless (2)','tag',{tag_index:3,tag_type:20,tag_name:'DefineBitsLossless',character_id:2,bytes:80,detail:'logo'})]}),
+  node('folder:scripts','Scripts','folder',{folder:'scripts',detail:'1 clases · 2 métodos',child_count:1,children:[
+    node('pkg:demo','demo','package',{child_count:1,children:[node('class:tag:0/class:0','Demo','class',{language:'as3',tag_index:0,document_id:'tag:0/class:0',detail:'demo',child_count:2,
+      members:[{unit_id:'tag:0/method:1',name:'run',role:'method'},{unit_id:'tag:0/method:2',name:'other',role:'method'}]})]})]}),
+]});
+const decompile = (a) => {
+  const engine = a.engine === 'auto' ? 'python' : a.engine;
+  const body = a.unit_id.endsWith('1') ? 'return 1;' : 'return 2;';
+  return {engine, source: engine === 'rust' ? null : body, pcode: 'pushbyte 1\nreturnvalue', diagnostics: [], editable: engine !== 'rust', revision: state.revision, unit_id: a.unit_id};
+};
+const engines = {default_engine:'auto',engines:[
+  {id:'python',name:'PySWF',available:true,version:'controlled',category:'native',path:null,detail:'Controlled bridge fixture',operations:['decompile','edit','assemble','compile_project','compile_saved','resource-bundle','scripts','timeline','resources','resource_edit']},
+  {id:'rust',name:'RustSWF',available:true,version:'controlled',category:'native',path:null,detail:'Controlled bridge fixture',operations:['decompile']},
+  {id:'jpexs',name:'JPEXS',available:false,version:null,category:'decompiler',path:null,detail:'Not configured in fixture',operations:['decompile','edit','fla','xfl']},
+  ...['haxe','haxeflixel','flex','mtasc'].map(id=>({id,name:id,available:false,version:null,category:'compiler',path:null,detail:'Not configured in fixture',operations:['compile_project']})),
 ]};
-const units=[{id:'tag:0/body:0',name:'Demo.run',language:'as3',tag_path:[0],body_index:0},{id:'tag:0/body:1',name:'Demo.other',language:'as3',tag_path:[0],body_index:1}];
-const source = engine=>({engine:engine==='auto'?'python':engine,source:engine==='rust'?null:'return 1;',pcode:'pushbyte 1\nreturnvalue',diagnostics:[],editable:engine!=='rust',revision:state.revision});
+const bench = {runs:[{run_id:'run-1',mode:'smoke',cases:6}],folder:'C:/controlled/bench',results:{run_id:'run-1',mode:'smoke',created_utc:'2026-10-23T00:00:00Z',seconds:12,corpus:'controlled',cases:6,tables:{
+  decompilers:{unit:'casos que recompilan',winner:null,note:'Sin ganador: la diferencia es de un caso.',engines:[
+    {engine:'native',name:'PySWF',cases:6,source:4,recompiles:4,same_trace:4,jpexs_closeness:0.874,jpexs_coverage:0.64,reasons:[]},
+    {engine:'rust',name:'RustSWF',cases:6,source:1,recompiles:1,same_trace:1,reasons:['no lee AS1/AS2']},
+    {engine:'jpexs',name:'JPEXS',cases:6,source:5,recompiles:5,same_trace:5,jpexs_closeness:1,jpexs_coverage:1,reference:true,reasons:[]},
+    {engine:'go',name:'GoSWF',cases:6,source:2,recompiles:2,same_trace:2,jpexs_closeness:null,jpexs_coverage:null,reasons:[]}]}}}};
 window.__TAURI_INTERNALS__ = {
- metadata:{currentWindow:{label:'main'},currentWebview:{label:'main'}},
- transformCallback:()=>1, unregisterCallback:()=>{}, convertFileSrc:path=>path,
+ metadata:{currentWindow:{label:'main'},currentWebview:{label:'main'}}, transformCallback:()=>1, unregisterCallback:()=>{}, convertFileSrc:path=>path,
  invoke:async(command,args={})=>{
   if(command.startsWith('plugin:'))return 1;
   if(command==='startup')return {path:'C:/controlled/demo.swf',smoke:false};
   if(command==='ui_verified')return;
-  if(command==='open_document')return {session_id:'controlled',source_path:args.path,info:{filename:'demo.swf',sha256:state.revision,signature:'FWS',version:11,width:640,height:480,frame_rate:24,frame_count:2,tag_count:1},diagnostics:[],script_count:2};
-  if(command==='rpc')return {items:[],total:0,offset:0};
   if(command==='suite_cancel')return;
-  if(command==='suite_pick')return args.kind==='project_output'?'C:/controlled/project.pyswfproj':null;
+  if(command==='suite_pick')return {swf:'C:/controlled/demo.swf',output:'C:/controlled/out.swf',project_output:'C:/controlled/p.pyswfproj',source:'C:/controlled/Main.as'}[args.kind]??null;
   if(command!=='suite_rpc')throw new Error('Unexpected bridge command: '+command);
-  window.__suiteCalls.push({operation:args.operation,args:args.args});
-  const a=args.args??{};
+  const a = args.args ?? {};
+  window.__calls.push({operation:args.operation,args:a});
   switch(args.operation){
-   case 'engines':case 'configure_engine':return catalog;
-   case 'open':state={...initial};return state;
-   case 'state':return state;
-   case 'scripts':return {items:units.filter(u=>u.name.toLowerCase().includes((a.query??'').toLowerCase())),total:2,offset:0};
-   case 'decompile':return source(a.engine);
-   case 'compare':return {results:[source('python'),source('rust')]};
-   case 'edit':if(window.__failEdit)throw new Error('Controlled compiler rejection');state={...state,revision:'b'.repeat(64),dirty:true,working_path:'C:/controlled/staged.swf',history:{undo:true,redo:false}};return state;
-   case 'undo':state={...state,revision:'a'.repeat(64),history:{undo:false,redo:true}};return state;
-   case 'redo':state={...state,revision:'b'.repeat(64),history:{undo:true,redo:false}};return state;
-   case 'save_project':return {...state,path:a.path};
-   case 'export_swf':return {...state,path:a.path};
-   case 'validate':return {valid:true,errors:[],warnings:[]};
-   case 'resources':return {items:[{id:'tag:0',tag_index:0,index:0,name:'Controlled image',type:'image',formats:['png']}],total:1,offset:0};
-   case 'resource_edit':state={...state,revision:'c'.repeat(64),dirty:true,history:{undo:true,redo:false}};return state;
-   case 'timeline':return {frame:a.frame,frame_count:2,display_list:[{depth:1,character_id:1}],svg:'<svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480"><rect width="640" height="480" fill="#133c35"/><circle cx="320" cy="240" r="100" fill="#79dbb6"/><script>window.__injected=1</script><foreignObject><div>unsafe</div></foreignObject></svg>',actionscript_executed:false};
-   case 'compile_project':state={...state,filename:'compiled.swf',working_path:a.output,revision:'d'.repeat(64),dirty:false};return {...state,path:a.output,engine:'python',validation:{valid:true,errors:[],warnings:[]},log:'Controlled UI fixture; compiler not executed'};
-   case 'benchmark':return {path:'C:/controlled/report.json',html_path:'C:/controlled/report.html',completed_files:2,scheduled_files:2,claims:{parity:false,superiority:false,performance_winner:null}};
-   default:throw new Error('Unexpected suite operation: '+args.operation);
+   case 'engines': case 'configure_engine': return engines;
+   case 'open': return {...state};
+   case 'state': return {...state};
+   case 'tag_tree': return tree();
+   case 'header': return {filename:'demo.swf',signature:'FWS',compression:'none',version:11,file_length:200,file_size:200,frame_size:{xmin:0,xmax:12800,ymin:0,ymax:9600,width:640,height:480},frame_rate:24,frame_count:2,shown_frames:2,tag_count:6,abc_blocks:1,has_as3:true,has_metadata:false,file_attributes:null,metadata:null,sha256:state.revision,revision:state.revision,script_count:2};
+   case 'decompile': return decompile(a);
+   case 'compare': return {results:[decompile({...a,engine:'python'}),decompile({...a,engine:'rust'})],parity:false,superiority:false};
+   case 'edit': if(window.__failEdit)throw new Error('Controlled compiler rejection'); state={...state,revision:sha('b'),dirty:true,history:{undo:true,redo:false}}; return {...state};
+   case 'undo': state={...state,revision:sha('a'),dirty:false,history:{undo:false,redo:true}}; return {...state};
+   case 'redo': state={...state,revision:sha('b'),dirty:true,history:{undo:true,redo:false}}; return {...state};
+   case 'validate': return {valid:true,errors:[],warnings:[]};
+   case 'raw': return {scope:'tag',name:'DefineBitsLossless',tag_index:a.tag_index,type:20,offset:a.offset??0,limit:a.limit??4096,total:20,length:20,encoding:'hex',hex:'0200050400040000789c63f8cfc000000401000100',revision:state.revision};
+   case 'resource_preview': return a.tag_index===2
+     ? {kind:'shape',mime:'image/svg+xml',encoding:'text',data:'<svg xmlns="http://www.w3.org/2000/svg" width="64" height="48" viewBox="0 0 64 48"><rect width="64" height="48" fill="#133c35"/><circle cx="32" cy="24" r="14" fill="#79dbb6"/><script>window.__injected=1</script><foreignObject><div>unsafe</div></foreignObject></svg>',tag_index:2,name:'DefineShape',revision:state.revision}
+     : {kind:'image',mime:'image/png',encoding:'base64',data:'iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAFklEQVR4nGP8z8Dwn4EIwESMolGFxQEAXm0CBPDfEmQAAAAASUVORK5CYII=',width:4,height:4,tag_index:3,name:'DefineBitsLossless',revision:state.revision};
+   case 'resource_info': return {kind:'image',parsed:{character_id:2,bytes:80,type:20},revision:state.revision,coordinate_units:'pixels',tag_index:a.tag_index};
+   case 'timeline': return {frame:0,frame_count:2,display_list:[],svg:null,actionscript_executed:false};
+   case 'compile_project': state={...state,filename:'compiled.swf',working_path:a.output,revision:sha('d'),dirty:false}; return {...state,path:a.output,engine:'python',validation:{valid:true,errors:[],warnings:[]},log:'Controlled UI fixture; compiler not executed'};
+   case 'export': return {path:a.path,engine:'python',diagnostics:[]};
+   case 'bench_results': return bench;
+   case 'benchmark_tools': return {engines:[{id:'native',name:'PySWF',category:'decompiler',configured:true,operations:['source']},{id:'flare',name:'Flare',category:'decompiler',configured:false,operations:['source'],setup_diagnostic:'sin configurar en el fixture'}]};
+   default: throw new Error('Unexpected suite operation: '+args.operation);
   }
  }
 };
 """
 
+
+def item(page, label):
+    """A tree row by its exact label (names like "Demo" also occur inside "demo" packages)."""
+    return page.locator("[role=treeitem]").filter(has=page.locator(".tree-label", has_text=re.compile("^" + re.escape(label) + "$")))
+
+
+def opens(page):
+    return page.evaluate("window.__calls.filter(c=>c.operation==='open').length")
+
+
+def wait_text(page, selector):
+    page.wait_for_function("sel => (document.querySelector(sel + ' .cm-content')?.textContent || '').trim().length > 0", arg=selector)
+
+
 with sync_playwright() as p:
-    browser=p.chromium.launch()
-    page=browser.new_page(viewport={"width":1440,"height":960})
+    browser = p.chromium.launch()
+    page = browser.new_page(viewport={"width": 1440, "height": 900})
     page.set_default_timeout(8000)
-    errors=[]
-    page.on("pageerror",lambda error:errors.append(str(error)))
+    errors = []
+    page.on("pageerror", lambda error: errors.append(str(error)))
     page.add_init_script(MOCK)
-    page.goto("http://127.0.0.1:4174",wait_until="networkidle")
-    expect(page.get_by_text("Flash Universal Studio",exact=True)).to_be_visible()
-    page.get_by_role("button",name="Mesa de trabajo",exact=True).click()
-    expect(page.get_by_role("dialog")).to_be_visible()
-    # Reconnaissance before behavior checks: actual rendered dialog and accessible editor.
-    page.screenshot(path=str(OUTPUT/"ui-suite-controlled-editor-empty.png"))
-    page.get_by_role("button",name=re.compile("Demo.run")).click()
-    editor=page.get_by_role("textbox",name="Editor ActionScript de Demo.run")
-    expect(editor).to_have_value("return 1;")
-    editor.fill("return 2;")
-    page.get_by_role("button",name="Aplicar y validar",exact=True).click()
-    expect(page.get_by_role("alert")).to_contain_text("Controlled compiler rejection")
-    expect(editor).to_have_value("return 2;")
-    page.get_by_role("button",name=re.compile("Demo.other")).click()
-    expect(page.get_by_role("textbox",name="Editor ActionScript de Demo.other")).to_be_visible()
-    page.get_by_role("button",name=re.compile("Demo.run")).click()
-    expect(editor).to_have_value("return 2;")
+    page.goto(URL, wait_until="networkidle")
+    tree = page.get_by_role("tree", name="Elementos del SWF")
+    expect(item(page, "Cabecera")).to_be_visible()
+    expect(page.get_by_text("Longitud declarada")).to_be_visible()
+    page.screenshot(path=str(OUTPUT / "ui-shell-controlled-header.png"))
+
+    # Keyboard model of the tree: arrows move and open, Home/End jump.
+    tree.focus()
+    page.keyboard.press("End")
+    expect(page.locator("[role=treeitem][aria-selected=true]")).to_contain_text("Demo")
+    page.keyboard.press("Home")
+    expect(page.locator("[role=treeitem][aria-selected=true]")).to_contain_text("Cabecera")
+    page.keyboard.press("ArrowDown")
+    page.keyboard.press("ArrowRight")
+    expect(item(page, "DefineShape (1)")).to_be_visible()
+    page.keyboard.press("ArrowLeft")
+    expect(item(page, "DefineShape (1)")).to_have_count(0)
+
+    # Quick filter finds a class by one of its members, and Escape restores the tree.
+    page.get_by_label("Filtrar el árbol").fill("other")
+    expect(item(page, "Demo")).to_be_visible()
+    expect(item(page, "Imágenes")).to_have_count(0)
+    page.get_by_label("Filtrar el árbol").press("Escape")
+    expect(item(page, "Imágenes")).to_be_visible()
+
+    # Script: class view, then one method; a rejected edit keeps the draft across selections.
+    item(page, "Demo").click()
+    wait_text(page, "[data-testid=script-source]")
+    wait_text(page, "[data-testid=script-pcode]")
+    expect(page.locator("[data-testid=script-source] .cm-content")).to_contain_text("return 1;")
+    page.get_by_role("button", name="run", exact=False).first.click()
+    editor = page.locator("[data-testid=script-source] .cm-content")
+    expect(editor).to_have_text("return 1;")  # wait until the member itself is loaded and editable
+    expect(page.get_by_test_id("script-status")).to_have_text("Listo para editar")
+    editor.click()
+    page.keyboard.press("Control+A")
+    page.keyboard.type("return 2;")
+    expect(page.get_by_test_id("script-status")).to_contain_text("Borrador")
+    page.get_by_role("button", name="Aplicar y validar").click()
+    expect(page.locator(".toast.error")).to_contain_text("Controlled compiler rejection")
+    expect(editor).to_contain_text("return 2;")
+    page.get_by_role("button", name="other", exact=False).first.click()
+    expect(page.locator("[data-testid=script-source] .cm-content")).to_contain_text("return 2;")
+    page.get_by_role("button", name="run", exact=False).first.click()
+    expect(page.locator("[data-testid=script-source] .cm-content")).to_contain_text("return 2;")
+    page.screenshot(path=str(OUTPUT / "ui-shell-controlled-script.png"))
     page.evaluate("window.__failEdit=false")
-    page.get_by_role("button",name="Aplicar y validar",exact=True).click()
-    expect(page.get_by_role("status").filter(has_text="Cambio validado")).to_be_visible()
-    expect(page.get_by_role("button",name="Deshacer cambio aplicado")).to_be_enabled()
-    assert page.evaluate("window.__suiteCalls.filter(c=>c.operation==='open').length")==1,"Rust refresh reopened the suite"
-    page.get_by_role("button",name="Comparar motores",exact=True).click()
-    expect(page.locator(".suite-comparison article")).to_have_count(2)
-    page.screenshot(path=str(OUTPUT/"ui-suite-controlled-comparison.png"))
-    page.get_by_role("button",name="Volver al editor",exact=True).click()
-    page.get_by_role("button",name="Timeline",exact=True).click()
-    page.get_by_role("button",name="Inspeccionar cuadro",exact=True).click()
-    expect(page.get_by_role("img",name="Composición estática del cuadro seleccionado")).to_be_visible()
+    page.get_by_role("button", name="Aplicar y validar").click()
+    expect(page.locator(".toast.ok")).to_contain_text("Cambio validado")
+    expect(page.get_by_role("button", name="Deshacer").first).to_be_enabled()
+    assert opens(page) == 1, "Editing reopened the document"
+
+    # Engine comparison dialog: each engine keeps its own output.
+    page.get_by_role("button", name="Comparar motores").click()
+    expect(page.locator(".compare-card")).to_have_count(2)
+    page.screenshot(path=str(OUTPUT / "ui-shell-controlled-compare.png"))
+    page.keyboard.press("Escape")
+
+    # Preview: vector SVG is shown without running its script; image previews load.
+    item(page, "Formas").click()
+    page.keyboard.press("ArrowRight")
+    item(page, "DefineShape (1)").click()
+    page.wait_for_function("() => { const i = document.querySelector('.preview-surface img'); return i && i.complete && i.naturalWidth > 0; }")
     assert page.evaluate("window.__injected") is None
-    page.screenshot(path=str(OUTPUT/"ui-suite-controlled-timeline.png"))
-    page.get_by_role("button",name="Recursos",exact=True).last.click()
-    page.get_by_role("button",name=re.compile("Controlled image")).click()
-    page.get_by_label("Imagen nueva",exact=True).fill("C:/controlled/replacement.png")
-    page.get_by_role("button",name="Reemplazar y validar",exact=True).click()
-    expect(page.get_by_role("status").filter(has_text="Recurso validado")).to_be_visible()
-    page.get_by_role("button",name="Compilar",exact=True).click()
-    page.screenshot(path=str(OUTPUT/"ui-suite-controlled-compile.png"))
+    page.screenshot(path=str(OUTPUT / "ui-shell-controlled-shape.png"))
+    item(page, "Imágenes").click()
+    page.keyboard.press("ArrowRight")
+    item(page, "DefineBitsLossless (2)").click()
+    page.wait_for_function("() => { const i = document.querySelector('.preview-surface img'); return i && i.complete && i.naturalWidth > 0; }")
+    page.get_by_role("tab", name="Hex").click()
+    expect(page.get_by_test_id("hex-dump")).to_contain_text("00000000")
+    page.screenshot(path=str(OUTPUT / "ui-shell-controlled-hex.png"))
+
+    # Dialogs: compile (unavailable profile disabled), benchmarks columns, engines.
+    page.get_by_role("menuitem", name="Herramientas").click()
+    page.get_by_role("menuitem", name="Compilar…").click()
     assert page.locator('option[value="haxeflixel"]').get_attribute("disabled") is not None
-    page.get_by_label("Fuente o proyecto de entrada",exact=True).fill("C:/controlled/Main.as")
-    page.get_by_label("Archivo SWF de salida",exact=True).fill("C:/controlled/compiled.swf")
-    page.get_by_role("button",name="Compilar y validar",exact=True).click()
-    expect(page.get_by_text("Controlled UI fixture; compiler not executed",exact=True)).to_be_visible()
-    assert page.evaluate("window.__suiteCalls.filter(c=>c.operation==='open').length")==1
-    page.get_by_role("button",name="Benchmarks",exact=True).click()
-    page.get_by_label("Corpus local de SWF",exact=True).fill("C:/controlled/corpus")
-    page.get_by_label("Carpeta de informes",exact=True).fill("C:/controlled/reports")
-    page.get_by_role("button",name="Medir y generar informe",exact=True).click()
-    expect(page.get_by_text("El informe no establece paridad semántica.",exact=True)).to_be_visible()
-    page.screenshot(path=str(OUTPUT/"ui-suite-controlled-benchmark.png"))
-    page.get_by_role("button",name="Herramientas",exact=True).click()
-    expect(page.get_by_role("heading",name="Motores y herramientas")).to_be_visible()
-    page.screenshot(path=str(OUTPUT/"ui-suite-controlled-tools.png"))
-    page.get_by_role("button",name="Cerrar mesa de trabajo",exact=True).click()
-    expect(page.get_by_role("dialog")).not_to_be_visible()
-    assert not errors,errors
-    evidence={"scope":"Controlled browser/Tauri contract UI only; no native worker/compiler/player executed","passed":True,"checks":["draft survives compiler rejection and unit switches","edit enables undo","Rust refresh does not reopen suite","independent engine comparison","SVG image preview without inline scripts","image replacement request and revision adoption","unavailable HaxeFlixel disabled","compile response updates working session","benchmark reports no unverified parity","tools visible","dialog focus/close"],"page_errors":errors,"calls":page.evaluate("window.__suiteCalls")}
-    (OUTPUT/"ui-suite-controlled-contract.json").write_text(json.dumps(evidence,indent=2),encoding="utf-8")
-    print(json.dumps({"passed":True,"scope":evidence["scope"],"checks":len(evidence["checks"]),"report":str(OUTPUT/"ui-suite-controlled-contract.json")}))
+    page.get_by_label("Fuente o proyecto de entrada", exact=True).fill("C:/controlled/Main.as")
+    page.get_by_label("Archivo SWF de salida", exact=True).fill("C:/controlled/compiled.swf")
+    page.get_by_role("button", name="Compilar y validar").click()
+    expect(page.get_by_text("Controlled UI fixture; compiler not executed")).to_be_visible()
+    assert opens(page) == 1
+    page.screenshot(path=str(OUTPUT / "ui-shell-controlled-compile.png"))
+    page.keyboard.press("Escape")
+
+    page.get_by_role("menuitem", name="Herramientas").click()
+    page.get_by_role("menuitem", name="Benchmarks").click()
+    expect(page.get_by_role("columnheader", name="% cerca de JPEXS")).to_be_visible()
+    expect(page.get_by_role("columnheader", name="% de unidades de JPEXS")).to_be_visible()
+    expect(page.get_by_test_id("closeness-native")).to_have_text("87%")
+    expect(page.get_by_test_id("coverage-native")).to_have_text("64%")
+    expect(page.get_by_test_id("closeness-rust")).to_have_text("—")
+    expect(page.get_by_test_id("coverage-go")).to_have_text("—")
+    expect(page.get_by_test_id("closeness-jpexs")).to_have_text("100%")
+    page.screenshot(path=str(OUTPUT / "ui-shell-controlled-benchmarks.png"))
+    page.keyboard.press("Escape")
+
+    page.get_by_role("menuitem", name="Herramientas").click()
+    page.get_by_role("menuitem", name="Motores…").click()
+    expect(page.get_by_role("heading", name="Motores y herramientas")).to_be_visible()
+    page.screenshot(path=str(OUTPUT / "ui-shell-controlled-engines.png"))
+    page.keyboard.press("Escape")
+
+    # Theme and splitter persistence.
+    page.get_by_role("menuitem", name="Ver").click()
+    page.get_by_role("menuitemradio", name="Tema claro").click()
+    assert page.evaluate("document.documentElement.dataset.theme") == "light"
+    page.screenshot(path=str(OUTPUT / "ui-shell-controlled-light.png"))
+    box = page.get_by_role("separator", name="Ancho del árbol").bounding_box()
+    page.mouse.move(box["x"] + 2, box["y"] + 100)
+    page.mouse.down()
+    page.mouse.move(box["x"] + 102, box["y"] + 100, steps=5)
+    page.mouse.up()
+    assert int(page.evaluate("localStorage.getItem('flash-studio.tree-width')")) > 380
+
+    assert not errors, errors
+    evidence = {
+        "scope": "Controlled browser/host-bridge contract of the single-window shell; no native worker, compiler or player executed",
+        "passed": True,
+        "checks": ["tree keyboard model and quick filter", "class view with source and P-code", "draft survives a rejected edit and member switches",
+                   "edit enables undo without reopening the document", "engine comparison dialog", "SVG preview without inline scripts",
+                   "hex view pages through raw", "unavailable HaxeFlixel profile disabled", "compile adopts the new document",
+                   "benchmark closeness columns show percentages and dashes", "theme switch and remembered tree width"],
+        "page_errors": errors, "calls": page.evaluate("window.__calls"),
+    }
+    (OUTPUT / "ui-shell-controlled-contract.json").write_text(json.dumps(evidence, indent=2), encoding="utf-8")
+    print(json.dumps({"passed": True, "scope": evidence["scope"], "checks": len(evidence["checks"]), "report": str(OUTPUT / "ui-shell-controlled-contract.json")}))
     browser.close()

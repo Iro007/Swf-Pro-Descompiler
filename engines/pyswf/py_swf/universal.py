@@ -201,6 +201,13 @@ class UniversalSuite:
             self._inventory = list(enumerate_scripts(self.require_project().working))
         return self._inventory
 
+    def read_movie(self):
+        """Parsed movie of the current revision shared by read-only operations (never mutate it)."""
+        key = ("movie", sha(self.require_project().working))
+        if key not in self.cache:
+            self.cache[key] = self.movie()
+        return self.cache[key]
+
     def unit(self, identity):
         result = next((u for u in self.units() if u.document_id == identity), None)
         if result is None:
@@ -1049,6 +1056,45 @@ class UniversalSuite:
         limit = min(500, max(1, int(args.get("limit", 200))))
         return {"total": len(items), "offset": offset, "items": items[offset:offset + limit]}
 
+    def tag_tree(self, args):
+        """JPEXS-like folder tree of the open movie (header, characters, frames, scripts as packages)."""
+        from . import tag_tree as tree_module
+        from .tag_tree import DEFAULT_TREE_NODES, build_tag_tree
+        project = self.require_project()
+        requested = limit = args.get("limit", DEFAULT_TREE_NODES)
+        key = ("tag_tree", sha(project.working), self.source_revision(), requested)
+        if key not in self.cache:
+            while True:
+                tree = build_tag_tree(self.read_movie(), self.units(), project.source_documents, limit=limit)
+                # The JSONL worker rejects replies above 8 MiB: shrink the node budget instead of failing.
+                if tree["limit"] <= 200 or len(json.dumps(tree, ensure_ascii=False, separators=(",", ":"))) <= tree_module.MAX_TREE_JSON_BYTES:
+                    break
+                limit = tree["limit"] // 2
+            self.cache[key] = {**tree, "revision": sha(project.working), "filename": project.filename}
+        return self.cache[key]
+
+    def raw(self, args):
+        """One page of a tag payload (hex or base64) or of the whole working SWF (scope='file')."""
+        from .tag_tree import read_raw
+        project = self.require_project()
+        return {**read_raw(self.read_movie(), project.working, args), "revision": sha(project.working)}
+
+    def header(self, args):
+        """Container and movie summary: signature, version, sizes, frame size/rate, flags."""
+        from .tag_tree import read_header
+        project = self.require_project()
+        return {**read_header(self.read_movie(), project.working, filename=project.filename, script_count=len(self.units())),
+                "revision": sha(project.working)}
+
+    def resource_preview(self, args):
+        """Static image/SVG of a character (never executes ActionScript)."""
+        from .previews import preview_tag
+        from .tag_tree import resolve_tag
+        movie = self.read_movie()
+        path, tag = resolve_tag(movie, {"tag_index": args.get("tag_index")})
+        result = preview_tag(movie, tag, frame=args.get("frame", 0), ratio=args.get("ratio", 0))
+        return {**result, "tag_index": path[0], "name": tag.name, "revision": sha(self.project.working)}
+
     def tool_operation(self, args):
         """Whole-file assembly formats stay distinct from ActionScript source."""
         key, operation = args["id"], args["operation"]
@@ -1166,6 +1212,14 @@ class UniversalSuite:
             return self.scripts(args)
         if operation == "resources":
             return self.resources(args)
+        if operation == "tag_tree":
+            return self.tag_tree(args)
+        if operation == "raw":
+            return self.raw(args)
+        if operation == "header":
+            return self.header(args)
+        if operation == "resource_preview":
+            return self.resource_preview(args)
         if operation == "resource_info":
             return self.resource_info(args)
         if operation == "source_files":

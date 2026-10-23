@@ -1,0 +1,3 @@
+# Sealed by hash: keep the exact bytes on every checkout
+corpus/** -text
+engines/pyswf/tools/jpexs_java_bridge/*.java text eol=lf

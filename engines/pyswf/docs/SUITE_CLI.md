@@ -42,6 +42,22 @@ Perfiles: `native-as2`, `native-as3`, `auto-as2`, `auto-as3`, `as2-jpexs`, `as3-
 
 `--project-output` o `--state-dir` es obligatorio para las ediciones de consola. Reabrir `--input` en cada llamada vuelve a cargar ese archivo; omítelo al continuar una sesión persistente. Use `--args-file` para rutas y texto complejos en PowerShell. `rpc` permite las operaciones JSONL restantes con un objeto de argumentos. Los errores salen por stderr con código 1 y no avanzan la revisión.
 
+## Árbol, cabecera, bytes y vistas previas (solo lectura)
+
+La ventana única se alimenta de cuatro operaciones que tampoco modifican la sesión; por consola se llaman con `rpc`:
+
+```powershell
+.\pyswf.ps1 rpc --input 'juego.swf' --rpc-operation tag_tree
+.\pyswf.ps1 rpc --input 'juego.swf' --rpc-operation header
+.\pyswf.ps1 rpc --input 'juego.swf' --rpc-operation raw --args-json '{"tag_index":3,"offset":0,"limit":256}'
+.\pyswf.ps1 rpc --input 'juego.swf' --rpc-operation resource_preview --args-json '{"tag_index":3}'
+```
+
+- `tag_tree` devuelve las carpetas al estilo JPEXS (cabecera, formas, sprites con cuadros y etiquetas, textos, imágenes, sonidos, botones, fuentes, cuadros, otros y scripts como paquetes y clases AS3 o cuadros, sprites y botones AS1/AS2). Cada nodo lleva `id`, `label`, `kind` y, según el caso, `tag_index`, `character_id`, `unit_id`, `document_id` o `members`. `limit` (por defecto 20 000, máximo 100 000) acota el número de nodos; `truncated` avisa de que se recortó.
+- `header` resume la firma y compresión, la versión, la longitud declarada y real, el escenario, la velocidad, los cuadros, los tags, si hay AS3 y metadatos.
+- `raw` entrega una página de bytes de un tag (`tag_index`, o `tag_path` dentro de un sprite) o del archivo (`scope: "file"`): `offset`, `limit` (1 a 65 536) y `encoding` `hex` o `base64`.
+- `resource_preview` devuelve una imagen PNG/JPEG o un SVG estático de una imagen, forma, forma morf. (`ratio` 0 a 65 535), sprite (`frame`), texto o fuente. No ejecuta ActionScript.
+
 ## CLI RustSWF
 
 ```powershell

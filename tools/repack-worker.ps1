@@ -8,7 +8,7 @@ param(
 $ErrorActionPreference='Stop'
 $projectRoot=Split-Path $PSScriptRoot -Parent
 $destination=Join-Path $projectRoot 'dist\FlashUniversalStudio'
-if(-not $WorkerPath){$WorkerPath=Join-Path (Split-Path $projectRoot -Parent) 'py_swf\dist\FlashSuiteWorker.exe'}
+if(-not $WorkerPath){$WorkerPath=Join-Path $projectRoot 'engines\pyswf\dist\FlashSuiteWorker.exe'}
 $WorkerPath=(Resolve-Path -LiteralPath $WorkerPath).Path
 $ExpectedWorkerSha256=$ExpectedWorkerSha256.ToLowerInvariant()
 function Assert-Hash([string]$Path,[string]$Expected){

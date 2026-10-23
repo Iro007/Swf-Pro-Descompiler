@@ -15,5 +15,5 @@
   "color": "#167252",
   "license": "GPL-3.0",
   "delivery": "repo",
-  "root": "../../py_swf"
+  "root": "."
 }

@@ -82,7 +82,7 @@ consola y conserva los modos `worker`/`request` del sidecar.
 ## Empaquetar y comprobar sin GUI
 
 Primero se construye el worker onefile mediante
-`py_swf/packaging/suite_worker.spec`. Después, desde este proyecto:
+`engines/pyswf/packaging/suite_worker.spec`. Después, desde este proyecto:
 
 ```powershell
 .\build.ps1 -Offline -SkipTests -SkipDependencyInstall -ExpectedWorkerSha256 <SHA256_FINAL>

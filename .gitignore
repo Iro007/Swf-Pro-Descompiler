@@ -16,17 +16,13 @@ build/
 /src-tauri/binaries/
 /src-tauri/gen/
 
-# Toolchains que descargan los bootstrap (MinGW, Go...) y copias de terceros
+# Toolchains que descargan los bootstrap (MinGW, Go...)
 /tools/bootstrap/
 **/tools/bootstrap/
-/third_party/
-/jpexs-decompiler-master/
-/toolpacks/
-/as3sorcerer_setup/
-/asv202201_other/
-/swfdec/
-/flare06doswin/
-/flash_decompiler.exe
+
+# Todo lo descargado o instalado por el usuario vive en vendor/ y no se versiona
+# (references/, toolpacks/, installers/, jpexs-source/, third_party/)
+/vendor/
 .dev-references/
 
 # Informes y resultados de benchmarks (se regeneran)

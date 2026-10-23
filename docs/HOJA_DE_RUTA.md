@@ -80,7 +80,7 @@ Este plan explica cómo funciona hoy (Parte 1) y propone una hoja de ruta por fa
 | Orquestador | Clase gigante con cadena de `if`; herramientas escritas dentro del código; busca uno a uno en RustSWF (`_rust_unit`) | `universal.py` |
 | Interfaces | Tauri (la buena) + Qt `gui/` + pywebview `desktop.py` + FastAPI `server/` con `py_swf_editor/web/` (con su propia sesión y deshacer) | `py_swf_editor/` |
 | Procesos | El mismo SWF se analiza en dos procesos; dos supervisores y dos protocolos duplicados | `desktop/src/main.rs`, `suite.rs` |
-| Rutas | Cadenas de carpetas con fecha (`FlashUniversalStudio-*-20261014/17`), `.dev-references`, `toolpacks`, la carpeta `RUST SWF` con espacio (36 archivos; ya renombrada a `rust_swf`), oráculo Ruffle con nombre-hash en `%LOCALAPPDATA%` | launchers, `suite_tools.py`, `benchmark_engines.py`, `run_semantic_benchmarks.py` |
+| Rutas | Cadenas de carpetas con fecha (`FlashUniversalStudio-*-20261014/17`), `vendor/references`, `toolpacks`, la carpeta `RUST SWF` con espacio (36 archivos; ya renombrada a `rust_swf`), oráculo Ruffle con nombre-hash en `%LOCALAPPDATA%` | launchers, `suite_tools.py`, `benchmark_engines.py`, `run_semantic_benchmarks.py` |
 | Benchmarks | Tiempo y memoria casi siempre N/V. No se miden compiladores, ida y vuelta de desensambladores ni exportadores de recursos. "smoke" apunta a archivos inexistentes. El catálogo crece por encima del límite | `benchmarks.py` (`SMOKE_FILES`), `benchmarkModel.ts`, `benchmark_catalog.py` |
 | Calidad propia | RustSWF rechaza closures anónimos, try/finally, switch y bucles complejos (23 códigos `UNSUPPORTED_*`). El compilador AS3 nativo solo admite un subconjunto | `swf-decompile/src/reconstruct.rs`, `py_swf/compiler/` |
 | Repo | CI solo Ubuntu, sin `cargo test` ni Windows. Casi sin tests de web y escritorio. Bug probable: snapshots idénticos se fusionan al reabrir | `.github/workflows/ci.yml`, `project.py:from_archive` |
@@ -99,7 +99,7 @@ Este plan explica cómo funciona hoy (Parte 1) y propone una hoja de ruta por fa
 
 ### Fase 0: red de seguridad y limpieza (S–M)
 - **Fusionar el PR #3.** Después, CI con un job `windows-latest` que ejecute `cargo test --workspace`, ambas suites pytest y `npm run lint && npm run build` de `rust_swf/web`. Se quita el job de `py_swf_editor/web`.
-- **`SMOKE_FILES`** (`py_swf/benchmarks.py`): pasa a ids que existen (los 3 SWF de `benchmark_inputs/` + 3 familias parity). Un test falla si falta alguno, y el "smoke" no admite SWF inválidos.
+- **`SMOKE_FILES`** (`py_swf/benchmarks.py`): pasa a ids que existen (los 3 SWF de `corpus/` + 3 familias parity). Un test falla si falta alguno, y el "smoke" no admite SWF inválidos.
 - **Bug de snapshots** en `project.from_archive`: mapear por nombre, no por hash. Test con dos snapshots idénticos.
 - **Interfaces viejas.** Crear la etiqueta `legacy-ui-final` y borrar `gui/`, `main.py`, `desktop.py`, `py_swf_editor/web/`, `Dockerfile` y `docker-compose.yml`. Quitar PySide6 y pywebview de `requirements.txt`. `server/` se elimina en la Fase 1, cuando exista su reemplazo.
 - **Una ruta de entrega.**
@@ -133,7 +133,7 @@ Este plan explica cómo funciona hoy (Parte 1) y propone una hoja de ruta por fa
 ### Fase 2: un puente JPEXS, workers persistentes y un "auto" que elige el mejor (M)
 - **Puente JPEXS.** Unir en `UniversalBridge.java` las operaciones de los otros dos puentes (P-code, exportación, inventario de `ParityBridgeInventory`), compilarlo solo desde el instalador de toolchain con el hash en `lock.json`, y borrar los otros dos. flashdec deja de lanzar `ffdec-cli` por cada SWF.
 - **Java persistente para Flex.** `mxmlc` y `swfdump` corren en un runner Java persistente, para que los tiempos sean comparables.
-- **`decompile_all` en el worker `rustswf`** (`crates/swf-cli/src/main.rs`): todas las unidades con id, sha, fuente y códigos de diagnóstico. Sustituye la búsqueda unidad por unidad de `_rust_unit`.
+- **`decompile_all` en el worker `rustswf`** (`engines/rustswf/swf-cli/src/main.rs`): todas las unidades con id, sha, fuente y códigos de diagnóstico. Sustituye la búsqueda unidad por unidad de `_rust_unit`.
 - **Puntuación común.** `shared/scoring-rules.json` + `scoring-vectors.json` sustituyen las tablas copiadas a mano en `flashdec_py/flashdec/scoring.py` y `crates/flashdec/src/scoring.rs`.
 - **`toolchain/select.py`**, el "auto" nuevo:
   1. Ejecuta los motores nativos en lote (con caché por sha del SWF, motor y versión).
@@ -150,7 +150,7 @@ Este plan explica cómo funciona hoy (Parte 1) y propone una hoja de ruta por fa
   - `canonical_inventory.build_inventory`
   - el sellado y la caché de `run_semantic_benchmarks`
   - `corpus.read_immutable_manifest`
-- **Un corpus: `benchmark_inputs/corpus.json` (v3).**
+- **Un corpus: `corpus/corpus.json` (v3).**
   - Cada entrada lleva id, sha256, etiquetas, split, fuentes de referencia, escenarios y recursos de referencia.
     - Lenguaje: as1, as2, as3.
     - Productor: Flash IDE, Flex, MTASC, Haxe, HaxeFlixel, Rascal.
@@ -254,6 +254,6 @@ Este plan explica cómo funciona hoy (Parte 1) y propone una hoja de ruta por fa
   - `rust_swf`: `. .\tools\env.ps1; cargo test --workspace`
   - `rust_swf/web`: `npm run lint && npm run build`
   - Todo esto también en la CI de Windows.
-- **App de extremo a extremo**: `build.ps1`, después `flash-studio.ps1`. Abrir `benchmark_inputs/as3_new.flex.swf`, descompilar en "auto", editar y recompilar con Flex, exportar recursos, vista previa en Ruffle.
+- **App de extremo a extremo**: `build.ps1`, después `flash-studio.ps1`. Abrir `corpus/as3_new.flex.swf`, descompilar en "auto", editar y recompilar con Flex, exportar recursos, vista previa en Ruffle.
 - **Benchmarks**: `python -m py_swf.bench run --profile smoke` en las cinco categorías, revisar la pestaña Benchmarks (sin N/V sin motivo) y `bench gate` contra las líneas base.
 - **Instalador** (Fase 6): instalar en una VM limpia y repetir la prueba de extremo a extremo.

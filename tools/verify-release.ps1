@@ -1,7 +1,7 @@
 param([string]$AppFolder=(Join-Path (Split-Path $PSScriptRoot -Parent) 'dist\FlashUniversalStudio'))
 $ErrorActionPreference='Stop'
 $projectRoot=Split-Path $PSScriptRoot -Parent
-$corpus=Join-Path (Split-Path $projectRoot -Parent) 'py_swf\third_party\references\jpexs-26.3.0\libsrc\ffdec_lib\testdata'
+$corpus=Join-Path $projectRoot 'vendor\jpexs-source\libsrc\ffdec_lib\testdata'
 $app=Join-Path $AppFolder 'FlashUniversalStudio.exe'
 foreach($required in @($app,(Join-Path $AppFolder 'rustswf.exe'),(Join-Path $AppFolder 'WebView2Loader.dll'))){if(-not(Test-Path -LiteralPath $required)){throw "Falta componente portable: $required"}}
 $cases=@(@{Name='as2';File='as2\as2.swf'},@{Name='as3';File='as3_new\bin\as3_new.flex.swf'},@{Name='zws';File='amf3\AmfTest.swf'},@{Name='resources';File='graphics\graphics.swf'})

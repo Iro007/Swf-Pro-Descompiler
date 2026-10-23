@@ -13,8 +13,8 @@ if (Test-Path -LiteralPath $worker -PathType Leaf) {
         $env:FLASH_SUITE_WORKSPACE = $envBefore
     }
 }
-$python = Join-Path $suiteWorkspace 'py_swf\.venv\Scripts\python.exe'
-$entry = Join-Path $suiteWorkspace 'py_swf\tools\flash_suite_cli.py'
+$python = Join-Path $suiteWorkspace 'engines\pyswf\.venv\Scripts\python.exe'
+$entry = Join-Path $suiteWorkspace 'engines\pyswf\tools\flash_suite_cli.py'
 if (-not (Test-Path -LiteralPath $python -PathType Leaf)) {
     throw 'Falta PySWF empaquetado y el entorno .venv del proyecto.'
 }

@@ -14,6 +14,6 @@ Cada carpeta es un motor y su `engine.json` es el único sitio donde se declara.
 - `category`: `decompiler`, `disassembler`, `commercial_decompiler`, `restricted_decompiler`, `remote_service`, `resource_extractor`, `xml_converter`, `runtime`.
 - `operations`: `source`, `disassemble`, `extract`, `xml`, `execute`.
 - `delivery`: `repo` (el código está aquí o en `root`), `download` (se instala aparte, con hash), `user_install` (licencia del usuario; solo se localiza), `remote` (servicio web, no se envían archivos sin permiso).
-- `root`: dónde está el código si no es esta carpeta (`../../py_swf` para PySWF, `../../crates` para RustSWF).
+- `root`: dónde está el código si no es esta carpeta (`.` para los motores propios: `pyswf/` es el paquete Python y `rustswf/` contiene los crates `swf-*`).
 
-Los motores propios hablan el protocolo JSONL de `rustswf worker`. Para añadir uno: crea la carpeta con su `engine.json` y, si es un ejecutable, regístralo con su hash en `py_swf/.dev-references/extra-tools.json`.
+Los motores propios hablan el protocolo JSONL de `rustswf worker`. Para añadir uno: crea la carpeta con su `engine.json` y, si es un ejecutable, regístralo con su hash en `vendor/references/extra-tools.json` (`vendor/` no se versiona).

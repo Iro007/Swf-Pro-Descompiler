@@ -1,7 +1,7 @@
 # Ejecute desde cualquier carpeta. Todas las rutas parten de este archivo.
 # Inventario: .\flash-studio.ps1
 # Aplicación: .\flash-studio.ps1 (Suite; 'Python' y 'Rust' son alias de la misma ventana)
-# Comparar: .\flash-studio.ps1 -Accion Comparar -Corpus benchmark_inputs -Perfil full
+# Comparar: .\flash-studio.ps1 -Accion Comparar -Corpus corpus -Perfil full
 # Source y disassemble son operaciones distintas; vea docs/funciones_objetivo.json.
 [CmdletBinding()]
 param(
@@ -12,7 +12,7 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 $workspaceFlash = $PSScriptRoot
-$pythonProjectFlash = Join-Path $workspaceFlash 'py_swf'
+$pythonProjectFlash = Join-Path $workspaceFlash 'engines\pyswf'
 $pythonFlash = Join-Path $pythonProjectFlash '.venv/Scripts/python.exe'
 # 'Python' y 'Rust' abren la misma aplicación: PySWF y RustSWF forman parte de la suite.
 if ($Accion -eq 'Suite' -or $Accion -eq 'Rust' -or $Accion -eq 'Python') {
@@ -36,7 +36,7 @@ if ($Accion -eq 'Funciones') {
     return
 }
 if (-not (Test-Path -LiteralPath $pythonFlash -PathType Leaf)) {
-    throw 'Falta el entorno Python: cree py_swf/.venv e instale las dependencias del proyecto.'
+    throw 'Falta el entorno Python: cree engines/pyswf/.venv e instale las dependencias del proyecto.'
 }
 if ($Salida -and -not [System.IO.Path]::IsPathRooted($Salida)) {
     $Salida = Join-Path $workspaceFlash $Salida

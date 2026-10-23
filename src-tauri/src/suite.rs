@@ -34,7 +34,7 @@ fn workspace_beside(executable_dir: &Path) -> PathBuf {
         .take(8)
         .find(|ancestor| {
             ancestor
-                .join("py_swf/py_swf/universal_worker.py")
+                .join("engines/pyswf/py_swf/universal_worker.py")
                 .is_file()
         })
         .unwrap_or(executable_dir)
@@ -63,14 +63,15 @@ impl Launch {
         let source = Path::new(env!("CARGO_MANIFEST_DIR"))
             .parent()
             .context("No se encontró el workspace fuente")?
-            .join("py_swf");
+            .join("engines/pyswf");
         let python = source.join(".venv/Scripts/python.exe");
         ensure!(
             python.is_file() && source.join("py_swf/universal_worker.py").is_file(),
-            "No se encuentra FlashSuiteWorker.exe. En desarrollo se requieren py_swf/.venv y py_swf/universal_worker.py"
+            "No se encuentra FlashSuiteWorker.exe. En desarrollo se requieren engines/pyswf/.venv y engines/pyswf/py_swf/universal_worker.py"
         );
         let workspace = source
             .parent()
+            .and_then(Path::parent)
             .context("Workspace fuente sin directorio")?
             .to_owned();
         Ok(Self {
@@ -780,7 +781,7 @@ rl.on('line',line=>{
     }
 
     #[test]
-    #[ignore = "Requires the py_swf virtual environment and worker source"]
+    #[ignore = "Requires the engines/pyswf virtual environment and worker source"]
     fn source_worker_opens_and_restores_a_real_project() {
         let executable = std::env::current_exe().unwrap();
         let launch = Launch::resolve(&executable, executable.parent().unwrap()).unwrap();

@@ -7,7 +7,7 @@ import (
 )
 
 func TestOpenAvm1DefineFunction2(t *testing.T) {
-	swfPath := filepath.Join("..", "..", "..", "..", "benchmark_inputs", "as2_definefunc_regs.swf")
+	swfPath := filepath.Join("..", "..", "..", "..", "corpus", "as2_definefunc_regs.swf")
 	s, err := openSwfFile(swfPath)
 	if err != nil {
 		t.Fatalf("openSwfFile failed: %v", err)
@@ -37,7 +37,7 @@ func TestOpenAvm1DefineFunction2(t *testing.T) {
 }
 
 func TestOpenAvm2DoAbc(t *testing.T) {
-	swfPath := filepath.Join("..", "..", "..", "..", "benchmark_inputs", "as3_new.flex.swf")
+	swfPath := filepath.Join("..", "..", "..", "..", "corpus", "as3_new.flex.swf")
 	s, err := openSwfFile(swfPath)
 	if err != nil {
 		t.Fatalf("openSwfFile failed: %v", err)

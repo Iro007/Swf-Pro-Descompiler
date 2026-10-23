@@ -21,9 +21,9 @@ $webVersion=(Get-Content -LiteralPath '.\ui\package.json' -Raw | ConvertFrom-Jso
 if($appVersion -ne $webVersion){throw "Las versiones de Tauri y web no coinciden"}
 $cargoMode=@('--locked')
 if($Offline){$cargoMode+='--offline'}
-$pythonProject=Join-Path $PSScriptRoot 'py_swf'
+$pythonProject=Join-Path $PSScriptRoot 'engines\pyswf'
 if(-not $SuiteWorkerPath){$SuiteWorkerPath=Join-Path $pythonProject 'dist\FlashSuiteWorker.exe'}
-if(-not(Test-Path -LiteralPath $SuiteWorkerPath -PathType Leaf)){throw "Falta el worker universal: $SuiteWorkerPath. Compile py_swf/packaging/suite_worker.spec antes de distribuir la suite."}
+if(-not(Test-Path -LiteralPath $SuiteWorkerPath -PathType Leaf)){throw "Falta el worker universal: $SuiteWorkerPath. Compile engines/pyswf/packaging/suite_worker.spec antes de distribuir la suite."}
 $SuiteWorkerPath=(Resolve-Path -LiteralPath $SuiteWorkerPath).Path
 $workerSha256=(Get-FileHash -LiteralPath $SuiteWorkerPath -Algorithm SHA256).Hash.ToLowerInvariant()
 if($ExpectedWorkerSha256 -and $workerSha256 -ne $ExpectedWorkerSha256.ToLowerInvariant()){throw "El worker no coincide con el SHA-256 de esta entrega"}

@@ -17,8 +17,8 @@
       "python": "implemented_with_validation",
       "rust": "implemented_reading_and_wrapper_roundtrip",
       "evidence": [
-        "py_swf/py_swf/swf_parser.py",
-        "crates/swf-core/src",
+        "engines/pyswf/py_swf/swf_parser.py",
+        "engines/rustswf/swf-core/src",
         "reports/rustswf-source-only-summary.json"
       ]
     },
@@ -29,8 +29,8 @@
       "python": "implemented",
       "rust": "implemented_paginated",
       "evidence": [
-        "py_swf/py_swf/script_inventory.py",
-        "crates/swf-avm/src"
+        "engines/pyswf/py_swf/script_inventory.py",
+        "engines/rustswf/swf-avm/src"
       ]
     },
     {
@@ -56,7 +56,7 @@
       "python": "partial_supported_programs_and_saved_sources",
       "rust": "delegated_to_pyswf_in_suite",
       "evidence": [
-        "py_swf/py_swf/editing.py",
+        "engines/pyswf/py_swf/editing.py",
         "README.md"
       ],
       "verification": "Fuente aportada con hash del texto y revisión del SWF; recompilación desde fuentes guardadas. Familias AS no compatibles permanecen acotadas."
@@ -124,8 +124,8 @@
       "rust": "delegated_to_pyswf_in_suite",
       "verification": "Cambios validados con historial; formas en píxeles, glifos en sus unidades originales. Arrastre profesional, controles de curvas y estilos completos pendientes.",
       "evidence": [
-        "py_swf/tests/test_suite_resource_documents.py",
-        "py_swf/tests/test_suite_font_documents.py",
+        "engines/pyswf/tests/test_suite_resource_documents.py",
+        "engines/pyswf/tests/test_suite_font_documents.py",
         "ui/src/components/SuiteResources.tsx"
       ]
     }

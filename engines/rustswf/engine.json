@@ -15,5 +15,5 @@
   "color": "#b66a38",
   "license": "See LICENSE and THIRD_PARTY_NOTICES.md",
   "delivery": "repo",
-  "root": "../../crates"
+  "root": "."
 }

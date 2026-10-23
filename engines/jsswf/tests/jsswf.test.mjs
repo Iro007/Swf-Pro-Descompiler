@@ -10,7 +10,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, "..", "..", "..");
 
 test("JsSWF parses AVM1 DefineFunction2 registers and constant pool hash", () => {
-  const swfPath = path.join(repoRoot, "benchmark_inputs", "as2_definefunc_regs.swf");
+  const swfPath = path.join(repoRoot, "corpus", "as2_definefunc_regs.swf");
   const movie = parseSwfFile(swfPath);
   const units = buildInventory(movie);
   assert.equal(movie.info.signature, "CWS");
@@ -25,7 +25,7 @@ test("JsSWF parses AVM1 DefineFunction2 registers and constant pool hash", () =>
 });
 
 test("JsSWF parses AVM2 DoABC methods and reconstructs structured source", () => {
-  const swfPath = path.join(repoRoot, "benchmark_inputs", "as3_new.flex.swf");
+  const swfPath = path.join(repoRoot, "corpus", "as3_new.flex.swf");
   const movie = parseSwfFile(swfPath);
   const units = buildInventory(movie);
   assert.ok(units.length > 0);
@@ -41,7 +41,7 @@ test("JsSWF parses AVM2 DoABC methods and reconstructs structured source", () =>
 
 test("JSONL worker responds to open, scripts, disassemble, and decompile", async () => {
   const cliPath = path.join(repoRoot, "engines", "jsswf", "src", "cli.mjs");
-  const swfPath = path.join(repoRoot, "benchmark_inputs", "as2_definefunc_regs.swf");
+  const swfPath = path.join(repoRoot, "corpus", "as2_definefunc_regs.swf");
   const child = spawn(process.execPath, [cliPath, "worker"], {
     stdio: ["pipe", "pipe", "pipe"],
   });

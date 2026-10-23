@@ -16,7 +16,7 @@ for(const entry of fs.readdirSync(modules,{withFileTypes:true})){
   const folders=entry.name.startsWith('@')?fs.readdirSync(path.join(modules,entry.name)).map(n=>path.join(modules,entry.name,n)):[path.join(modules,entry.name)];
   for(const folder of folders){const manifest=path.join(folder,'package.json');if(fs.existsSync(manifest)){const item=JSON.parse(fs.readFileSync(manifest,'utf8'));collect(item.name,item.version,item.license??'SEE LICENSE',folder);}}
 }
-const ruffle=path.resolve('third_party/ruffle');if(fs.existsSync(path.join(ruffle,'LICENSE.md'))){fs.mkdirSync(path.join(output,'ruffle'),{recursive:true});for(const name of ['LICENSE.md','LICENSE_MIT','LICENSE_APACHE'])if(fs.existsSync(path.join(ruffle,name)))fs.copyFileSync(path.join(ruffle,name),path.join(output,'ruffle',name));}
+const ruffle=path.resolve('vendor/third_party/ruffle');if(fs.existsSync(path.join(ruffle,'LICENSE.md'))){fs.mkdirSync(path.join(output,'ruffle'),{recursive:true});for(const name of ['LICENSE.md','LICENSE_MIT','LICENSE_APACHE'])if(fs.existsSync(path.join(ruffle,name)))fs.copyFileSync(path.join(ruffle,name),path.join(output,'ruffle',name));}
 const rustLicenses=path.join(process.env.USERPROFILE,'.rustup/toolchains/1.99.0-x86_64-pc-windows-gnu/share/doc/rust/licenses');
 if(fs.existsSync(rustLicenses)){const target=path.join(output,'rust-stdlib');fs.mkdirSync(target,{recursive:true});for(const file of fs.readdirSync(rustLicenses))if(file.endsWith('.txt'))fs.copyFileSync(path.join(rustLicenses,file),path.join(target,file));}
 const compiler=path.resolve('tools/bootstrap/mingw/mingw64');

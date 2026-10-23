@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "description": "Golden cases for scoring-rules.json. 'score' null means no output (blank or missing text). 'balanced' checks bracket matching outside strings and comments.",
+  "cases": [
+    {"text": "var a = 1;", "score": 100, "balanced": true},
+    {"text": null, "score": null},
+    {"text": "  \n", "score": null},
+    {"text": "§§push(1);", "score": 70, "balanced": true},
+    {"text": "// Incomplete function f(); original method:1 retained as P-code", "score": 70, "balanced": true},
+    {"text": "function f() {", "score": 60, "balanced": false},
+    {"text": "trace(\"}\"); // {\n/* ( */ var x = [1];", "score": 100, "balanced": true},
+    {"text": "if (a) { b(;", "score": 60, "balanced": false},
+    {"text": "// Code may be obfuscated\nvar a = 1;", "score": 95, "balanced": true},
+    {"text": "§§§§§§§§§§§§§§§§§§§§§§§§", "score": -200, "balanced": true}
+  ]
+}

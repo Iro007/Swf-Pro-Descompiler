@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "description": "Quality score for one decompiled script file. Read by flashdec_py/flashdec/scoring.py and crates/flashdec/src/scoring.rs; scoring-vectors.json holds the golden cases both test suites check. A score detects declared failures only: it does not prove recompilation or equal behavior.",
+  "base_score": 100,
+  "hard_penalty": 30,
+  "soft_penalty": 5,
+  "unbalanced_penalty": 40,
+  "max_marker_hits": 10,
+  "hard_markers": [
+    "Decompilation error",
+    "§§",
+    "// no decompilable",
+    "Native reconstruction incomplete",
+    "retained as P-code",
+    "Fuente no reconstruida",
+    "pcode_only",
+    "Error during",
+    "decompilation timeout",
+    "//unresolved jump"
+  ],
+  "soft_markers": [
+    "// Unsupported",
+    "/* unsupported",
+    "unknown_opcode",
+    "Code may be obfuscated"
+  ]
+}

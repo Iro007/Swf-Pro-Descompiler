@@ -582,3 +582,102 @@ fn pinned_corpus_is_read_and_selected_resources_export() {
     assert_eq!(parsed_files, 3);
     assert!(assets > 0);
 }
+
+#[test]
+fn header_reports_rect_rate_count_and_header_tags_for_every_container() {
+    let fws = movie(&[
+        tag(69, &[0x18, 0, 0, 0]), // AS3 + HasMetadata
+        tag(77, b"<x:xmpmeta/>\0"),
+        tag(65, &[0xe8, 0x03, 0x0f, 0x00]),
+        tag(9, &[0x10, 0x20, 0x30]),
+        tag(1, &[]),
+    ]);
+    for (signature, compression, input) in [
+        ("FWS", "none", fws.clone()),
+        ("CWS", "zlib", cws(&fws)),
+        ("ZWS", "lzma", zws(&fws)),
+    ] {
+        let parsed = Movie::from_bytes(&input, "header.swf").unwrap();
+        let header = parsed.header().unwrap();
+        assert_eq!(header.filename, "header.swf");
+        assert_eq!(header.signature, signature);
+        assert_eq!(header.compression, compression);
+        assert_eq!(header.version, 13);
+        assert_eq!(header.file_length as usize, fws.len());
+        assert_eq!(header.file_size, input.len());
+        assert_eq!(
+            (
+                header.frame_size.xmin,
+                header.frame_size.xmax,
+                header.frame_size.ymin,
+                header.frame_size.ymax
+            ),
+            (0, 2000, 0, 1000)
+        );
+        assert_eq!((header.frame_size.width, header.frame_size.height), (100.0, 50.0));
+        assert_eq!(header.frame_rate, 24.0);
+        assert_eq!(header.frame_count, 1);
+        assert_eq!(header.tag_count, 6, "the five tags and End");
+        assert_eq!(header.shown_frames, 1);
+        assert_eq!(header.abc_blocks, 0);
+        assert_eq!(header.background_color.as_deref(), Some("#102030"));
+        let attributes = header.file_attributes.unwrap();
+        assert!(attributes.actionscript3 && attributes.has_metadata);
+        assert!(!attributes.use_network && !attributes.use_gpu && !attributes.use_direct_blit);
+        assert!(header.has_as3 && header.has_metadata);
+        let limits = header.script_limits.unwrap();
+        assert_eq!((limits.max_recursion_depth, limits.script_timeout_seconds), (1000, 15));
+        assert_eq!(header.metadata.as_deref(), Some("<x:xmpmeta/>"));
+        assert_eq!(header.sha256, parsed.info.sha256);
+        assert_eq!(header.revision, header.sha256);
+        assert_eq!(header.script_count, None, "only the worker knows the code units");
+    }
+}
+
+#[test]
+fn header_without_optional_tags_reports_nothing_for_them() {
+    let parsed = Movie::from_bytes(&movie(&[tag(1, &[])]), "bare.swf").unwrap();
+    let header = parsed.header().unwrap();
+    assert!(header.background_color.is_none());
+    assert!(header.file_attributes.is_none());
+    assert!(header.script_limits.is_none());
+    assert!(!header.has_metadata && !header.has_as3);
+    assert!(header.metadata.is_none());
+}
+
+#[test]
+fn header_counts_the_main_timeline_only_and_finds_abc_code() {
+    let mut sprite = vec![2u8, 0, 2, 0];
+    sprite.extend(tag(1, &[]));
+    sprite.extend(tag(1, &[]));
+    sprite.extend(tag(0, &[]));
+    let parsed = Movie::from_bytes(
+        &movie(&[
+            tag(39, &sprite),
+            tag(82, &[0, 0, 0, 0, b'a', 0]),
+            tag(72, &[1, 2, 3]),
+            tag(1, &[]),
+            tag(1, &[]),
+        ]),
+        "counts.swf",
+    )
+    .unwrap();
+    let header = parsed.header().unwrap();
+    assert_eq!(header.tag_count, 6, "the sprite and its inner tags count as one tag");
+    assert_eq!(header.shown_frames, 2, "ShowFrame inside the sprite does not count");
+    assert_eq!(header.abc_blocks, 2);
+    assert!(header.has_as3, "ABC code makes it AS3 even without FileAttributes");
+    assert!(header.file_attributes.is_none());
+    assert!(parsed.tags.len() > header.tag_count);
+}
+
+#[test]
+fn header_metadata_is_cut_at_the_first_nul_and_at_64k_characters() {
+    let mut long = vec![b'x'; 70_000];
+    long.push(0);
+    long.extend_from_slice(b"after");
+    let parsed = Movie::from_bytes(&movie(&[tag(77, &long), tag(1, &[])]), "meta.swf").unwrap();
+    let header = parsed.header().unwrap();
+    assert_eq!(header.metadata.as_ref().map(|text| text.chars().count()), Some(64 * 1024));
+    assert!(header.has_metadata);
+}

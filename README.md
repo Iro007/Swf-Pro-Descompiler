@@ -5,9 +5,10 @@ Un **arnés de descompiladores de Flash**: una sola aplicación que usa varios m
 ## Estructura
 
 ```
-src-tauri/   la aplicación de escritorio (Tauri, Rust)
+desktop/     el anfitrión Electron: el arnés que lanza los motores como procesos JSONL (sustituye a src-tauri/)
+src-tauri/   la aplicación de escritorio actual (Tauri, Rust); se retira cuando la interfaz pase a Electron
 ui/          la interfaz (React)
-engines/     un motor por carpeta, cada uno con su engine.json
+engines/     un motor por carpeta, cada uno con su engine.json; PROTOCOL.md es el contrato común
   pyswf/       PySWF: orquestador de herramientas, compilador, editor de recursos, benchmarks (Python)
   rustswf/     RustSWF: crates swf-core, swf-avm, swf-decompile y swf-cli
   jsswf/ goswf/ asmswf/   motores propios en JS, Go y ensamblador x86_64
@@ -19,6 +20,24 @@ vendor/      NO se versiona: lo descargado o instalado (references/, toolpacks/,
 ```
 
 Las herramientas de terceros (JPEXS, JDK, Flex, Haxe, instaladores comerciales…), los entornos virtuales, las compilaciones y los informes **no se versionan**: viven en `vendor/` o se regeneran con los scripts de `engines/pyswf/tools/`. Todas las rutas de Python salen de `engines/pyswf/py_swf/paths.py` (`FLASH_SUITE_WORKSPACE`, `FLASH_ENGINES_DIR` y `FLASH_VENDOR_DIR` las sobrescriben).
+
+## Arquitectura
+
+```
+interfaz React  →  Electron (desktop/): el arnés  →  motores (un proceso JSONL cada uno)
+```
+
+El proceso principal de Electron lanza cada motor (RustSWF, PySWF, JsSWF, GoSWF, AsmSWF) como un proceso que habla JSONL, abre el documento en ellos, enruta cada operación (con reserva `rust → pyswf → jpexs` y la indicación de qué motor contestó) y, en «Automático», pregunta a todos a la vez y se queda con la mejor fuente. PySWF es solo un motor más, el que edita. Ver [engines/PROTOCOL.md](engines/PROTOCOL.md).
+
+```powershell
+cd desktop
+npm ci
+npm start            # abre la ventana (muestra la consola del arnés mientras la interfaz no esté compilada)
+npm test             # pruebas del arnés; las que usan los motores reales se omiten si no están compilados
+npm run e2e          # abre un SWF del corpus y descompila una clase en «automático»
+npm run try-ui       # compila la interfaz React (sin tocar ui/) con desktop/ui-host/api.ts y la abre en Electron
+npm run smoke        # abre la ventana con un SWF y escribe reports/electron-smoke.json (una interfaz compilada informa de lo que vio)
+```
 
 ## Uso (Windows, PowerShell)
 

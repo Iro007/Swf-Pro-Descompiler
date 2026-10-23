@@ -15,5 +15,27 @@
   "color": "#d4940a",
   "license": "GPL-3.0; Node.js ESM JSONL worker",
   "delivery": "repo",
-  "root": "."
+  "root": ".",
+  "worker": {
+    "protocol": "jsonl",
+    "framing": "legacy",
+    "command": [
+      "{node}",
+      "engines/jsswf/src/cli.mjs",
+      "worker"
+    ],
+    "memory_mib": 1024,
+    "class_units": false,
+    "ops": [
+      "capabilities",
+      "open",
+      "header",
+      "scripts",
+      "disassemble",
+      "decompile"
+    ],
+    "native_ops": {
+      "info": {}
+    }
+  }
 }

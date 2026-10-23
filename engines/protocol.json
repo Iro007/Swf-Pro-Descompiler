@@ -1,0 +1,88 @@
+{
+  "protocol": "flash-engine-jsonl",
+  "version": 2,
+  "description": "Contrato común de los motores (ver PROTOCOL.md). Lo leen el arnés de Electron (desktop/harness) y, mediante include_str!, rustswf. Un motor declara en su engine.json (worker.ops) cuáles de estas operaciones implementa; el registro calcula de ahí los niveles.",
+  "levels": {
+    "L1": {"name": "Lectura", "ops": ["capabilities", "open", "header", "tag_tree", "raw", "resources"]},
+    "L2": {"name": "Recursos", "ops": ["resource_info", "extract_image", "extract_sound", "extract_font", "extract_text", "shape_svg", "resource_preview", "sprite_frames"]},
+    "L3": {"name": "Código", "ops": ["scripts", "disassemble", "decompile"]},
+    "L4": {"name": "Edición", "ops": ["assemble", "compile", "replace_resource", "undo", "redo", "save"]},
+    "L5": {"name": "Avanzado", "ops": ["export_fla", "export_xfl", "export_svg", "export_xml", "deobfuscate", "search"]}
+  },
+  "ops": {
+    "capabilities": {"timeout": "default", "document": false},
+    "open": {"timeout": "default", "mutates": true},
+    "header": {"timeout": "default"},
+    "tag_tree": {"timeout": "default"},
+    "raw": {"timeout": "default"},
+    "resources": {"timeout": "default"},
+    "resource_info": {"timeout": "default"},
+    "extract_image": {"timeout": "default"},
+    "extract_sound": {"timeout": "default"},
+    "extract_font": {"timeout": "default"},
+    "extract_text": {"timeout": "default"},
+    "shape_svg": {"timeout": "default"},
+    "resource_preview": {"timeout": "default"},
+    "sprite_frames": {"timeout": "default"},
+    "scripts": {"timeout": "default"},
+    "disassemble": {"timeout": "default"},
+    "decompile": {"timeout": "default"},
+    "assemble": {"timeout": "compile", "mutates": true},
+    "compile": {"timeout": "compile", "mutates": true},
+    "replace_resource": {"timeout": "default", "mutates": true},
+    "undo": {"timeout": "default", "mutates": true},
+    "redo": {"timeout": "default", "mutates": true},
+    "save": {"timeout": "default"},
+    "export_fla": {"timeout": "compile"},
+    "export_xfl": {"timeout": "compile"},
+    "export_svg": {"timeout": "compile"},
+    "export_xml": {"timeout": "compile"},
+    "deobfuscate": {"timeout": "compile", "mutates": true},
+    "search": {"timeout": "default"}
+  },
+  "timeouts_seconds": {
+    "default": {"seconds": 30, "env": "FLASH_SUITE_TIMEOUT_SECONDS"},
+    "compile": {"seconds": 120, "env": "FLASH_SUITE_COMPILE_TIMEOUT_SECONDS"},
+    "benchmark": {"seconds": 600, "env": "FLASH_SUITE_BENCHMARK_TIMEOUT_SECONDS"}
+  },
+  "memory_mib": {
+    "default": 1024,
+    "compile": 2048,
+    "env": "FLASH_SUITE_MEMORY_MIB",
+    "min": 256,
+    "max": 4096
+  },
+  "contracts": {
+    "hierarchy": {
+      "path": "vendor/toolpacks/flex/frameworks/libs/player/32.0/playerglobal.swc",
+      "sha256": "7d4d6168d27603cfb3b750302448e354e0bbc1bdd58f5d101c3dcf6891e9bb65",
+      "description": "Jerarquía de clases del SDK del reproductor. Con ella RustSWF demuestra los ancestros externos de una clase y puede emitir su documento completo; sin ella devuelve P-code para clases que extienden clases de Flash."
+    }
+  },
+  "fallback_chain": ["rust", "native", "jpexs"],
+  "prefer_authority": ["tag_tree", "resource_info"],
+  "authority": "native",
+  "error_kinds": {
+    "worker": ["bad_request", "not_open", "not_found", "unsupported", "failed", "limit", "internal"],
+    "harness": ["timeout", "crashed", "unavailable", "cancelled", "stale", "protocol", "no_engine"],
+    "no_fallback": ["bad_request", "cancelled", "stale"]
+  },
+  "tag_folders": {
+    "order": ["header", "shapes", "morphshapes", "sprites", "texts", "images", "movies", "sounds", "buttons", "fonts", "binaryData", "frames", "others", "scripts", "sources"],
+    "by_code": {
+      "shapes": [2, 22, 32, 83],
+      "morphshapes": [46, 84],
+      "sprites": [39],
+      "texts": [11, 33, 37],
+      "images": [6, 20, 21, 35, 36, 90],
+      "movies": [60],
+      "sounds": [14, 18, 45],
+      "buttons": [7, 34],
+      "fonts": [10, 13, 48, 62, 75, 88, 91],
+      "binaryData": [87]
+    },
+    "frame_control": [0, 1, 4, 5, 12, 15, 19, 26, 28, 43, 59, 61, 70, 89, 94],
+    "show_frame": 1,
+    "end": 0
+  }
+}

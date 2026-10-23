@@ -33,7 +33,9 @@ from py_swf.benchmark_engines import ENGINES
 from py_swf.corpus import read_immutable_manifest
 from py_swf.suite_tools import fingerprint
 from run_ruffle_trace_probe import bounded_run
+from py_swf.suite_tools import ToolRegistry
 from run_semantic_benchmarks import SOURCE_ENGINES, discover_pins, select_cases, write_json
+import bench_tasks
 
 SCHEMA_VERSION = 1
 OUT = WORKSPACE / "reports" / "bench"
@@ -123,25 +125,77 @@ def table(rows):
             "engines": lines}
 
 
+CATEGORIES = {
+    "decompilers": "Descompiladores",
+    "compilers": "Compiladores",
+    "disassemblers": "Desensambladores",
+    "converters": "Conversores XML",
+    "extractors": "Extractores",
+}
+UNITS = {
+    "compilers": "proyectos del corpus que compilan y Ruffle imprime la traza esperada",
+    "disassemblers": "SWF que tras desensamblar y reensamblar imprimen la misma traza (solo los que reensamblan)",
+    "converters": "SWF que tras SWF a XML a SWF imprimen la misma traza",
+    "extractors": "SWF cuyos recursos se extraen todos y decodifican",
+}
+
+
+def simple_table(rows, category):
+    """Same shape as table(): applicable cases only; the others keep their reason."""
+    by_engine = defaultdict(list)
+    for item in rows:
+        by_engine[item["engine"]].append(item)
+    lines = []
+    for engine, items in by_engine.items():
+        lines.append({"engine": engine, "name": ENGINES[engine].name if engine in ENGINES else engine,
+                      "cases": len([i for i in items if i["ok"] is not None]),
+                      "ok": sum(i["ok"] is True for i in items),
+                      "details": sorted({i["detail"] for i in items if i["detail"]})[:3],
+                      "reasons": sorted({i["reason"] for i in items if i["reason"]})[:3]})
+    lines.sort(key=lambda l: (l["cases"] == 0, -l["ok"], l["engine"]))
+    measured = [l for l in lines if l["cases"]]
+    winner = None
+    comparable = len({l["cases"] for l in measured}) == 1
+    if len(measured) > 1 and comparable and measured[0]["ok"] - measured[1]["ok"] > NOISE_CASES:
+        winner = measured[0]["engine"]
+    if winner:
+        note = None
+    elif len(measured) < 2:
+        note = "un solo motor medido: no hay con qué compararlo"
+    elif not comparable:
+        note = "sin ganador: los motores se midieron sobre casos distintos (leen lenguajes distintos)"
+    else:
+        note = "sin ganador claro: la ventaja es de %d caso(s) o menos" % NOISE_CASES
+    return {"unit": UNITS[category], "winner": winner, "note": note, "engines": lines}
+
+
 def show(tables):
     for category, data in tables.items():
-        print("\n== %s ==  (%s)" % (category, data["unit"]))
-        print("%-12s %5s %7s %10s %11s" % ("engine", "cases", "source", "recompiles", "same trace"))
+        print()
+        print("== %s ==  (%s)" % (CATEGORIES[category], data["unit"]))
+        if category == "decompilers":
+            print("%-12s %5s %8s %10s %11s" % ("motor", "casos", "fuente", "recompila", "misma traza"))
+        else:
+            print("%-12s %5s %9s" % ("motor", "casos", "correctos"))
         for line in data["engines"]:
-            print("%-12s %5d %7d %10d %11d" % (line["engine"], line["cases"], line["source"], line["recompiles"], line["same_trace"]))
+            if category == "decompilers":
+                print("%-12s %5d %8d %10d %11d" % (line["engine"], line["cases"], line["source"], line["recompiles"], line["same_trace"]))
+            else:
+                print("%-12s %5d %9d" % (line["engine"], line["cases"], line["ok"]))
             for reason in line["reasons"]:
                 print("    - " + reason)
-        print("winner: " + (data["winner"] or data["note"]))
+        print("ganador: " + data["winner"] if data["winner"] else data["note"])
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     mode = parser.add_mutually_exclusive_group()
-    mode.add_argument("--smoke", action="store_true", help="one case per development family (default)")
-    mode.add_argument("--full", action="store_true", help="every development and validation case")
-    parser.add_argument("--engines", nargs="+", choices=SOURCE_ENGINES, default=list(SOURCE_ENGINES))
+    mode.add_argument("--smoke", action="store_true", help="un caso por familia de desarrollo (por defecto)")
+    mode.add_argument("--full", action="store_true", help="todos los casos de desarrollo y validación")
+    parser.add_argument("--only", nargs="+", choices=list(CATEGORIES), default=list(CATEGORIES), help="categorías a medir")
+    parser.add_argument("--engines", nargs="+", choices=SOURCE_ENGINES, default=list(SOURCE_ENGINES), help="descompiladores")
     parser.add_argument("--job-timeout", type=int, default=240)
-    parser.add_argument("--keep-evidence", action="store_true", help="keep the per-job folders (large)")
+    parser.add_argument("--keep-evidence", action="store_true", help="conserva las carpetas de cada trabajo (grandes)")
     args = parser.parse_args()
 
     manifest = read_immutable_manifest(CORPUS, verify_sources=False)
@@ -153,44 +207,90 @@ def main():
             first.setdefault(case["family_id"], case)
         cases = list(first.values())
 
-    pins = discover_pins(settings(args.engines, args.job_timeout))
     run_id = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
     folder = OUT / run_id
-    rows, started = [], time.perf_counter()
-    for case in cases:
-        for engine in args.engines:
-            if pins["source_tools"].get(engine, {}).get("status") == "not_configured":
-                rows.append({"engine": engine, "family": case["family_id"], "case": case["relative"],
-                             "language": case["language"], "source": False, "recompiles": None, "same_trace": None,
-                             "reason": "not installed: " + str(pins["source_tools"][engine].get("diagnostic", ""))[:200]})
-                continue
-            if case["language"] not in ENGINES[engine].languages:
-                rows.append({"engine": engine, "family": case["family_id"], "case": case["relative"],
-                             "language": case["language"], "source": False, "recompiles": None, "same_trace": None,
-                             "reason": "does not read " + case["language"].upper()})
-                continue
-            work = folder / "work" / (case["family_id"] + "-" + engine)
-            job = run_job(pins, case, engine, work, args.job_timeout)
-            rows.append(verdict(job))
-            print(case["family_id"], engine, rows[-1]["same_trace"], flush=True)
-    if not args.keep_evidence:
-        shutil.rmtree(folder / "work", ignore_errors=True)
+    started = time.perf_counter()
+    tables, all_rows = {}, {}
 
-    tables = {"decompilers": table(rows)}
+    if "decompilers" in args.only:
+        pins = discover_pins(settings(args.engines, args.job_timeout))
+        rows = []
+        for case in cases:
+            for engine in args.engines:
+                base = {"engine": engine, "family": case["family_id"], "case": case["relative"], "language": case["language"],
+                        "source": False, "recompiles": None, "same_trace": None}
+                if pins["source_tools"].get(engine, {}).get("status") == "not_configured":
+                    rows.append({**base, "reason": "no instalado: " + str(pins["source_tools"][engine].get("diagnostic", ""))[:200]})
+                    continue
+                if case["language"] not in ENGINES[engine].languages:
+                    rows.append({**base, "reason": "no lee " + case["language"].upper()})
+                    continue
+                work = folder / "work" / (case["family_id"] + "-" + engine)
+                rows.append(verdict(run_job(pins, case, engine, work, args.job_timeout)))
+                print("descompilador", case["family_id"], engine, rows[-1]["same_trace"], flush=True)
+        if not args.keep_evidence:
+            shutil.rmtree(folder / "work", ignore_errors=True)
+        tables["decompilers"], all_rows["decompilers"] = table(rows), rows
+
+    others = [c for c in args.only if c != "decompilers"]
+    if others:
+        by_family = {case["family_id"]: case for case in cases}
+        ctx = {"tool_config": PROJECT / ".dev-references/extra-tools.json", "runtime": RUNTIME, "registry": ToolRegistry(None),
+               "rascal": PROJECT / ".dev-references/extra-tools/rascal-0.3.5/bin/rascal.exe",
+               "original_of": lambda family: CORPUS / by_family[family]["relative"]}
+        tasks = {"disassemblers": bench_tasks.disassemblers, "converters": bench_tasks.converters, "extractors": bench_tasks.extractors}
+        for category in others:
+            rows = []
+            if category == "compilers":
+                for family in manifest["families"]:
+                    if family["family_id"] in by_family:
+                        rows += guarded(bench_tasks.compilers, family, CORPUS.parent / "projects" / family["family_id"], ctx, family["family_id"], category)
+            else:
+                for case in (cases_with_resources(manifest) if category == "extractors" else cases):
+                    rows += guarded(tasks[category], case, CORPUS / case["relative"], ctx, case["relative"], category)
+            tables[category], all_rows[category] = simple_table(rows, category), rows
+
     results = {"schema_version": SCHEMA_VERSION, "run_id": run_id, "mode": "full" if args.full else "smoke",
                "created_utc": datetime.now(timezone.utc).isoformat(), "seconds": round(time.perf_counter() - started),
                "corpus": manifest["corpus_id"], "cases": len(cases),
                "oracle": {"runtime": RUNTIME.name, "runtime_sha256": fingerprint(RUNTIME) if RUNTIME.is_file() else None},
-               "tables": tables, "rows": rows}
+               "tables": tables, "rows": all_rows}
     write_json(folder / "results.json", results)
     index_path = OUT / "index.json"
     index = json.loads(index_path.read_text(encoding="utf-8")) if index_path.is_file() else []
     index.append({"run_id": run_id, "mode": results["mode"], "cases": len(cases), "seconds": results["seconds"],
-                  "winner": tables["decompilers"]["winner"]})
+                  "winner": tables.get("decompilers", {}).get("winner")})
     write_json(index_path, index)
     show(tables)
-    print("\n" + str(folder / "results.json"), "%.1f KB" % ((folder / "results.json").stat().st_size / 1024))
+    print()
+    print(folder / "results.json", "%.1f KB" % ((folder / "results.json").stat().st_size / 1024))
     return 0
+
+
+def cases_with_resources(manifest):
+    """Extraction needs SWFs that have resources: one per family, development and validation."""
+    from py_swf.benchmark_resource_tools import EXTRACTABLE
+    from py_swf.swf_parser import SWFFile
+    chosen = {}
+    for case in select_cases(manifest, splits=("development", "validation")):
+        if case["family_id"] in chosen:
+            continue
+        movie = SWFFile()
+        movie.read_bytes((CORPUS / case["relative"]).read_bytes())
+        if any(tag.tag_type in EXTRACTABLE and tag.char_id is not None for tag in movie.tags):
+            chosen[case["family_id"]] = case
+    return list(chosen.values())
+
+
+def guarded(task, subject, path, ctx, name, category):
+    """A task that blows up is a failed cell with its reason, never a missing one."""
+    try:
+        rows = task(subject, path, ctx)
+    except Exception as error:
+        rows = [bench_tasks.row("?", name, name, False, reason=type(error).__name__ + ": " + str(error).splitlines()[0][:160])]
+    for item in rows:
+        print(category, name, item["engine"], item["ok"], flush=True)
+    return rows
 
 
 if __name__ == "__main__":

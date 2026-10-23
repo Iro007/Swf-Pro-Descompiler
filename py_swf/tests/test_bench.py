@@ -36,3 +36,14 @@ def test_a_lead_within_noise_names_no_winner():
     assert close["winner"] is None and "sin ganador" in close["note"]
     clear = bench.table(rows("native", 6, 6) + rows("rust", 2, 6))
     assert clear["winner"] == "native"
+
+
+def test_engines_measured_on_different_cases_never_get_a_winner():
+    ok = lambda engine, n, passed: [{"engine": engine, "ok": i < passed, "detail": "", "reason": ""} for i in range(n)]  # noqa: E731
+    mixed = bench.simple_table(ok("rabcdasm", 4, 4) + ok("flasm", 2, 0), "disassemblers")
+    assert mixed["winner"] is None and "casos distintos" in mixed["note"]
+    gap = {"engine": "x", "ok": None, "detail": "", "reason": "no lee AS2"}
+    same = bench.simple_table(ok("a", 4, 4) + ok("b", 4, 1) + [gap], "compilers")
+    assert same["winner"] == "a"
+    skipped = [line for line in same["engines"] if line["engine"] == "x"][0]
+    assert skipped["cases"] == 0 and skipped["reasons"] == ["no lee AS2"]

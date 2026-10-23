@@ -63,17 +63,6 @@ def test_invalid_budget_is_rejected(budget):
         audit_compilation({},"native",{},lambda _:None,file_budget_seconds=budget)
 
 
-def test_public_audit_does_not_ship_document_records_or_change_target_summary():
-    from py_swf.benchmark_report import public_report,render_dashboard
-    report={"profile":"source_audit","configuration":{"compile_documents":True},"cases":[{"relative":"x.swf","engines":[
-        {"engine":"native","quality":{"compiled_verified":1,"source_available":1,"expected_units_reported":2,"pcode":1,"failed":0,"behavior_verified":0},"hot":{},"cold":{},"compilation_audit":{"summary":{"targets":2,"eligible":1,"validated_reopened":1},"records":[{"document_id":"private-detail"}]}}
-    ]}]}
-    public=public_report(report)
-    assert "records" not in public["cases"][0]["engines"][0]["compilation_audit"]
-    assert public["cases"][0]["engines"][0]["compilation_audit"]["summary"]["targets"]==2
-    html=render_dashboard(public)
-    assert "1/2 (1 admitidos; métodos/acciones)" in html
-    assert "Auditoría<br>validada / objetivos" in html
 
 
 def test_audit_recompiles_original_without_mutating_file_or_inventing_behavior(tmp_path):

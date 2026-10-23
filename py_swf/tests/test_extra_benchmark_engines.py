@@ -6,7 +6,7 @@ import pytest
 from py_swf.avm1 import assemble_avm1
 from py_swf.benchmark_engines import ENGINES, checked_tool, describe_engines
 from py_swf.benchmark_worker import handle
-from py_swf.benchmarks import quality, run_benchmark, run_engine
+from py_swf.benchmarks import quality, run_engine
 from py_swf.swf_parser import SWFTag
 from tests.conftest import make_synthetic_swf
 
@@ -256,19 +256,3 @@ def test_native_disassembly_is_not_marked_as_source():
     assert q["behavior_verified"]==0
 
 
-@pytest.mark.skipif(not (Path(__file__).resolve().parents[1] / ".dev-references/extra-tools.json").exists(),reason="Optional development tools absent")
-def test_real_rabcdasm_runs_fresh_and_keeps_original(tmp_path):
-    pytest.importorskip("psutil")
-    from tests.native_fixtures import as3_tag
-    path=tmp_path / "real-format.swf"
-    data=make_synthetic_swf([as3_tag()])
-    path.write_bytes(data)
-    report=run_benchmark(path,engines=("native","rabcdasm"),operation="disassemble",output=tmp_path / "report")
-    result=next(e for e in report["cases"][0]["engines"] if e["engine"]=="rabcdasm")
-    assert result["status"]=="output_unmapped" and result["artifacts"]
-    assert result["hot"]["successful"]==3
-    assert result["quality"]["disassembly_available"] is None
-    assert path.read_bytes()==data and not report["claims"]["parity"]
-    assert result["hot_samples"][0]["external_cli_ms"]>0
-    page=(tmp_path / "report/benchmark.html").read_text(encoding="utf-8")
-    assert "No verificado/2" in page and "Desensamblado" in page

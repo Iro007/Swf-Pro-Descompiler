@@ -5,17 +5,10 @@
 # Source y disassemble son operaciones distintas; vea docs/funciones_objetivo.json.
 [CmdletBinding()]
 param(
-    [ValidateSet('Suite', 'Inventario', 'Funciones', 'Python', 'Rust', 'Comparar', 'Catalogo')]
+    [ValidateSet('Suite', 'Inventario', 'Funciones', 'Python', 'Rust', 'Comparar')]
     [string]$Accion = 'Suite',
-    [string]$Corpus,
-    [ValidateSet('source', 'disassemble')]
-    [string]$Operacion = 'source',
-    [ValidateSet('smoke', 'full')]
-    [string]$Perfil = 'smoke',
-    [string]$Motores = 'native,rust,jpexs',
     [string]$Salida,
-    [string]$PaqueteNube,
-    [ValidatePattern('^[a-fA-F0-9]{64}$')][string]$HashPaqueteNube
+    [switch]$Completo
 )
 $ErrorActionPreference = 'Stop'
 $workspaceFlash = $PSScriptRoot
@@ -53,24 +46,9 @@ try {
     if ($Accion -eq 'Inventario') {
         if (-not $Salida) { $Salida = Join-Path $workspaceFlash 'reports/herramientas-locales.json' }
         & $pythonFlash -m py_swf.cli workspace-tools --root $workspaceFlash --output $Salida
-    } elseif ($Accion -eq 'Catalogo') {
-        $catalogArgsFlash = @((Join-Path $pythonProjectFlash 'tools/merge_benchmark_catalog.py'), '--workspace', $workspaceFlash)
-        if ($Salida) { $catalogArgsFlash += @('--output', $Salida) }
-        if ($PaqueteNube) {
-            if (-not [System.IO.Path]::IsPathRooted($PaqueteNube)) { $PaqueteNube = Join-Path $workspaceFlash $PaqueteNube }
-            $catalogArgsFlash += @('--cloud', $PaqueteNube)
-        }
-        if ($HashPaqueteNube) { $catalogArgsFlash += @('--cloud-sha256', $HashPaqueteNube) }
-        & $pythonFlash @catalogArgsFlash
     } else {
-        if (-not $Corpus) { throw 'Comparar requiere -Corpus con un SWF o una carpeta de SWF.' }
-        # Las rutas relativas del corpus parten de la carpeta compartida.
-        if (-not [System.IO.Path]::IsPathRooted($Corpus)) { $Corpus = Join-Path $workspaceFlash $Corpus }
-        if (-not (Test-Path -LiteralPath $Corpus)) { throw ('No existe el corpus: ' + $Corpus) }
-        if (-not $Salida) {
-            $Salida = Join-Path $workspaceFlash ('reports/comparacion-' + $Operacion + '-' + (Get-Date -Format 'yyyyMMdd-HHmmss'))
-        }
-        & $pythonFlash -m py_swf.cli benchmark $Corpus --engines $Motores --operation $Operacion --profile $Perfil --output $Salida --tool-config (Join-Path $pythonProjectFlash '.dev-references/extra-tools.json')
+        # Comparar: el benchmark de recompilación y traza (ver medir-codigo.ps1).
+        & (Join-Path $workspaceFlash 'medir-codigo.ps1') -Completo:$Completo
     }
     if ($LASTEXITCODE -ne 0) { throw ('El CLI termino con codigo ' + $LASTEXITCODE) }
 } finally {

@@ -7,7 +7,7 @@ import pytest
 
 from py_swf.avm1 import assemble_avm1
 from py_swf.benchmark_worker import decompile
-from py_swf.benchmarks import aggregate, build_manifest, match_units, reference_command, render_html, run_benchmark
+from py_swf.benchmarks import aggregate, build_manifest, match_units, reference_command
 from py_swf.benchmark_process import Worker, WorkerError
 from py_swf.swf_parser import SWFTag
 from tests.conftest import make_synthetic_swf, JPEXS_TESTDATA
@@ -54,21 +54,6 @@ def test_timeout_cleans_only_the_owned_worker():
         Worker(command, cwd=Path.cwd(), timeout=.1)
 
 
-def test_native_smoke_report_preserves_original_and_escapes_html(tmp_path):
-    pytest.importorskip("psutil")
-    path = tmp_path / 'sample.swf'
-    data = make_synthetic_swf([SWFTag(12, assemble_avm1('push "</script><script>bad()</script>"\ntrace\nend'))])
-    path.write_bytes(data)
-    report = run_benchmark(path, engines=("native",), output=tmp_path / 'out')
-    assert path.read_bytes() == data
-    assert report["completed_files"] == 1
-    assert report["claims"]["parity"] is False
-    result = report["cases"][0]["engines"][0]
-    assert result["hot"]["successful"] == 3
-    assert result["quality"]["behavior_verified"] == 0
-    page = render_html(report)
-    assert 'No se ha establecido paridad' in page
-    assert '<script>bad()</script>' not in page
 
 
 @pytest.mark.skipif(not (Path(__file__).resolve().parents[1] / '.dev-references/bridge/DevelopmentReferenceBridge.class').exists(), reason='Development reference toolchain not installed')

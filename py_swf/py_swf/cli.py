@@ -184,13 +184,6 @@ def cmd_batch(args) -> int:
     return 0 if all(item.get("valid") and not item.get("errors") for item in reports) else 1
 
 
-def cmd_benchmark(args) -> int:
-    from .benchmarks import run_benchmark
-    report = run_benchmark(args.corpus, profile=args.profile, engines=tuple(e.strip() for e in args.engines.split(',')), output=args.output, seed=args.seed, limit=args.limit, config_path=args.reference_config,tool_config=args.tool_config,operation=args.operation)
-    print(json.dumps({"completed_files": report["completed_files"], "scheduled_files": report["scheduled_files"], "claims": report["claims"], "output": str(args.output or "reports/decompiler-benchmark")}, ensure_ascii=False, indent=2))
-    return 1 if report.get("cancelled") or report["completed_files"] != report["scheduled_files"] or any(r["failures"] for c in report["cases"] for r in c["engines"]) else 0
-
-
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="pyswf", description="SWF inspector and decompiler")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -206,42 +199,6 @@ def build_parser() -> argparse.ArgumentParser:
         print(json.dumps({"classes":compiled.class_names,"output":str(args.output),"diagnostics":compiled.diagnostics},ensure_ascii=False,indent=2))
         return 0
     classes.set_defaults(func=cmd_classes)
-    benchmark = sub.add_parser("benchmark", help="development-only decompilation benchmarks with quality diagnostics")
-    benchmark.add_argument("corpus", type=Path)
-    benchmark.add_argument("--profile", choices=("smoke", "full"), default="smoke")
-    benchmark.add_argument("--engines", default="native,jpexs")
-    benchmark.add_argument("--operation",choices=("source","disassemble","extract","xml"),default="source")
-    benchmark.add_argument("--tool-config",type=Path)
-    benchmark.add_argument("--output", type=Path)
-    benchmark.add_argument("--limit", type=int)
-    benchmark.add_argument("--seed", type=int, default=1729)
-    benchmark.add_argument("--reference-config", type=Path)
-    benchmark.set_defaults(func=cmd_benchmark)
-    catalog = sub.add_parser("benchmark-catalog", help="import measured local/cloud campaigns into a reproducible SQLite catalog")
-    catalog.add_argument("sources", nargs="*", type=Path, help="benchmark.json reports or measured cloud ZIP bundles")
-    catalog.add_argument("--database", type=Path, default=Path(__file__).resolve().parents[2] / "reports/benchmark-catalog/benchmark.sqlite")
-    catalog.add_argument("--cloud-sha256", help="expected SHA-256 for the cloud ZIP source")
-    catalog.add_argument("--html", type=Path, help="export a standalone measured-campaign dashboard")
-    catalog.add_argument("--summary", action="store_true", help="include catalog summary after import")
-    def cmd_catalog(args):
-        from .benchmark_catalog import import_local_report, import_cloud_bundle, catalog_summary, export_catalog_html
-        imports = []
-        for source in args.sources:
-            if source.suffix.lower() == ".zip":
-                imports.append(import_cloud_bundle(args.database, source, expected_sha256=args.cloud_sha256))
-            elif source.suffix.lower() == ".json":
-                imports.append(import_local_report(args.database, source))
-            else:
-                raise ValueError("Las fuentes del catálogo deben ser informes JSON o paquetes ZIP")
-        result = {"database": str(args.database.resolve()), "imports": imports}
-        if args.html:
-            export_catalog_html(args.database, args.html)
-            result["html_path"] = str(args.html.resolve())
-        if args.summary or not args.sources:
-            result["catalog"] = catalog_summary(args.database)
-        print(json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False))
-        return 0
-    catalog.set_defaults(func=cmd_catalog)
     audit=sub.add_parser("audit-corpus",help="complete fresh source inventory comparison, not a speed benchmark")
     audit.add_argument("corpus",type=Path)
     audit.add_argument("--output",type=Path)
@@ -257,19 +214,6 @@ def build_parser() -> argparse.ArgumentParser:
         compilation=report["audit_summary"].get("compilation_by_engine",{}).values()
         return int(bool(report.get("cancelled") or report["uncompleted_files"] or report["audit_summary"]["operation_failure_files"] or any(e["failed"] or e["attempted"]<e["eligible"] or e["compiled"]!=e["validated_reopened"] for e in compilation)))
     audit.set_defaults(func=cmd_audit)
-    imported=sub.add_parser("benchmark-import",help="import public-corpus GUI source exports as untimed, unmapped observations")
-    imported.add_argument("--engine",choices=("sothink","trillix","as3_sorcerer"),required=True)
-    imported.add_argument("--input",type=Path,required=True)
-    imported.add_argument("--exports",type=Path,required=True)
-    imported.add_argument("--output",type=Path,required=True)
-    imported.add_argument("--manifest",type=Path,default=Path(__file__).resolve().parents[1] / "Competing_tools/benchmark_inputs/manifest.json")
-    imported.add_argument("--edition",choices=("unknown","trial","licensed"),default="unknown")
-    def cmd_import(args):
-        from .benchmark_import import import_exports
-        report=import_exports(args.engine,args.input,args.exports,args.output,args.manifest,edition=args.edition)
-        print(json.dumps(report["cases"][0]["engines"][0]["manual_export_observation"],ensure_ascii=False,indent=2))
-        return 0
-    imported.set_defaults(func=cmd_import)
     tools = sub.add_parser("benchmark-tools",help="list development comparison tools and their actual capabilities")
     def show_tools(args):
         from .benchmark_engines import describe_engines

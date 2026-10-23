@@ -107,22 +107,6 @@ def _benchmark_validate(report):
                 raise ValueError("Auditoría de compilación inválida")
 
 
-def _benchmark_compact(report):
-    from .benchmark_report import public_report
-    omitted = {"units", "documents", "source", "source_text", "source_code", "bytecode", "raw_bytecode",
-               "code", "swf_base64", "data_base64", "file", "path", "filename", "html", "script"}
-
-    def strip(value):
-        if isinstance(value, dict):
-            return {key: strip(item) for key, item in value.items()
-                    if key.casefold() not in omitted and not (key.casefold() == "pcode" and not isinstance(item, (int, float, type(None))))}
-        if isinstance(value, list):
-            return [strip(item) for item in value]
-        return value
-
-    return strip(public_report(report))
-
-
 def _benchmark_read(path):
     if not isinstance(path, str) or not path.strip():
         raise ValueError("Selecciona un archivo JSON de benchmark")
@@ -158,71 +142,6 @@ def read_bounded(path, limit=MAX_INPUT):
     if len(data) > limit:
         raise ValueError("El archivo creció y superó el límite de entrada")
     return data
-
-
-def benchmark_catalog_database(args):
-    import sys
-    candidates = [Path(ROOT) / "reports/benchmark-catalog/benchmark.sqlite",
-                  Path(__file__).resolve().parents[1] / "benchmark_data/benchmark.sqlite",
-                  Path(__file__).resolve().parents[1] / "benchmark_data/benchmark-catalog.sqlite"]
-    if getattr(sys, 'frozen', False):
-        # A portable release carries its updated catalog beside the worker.
-        # Prefer it over the snapshot embedded at engine build time.
-        candidates.insert(1, Path(sys.executable).resolve().parent / 'benchmark.sqlite')
-    selected = args.get("database") or os.environ.get("FLASH_BENCHMARK_CATALOG")
-    database = Path(selected) if selected else next((p for p in candidates if p.is_file()), candidates[0])
-    if not database.is_file():
-        if selected:
-            raise ValueError("El catálogo de benchmarks no existe")
-        return database.resolve(), False
-    if database.suffix.lower() not in (".sqlite", ".db") or database.stat().st_size > 512 * 1024**2:
-        raise ValueError("Selecciona un catálogo SQLite de hasta 512 MiB")
-    return database.resolve(strict=True), True
-
-
-def benchmark_catalog_snapshot(args):
-    """Read-only catalog transport, independent of engine discovery or a session."""
-    from .benchmark_catalog import catalog_summary
-    database, available = benchmark_catalog_database(args)
-    if not available:
-        return {"schema_version": 1, "database": str(database), "available": False,
-                "totals": {"campaigns": 0, "artifacts": 0, "runs": 0, "tools": 0},
-                "campaigns": [], "rows": [], "tools": [],
-                "claims": {"parity": False, "superiority": False, "performance_winner": None}}
-    filters = {key: args[key] for key in ("campaign", "operation", "engine", "environment", "limit", "scope", "adapter_mode", "split", "family_id") if key in args}
-    result = catalog_summary(database.resolve(strict=True), **filters)
-    result["available"] = True
-    def encoded_size():
-        return len(json.dumps(result, ensure_ascii=False, allow_nan=False).encode('utf-8'))
-    if encoded_size() > MAX_BENCHMARK_SNAPSHOT and result['rows']:
-        rows = result['rows']
-        result.update(truncated=True, transport_row_limit=True)
-        result['warnings'].append('El resumen se pagina para respetar 4 MiB; filtra por campaña y consulta unidades/evidencia para recuperar los detalles íntegros')
-        low, high = 0, len(rows)
-        while low < high:
-            middle = (low + high + 1) // 2
-            result['rows'] = rows[:middle]
-            if encoded_size() <= MAX_BENCHMARK_SNAPSHOT:
-                low = middle
-            else:
-                high = middle - 1
-        result['rows'] = rows[:low]
-    if encoded_size() > MAX_BENCHMARK_SNAPSHOT:
-        raise ValueError("La consulta de catálogo supera 4 MiB; utiliza filtros")
-    return result
-
-
-def benchmark_catalog_details(args, kind):
-    from .benchmark_unit_catalog import catalog_units, catalog_evidence
-    database, available = benchmark_catalog_database(args)
-    if not available:
-        return {"available": False, "items": [], "total": 0, "offset": 0, "limit": 0}
-    permitted = ('validation_id', 'campaign', 'unit_id', 'scope', 'engine', 'offset', 'limit', 'include_metadata') if kind == 'units' else ('campaign', 'evidence_id', 'kind', 'offset', 'limit', 'include_metadata')
-    options = {key: args[key] for key in permitted if key in args}
-    result = (catalog_units if kind == 'units' else catalog_evidence)(database, **options)
-    if len(json.dumps(result, ensure_ascii=False, allow_nan=False).encode('utf-8')) > MAX_BENCHMARK_SNAPSHOT:
-        raise ValueError('El detalle supera 4 MiB; reduce el límite o solicita sólo una unidad')
-    return result
 
 
 def publish(path, data):
@@ -1227,113 +1146,6 @@ class UniversalSuite:
                 return {"path": publish(args["path"], read_bounded(files[0])), "engine": key, "log": log, "mapping": "not_verified"}
         raise ValueError("Esta operación del módulo no está implementada")
 
-    def benchmark(self, args):
-        from .benchmarks import run_benchmark
-        import sys
-        corpus = Path(args["corpus"]).resolve(strict=True)
-        output = Path(args["output"]).resolve()
-        if output.exists():
-            output /= "benchmark-" + uuid.uuid4().hex[:8]
-        selected = args.get("engines", ["native", "rust", "jpexs"])
-        selected = ["native" if key == "python" else key for key in selected]
-        external_engines = ("pyflashkit", "flare", "flasm", "rabcdasm", "flex_swfdump", "swfmill", "swfextract")
-        if not selected or any(key not in ("native", "rust", "jpexs", *external_engines) for key in selected):
-            raise ValueError("Selecciona motores con un adaptador de benchmark local")
-        tool_config = args.get("tool_config") or PROJECT / ".dev-references/extra-tools.json"
-        def command_factory(engine):
-            if engine in external_engines:
-                from .benchmark_engines import external_command
-                return external_command(engine, tool_config)
-            if engine == "native":
-                return [sys.executable, "native-benchmark"] if getattr(sys, "frozen", False) else [sys.executable, "-m", "py_swf.benchmark_worker"]
-            if engine == "rust":
-                path = self.registry.executable("rust")
-                base = [sys.executable, "rust-benchmark"] if getattr(sys, "frozen", False) else [sys.executable, "-m", "py_swf.benchmark_rust_worker"]
-                return base + ["--executable", path, "--sha256", fingerprint(path)]
-            jar = Path(self.registry.executable("jpexs"))
-            bridge = ROOT / "toolpacks/jpexs-bridge"
-            return [self.registry.executable("java"), "-Xmx1024m", "-Djava.awt.headless=true", "-Duser.home={reference_home}",
-                    "-Dpyswf.playerglobal=" + str(jar.parent / "flashlib/playerglobal32_0.swc"), "-cp",
-                    os.pathsep.join(map(str, [bridge, jar, jar.parent / "lib/*"])), "UniversalBridge"]
-        report = run_benchmark(corpus, profile=args.get("profile", "smoke"), engines=tuple(selected), output=output,
-                               operation=args.get("operation", "source"), command_factory=command_factory, tool_config=tool_config,
-                               reference_provenance={"module_fingerprints": self.registry.catalog(), "suite_protocol": 1})
-        # Measurements requested through the application join the same catalog.
-        # An import problem cannot erase an already saved benchmark report.
-        catalog_result = None
-        catalog_warning = None
-        try:
-            from .benchmark_catalog import import_local_report
-            database = Path(os.environ.get("FLASH_BENCHMARK_CATALOG") or Path(ROOT) / "reports/benchmark-catalog/benchmark.sqlite")
-            bundled = Path(__file__).resolve().parents[1] / "benchmark_data/benchmark.sqlite"
-            if not database.exists() and bundled.is_file():
-                publish(database, read_bounded(bundled, 512 * 1024**2))
-            catalog_result = import_local_report(database, output / "benchmark.json")
-        except Exception as error:
-            catalog_warning = "El informe está guardado, pero no se pudo registrar en el catálogo: " + str(error)
-        return {"path": str(output / "benchmark.json"), "html_path": str(output / "benchmark.html"),
-                "completed_files": report["completed_files"], "scheduled_files": report["scheduled_files"], "claims": report["claims"],
-                "catalog_import": catalog_result, "catalog_warning": catalog_warning}
-
-    def benchmark_report(self, args):
-        path, report = _benchmark_read(args.get("path"))
-        return {"path": str(path), "report": report}
-
-    def benchmark_catalog(self, args):
-        """Read measured campaigns without starting engines or editing a project."""
-        return benchmark_catalog_snapshot(args)
-
-    def benchmark_reports(self, args):
-        """Bounded discovery of existing reports, independent of the live project."""
-        candidates, roots, seen = [], [], set()
-        for directory in (Path(ROOT) / "reports", Path(PROJECT) / "reports"):
-            try:
-                if directory.is_symlink() or getattr(directory, "is_junction", lambda: False)() or not directory.is_dir():
-                    continue
-                directory = directory.resolve(strict=True)
-                if directory not in roots:
-                    roots.append(directory)
-            except OSError:
-                continue
-        queue = [(directory, directory, 0) for directory in roots]
-        inspected = 0
-        while queue and inspected < MAX_BENCHMARK_FILES:
-            directory, root, depth = queue.pop(0)
-            try:
-                with os.scandir(directory) as entries:
-                    for entry in entries:
-                        if inspected >= MAX_BENCHMARK_FILES:
-                            break
-                        inspected += 1
-                        path = Path(entry.path)
-                        if entry.is_symlink() or getattr(path, "is_junction", lambda: False)():
-                            continue
-                        if entry.is_dir(follow_symlinks=False):
-                            if depth < MAX_BENCHMARK_DEPTH:
-                                queue.append((path, root, depth + 1))
-                        elif entry.is_file(follow_symlinks=False) and path.suffix.lower() == ".json":
-                            resolved = path.resolve(strict=True)
-                            if not resolved.is_relative_to(root) or resolved in seen:
-                                continue
-                            seen.add(resolved)
-                            stat = entry.stat(follow_symlinks=False)
-                            if stat.st_size <= MAX_BENCHMARK_REPORT:
-                                candidates.append((stat.st_mtime_ns, str(resolved), root))
-            except OSError:
-                continue
-        rows = []
-        for mtime, filename, root in sorted(candidates, key=lambda item: (-item[0], item[1].casefold(), item[1])):
-            try:
-                path, report = _benchmark_read(filename)
-                if not path.is_relative_to(root):
-                    continue
-                rows.append({"path": str(path), "label": path.parent.name if path.name == "benchmark.json" else path.stem,
-                             "created_at": report.get("created_at"), "profile": report.get("profile"),
-                             "operation": report.get("operation"), "completed_files": report.get("completed_files")})
-            except (OSError, ValueError, TypeError):
-                continue
-        return {"reports": rows[:MAX_BENCHMARK_RECENT], "total": len(rows)}
-
     def dispatch(self, operation, args):
         if not isinstance(args, dict):
             raise ValueError("Argumentos inválidos")
@@ -1407,24 +1219,12 @@ class UniversalSuite:
             return self.resource_edit(args)
         if operation == "tool_operation":
             return self.tool_operation(args)
-        if operation == "benchmark":
-            return self.benchmark(args)
-        if operation == "benchmark_report":
-            return self.benchmark_report(args)
-        if operation == "benchmark_reports":
-            return self.benchmark_reports(args)
-        if operation == "benchmark_catalog":
-            return self.benchmark_catalog(args)
         if operation == 'benchmark_tools':
             from .benchmark_engines import describe_engines
             return {'engines': describe_engines(args.get('tool_config')), 'scope': 'Read-only local adapter discovery; no decompilation executed'}
         if operation == 'bench_results':
             from .bench_results import read_bench
             return read_bench(args.get('run'))
-        if operation == 'benchmark_catalog_units':
-            return benchmark_catalog_details(args, 'units')
-        if operation == 'benchmark_catalog_evidence':
-            return benchmark_catalog_details(args, 'evidence')
         if operation == "snapshot":
             name = str(args["name"]).strip()
             if name.startswith("suite."):

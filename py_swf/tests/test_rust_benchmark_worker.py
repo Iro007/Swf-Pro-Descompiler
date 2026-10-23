@@ -242,38 +242,6 @@ def test_packaged_rust_real_jsonl_fresh_open_source_and_501_unit_inventory():
         assert listing["units"][0]["source_sha256"] != source["units"][0]["source_sha256"]
 
 
-@pytest.mark.skipif(os.name != "nt" or not RUST_EXE.is_file(), reason="Packaged Rust CLI is unavailable")
-def test_native_and_rust_integrated_benchmark_matches_as3_hashes_and_preserves_input(tmp_path):
-    pytest.importorskip("psutil")
-    from py_swf.benchmarks import run_benchmark
-    from tests.native_fixtures import as3_tag
-    data = make_synthetic_swf([as3_tag()])
-    movie = tmp_path / "fixture.swf"
-    movie.write_bytes(data)
-    executable = str(RUST_EXE.resolve())
-    digest = hashlib.sha256(RUST_EXE.read_bytes()).hexdigest()
-    config = tmp_path / "tools.json"
-    config.write_text(json.dumps({"development_only": True, "tools": {
-        "rust": {"executable": executable, "version": "0.1.0",
-                 "artifact_sha256": {executable: digest}}
-    }}), encoding="utf-8")
-    report = run_benchmark(movie, engines=("native", "rust"), profile="smoke",
-                           output=tmp_path / "report", tool_config=config, timeout=30,
-                           memory_bytes=1024**3)
-    assert movie.read_bytes() == data
-    assert report["completed_files"] == 1 and report["claims"]["parity"] is False
-    case = report["cases"][0]
-    assert case["original_preserved"]
-    rust = next(engine for engine in case["engines"] if engine["engine"] == "rust")
-    assert rust["status"] == "measured", rust["failures"]
-    assert rust["tool_fingerprint"]["sha256"] == digest
-    assert rust["hot"]["successful"] == 3 and rust["cold"]["successful"] == 1
-    assert rust["compilation_sample"] == []
-    assert all(unit["language"] == "as3" and unit["identity_verified"] for unit in rust["units"])
-    assert all(unit["behavior"] == unit["compilation"] == "not_run" for unit in rust["units"])
-    pair = next(pair for pair in case["comparison"]["pairs"] if pair["engines"] == ["native", "rust"])
-    assert pair["matched"] == 2 and pair["bytecode_mismatches"] == []
-    assert pair["quality_equivalent"] is False
 
 
 @pytest.mark.parametrize("path_form", ("forward_slashes", "relative_with_dot"))

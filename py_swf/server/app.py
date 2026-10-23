@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
-from .routers import benchmarks, export, files
+from .routers import export, files
 from py_swf.plugins import get_plugin_api_router
 
 app = FastAPI(title="py_swf_editor", version="0.1.0")
@@ -37,7 +37,6 @@ async def optional_api_auth(request, call_next):
 
 app.include_router(files.router)
 app.include_router(export.router)
-app.include_router(benchmarks.router)
 app.include_router(get_plugin_api_router())
 
 # Serve the built web UI when available (web/dist after `npm run build`)

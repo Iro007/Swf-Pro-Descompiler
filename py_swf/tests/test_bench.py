@@ -33,6 +33,6 @@ def test_a_lead_within_noise_names_no_winner():
     rows = lambda engine, passed, total: [  # noqa: E731
         {"engine": engine, "source": True, "recompiles": True, "same_trace": i < passed, "reason": ""} for i in range(total)]
     close = bench.table(rows("native", 4, 6) + rows("rust", 3, 6))
-    assert close["winner"] is None and "no clear winner" in close["note"]
+    assert close["winner"] is None and "sin ganador" in close["note"]
     clear = bench.table(rows("native", 6, 6) + rows("rust", 2, 6))
     assert clear["winner"] == "native"

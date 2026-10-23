@@ -11,7 +11,7 @@ from .universal import UniversalSuite, read_bounded, MAX_SOURCE
 OPERATIONS = ('engines', 'inspect', 'scripts', 'resources', 'resource-info', 'source-files',
               'source-edit', 'resource-edit', 'edit', 'decompile', 'compare', 'assemble',
               'compile', 'compile-saved', 'validate', 'export', 'save-project',
-              'undo', 'redo', 'snapshot', 'benchmark', 'code-documents', 'compile-document', 'rpc')
+              'undo', 'redo', 'snapshot', 'code-documents', 'compile-document', 'rpc')
 MUTATIONS = {'source-edit', 'resource-edit', 'edit', 'undo', 'redo', 'snapshot'}
 
 
@@ -38,13 +38,13 @@ def main(argv=None):
     rpc_mutations = {operation.replace('-', '_') for operation in MUTATIONS} | {'restore_snapshot'}
     if (args.operation in MUTATIONS or (args.operation == 'rpc' and args.rpc_operation in rpc_mutations)) and not (args.state_dir or args.project_output):
         parser.error('Una edición requiere --project-output o --state-dir para conservar la sesión')
-    if args.operation in ('compile', 'compile-saved', 'compile-document', 'assemble', 'export', 'save-project', 'benchmark') and not args.output:
+    if args.operation in ('compile', 'compile-saved', 'compile-document', 'assemble', 'export', 'save-project') and not args.output:
         parser.error('Esta operación requiere --output con un destino nuevo')
     if args.operation in ('source-edit', 'edit', 'assemble', 'compile-document') and not args.source:
         parser.error('Esta operación requiere --source')
     if args.operation == 'rpc' and not args.rpc_operation:
         parser.error('rpc requiere --rpc-operation')
-    if args.operation in ('compile','benchmark') and not args.input:
+    if args.operation == 'compile' and not args.input:
         parser.error('Esta operación requiere --input')
 
     suite = None
@@ -56,7 +56,7 @@ def main(argv=None):
                 and additional.get('commit') and not (args.state_dir or args.project_output)):
             raise ValueError('Una edición requiere --project-output o --state-dir para conservar la sesión')
         suite = UniversalSuite(state_dir=args.state_dir)
-        if args.input and args.operation not in ('compile', 'benchmark'):
+        if args.input and args.operation != 'compile':
             suite.open(args.input)
         if args.operation == 'compile':
             result = suite.compile_project({**additional, 'entry':args.input, 'profile':args.profile or 'auto-as3', 'output':args.output})
@@ -73,9 +73,6 @@ def main(argv=None):
                 'tag_sha256': document['tag_sha256'], 'source_engine': args.engine})
         elif args.operation == 'compile-saved':
             result = suite.compile_saved({**additional, 'output':args.output, **({'profile':args.profile} if args.profile else {})})
-        elif args.operation == 'benchmark':
-            result = suite.benchmark({**additional, 'corpus':args.input, 'profile':args.profile or 'smoke', 'output':args.output,
-                                      'engines':additional.get('engines', ['native','rust','jpexs'])})
         elif args.operation in ('decompile', 'compare'):
             result = suite.dispatch(args.operation, {**additional,'unit_id':args.unit,'engine':args.engine})
         elif args.operation in ('assemble', 'edit'):

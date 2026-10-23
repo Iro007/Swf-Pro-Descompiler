@@ -118,8 +118,8 @@ def table(rows):
         winner = lines[0]["engine"] if lead > NOISE_CASES else None
     else:
         winner = None
-    return {"unit": "cases where the emitted source recompiles and Ruffle prints the original's trace",
-            "winner": winner, "note": None if winner else "no clear winner: the lead is within %d case(s)" % NOISE_CASES,
+    return {"unit": "casos en que el fuente generado recompila y Ruffle imprime la misma traza que el original",
+            "winner": winner, "note": None if winner else "sin ganador claro: la ventaja es de %d caso(s) o menos" % NOISE_CASES,
             "engines": lines}
 
 

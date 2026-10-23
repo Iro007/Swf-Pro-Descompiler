@@ -50,9 +50,7 @@ jobs:
     - name: Install Rust
       run: rustup toolchain install 1.99.0-x86_64-pc-windows-msvc --profile minimal
     - name: Test crates
-      # The Tauri desktop crate needs the built web UI and sidecar binaries
-      # (build.ps1); it is built by the release workflow instead.
-      run: cargo test --workspace --exclude rust-swf-studio --locked
+      run: cargo test --workspace --locked
 
   suite-web:
     runs-on: windows-latest

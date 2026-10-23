@@ -24,8 +24,9 @@ un navegador ni un reproductor Flash.
   y clip. Las funciones AVM1 anidadas conservan su propia identidad de inventario.
 - El supervisor aplica 120 segundos/2 GiB a `compile_saved` y `source_edit`, como
   a compilación de proyecto; el picker de audio admite MP3 y WAV.
-- Los recursos Tauri nombran los dos workers explícitamente y mantienen los
-  binarios dentro de `binaries/`; un build de escritorio no sobrescribe la CLI
+- Los recursos del paquete Electron (`extraResources` de `desktop/package.json`)
+  nombran los workers explícitamente (`bin/rustswf.exe`, `bin/FlashSuiteWorker.exe`,
+  `bin/goswf.exe`, `bin/asmswf.exe`); un build de escritorio no sobrescribe la CLI
   recién compilada con una copia histórica.
 
 ## Cobertura comprobada
@@ -60,45 +61,41 @@ los hashes del compilado final.
 
 ## Ejecutables y consola
 
-La suite mantiene `FlashUniversalStudio.exe` y `RustSWFStudio.exe`. `rustswf.exe`
-es la CLI del motor RustSWF. `FlashSuiteWorker.exe` sigue siendo el sidecar JSONL
-canónico; `PySWF.exe` es una copia idéntica que expone la consola con el prefijo
-`cli`. El wrapper `pyswf.ps1` añade ese prefijo.
+La aplicación es Electron (`desktop/`): `desktop/dist` contiene
+`FlashUniversalStudio-<versión>-portable.exe` y `FlashUniversalStudio-<versión>-setup.exe`,
+y `desktop/dist/win-unpacked` la misma aplicación sin empaquetar. En `resources\bin`
+van `rustswf.exe` (la CLI del motor RustSWF), `FlashSuiteWorker.exe` (el worker JSONL
+de PySWF, que también expone la consola con el prefijo `cli`) y, si se compilaron,
+`goswf.exe` y `asmswf.exe`; `resources\licenses` lleva los avisos.
 
 ```powershell
 .\rustswf.exe capabilities
 .\rustswf.exe inspect archivo.swf
 .\rustswf.exe abc_metadata archivo.swf tag:4/method:0
 .\rustswf.exe roundtrip archivo.swf salida_nueva.swf cws
-.\PySWF.exe cli engines
+.\FlashSuiteWorker.exe cli engines
 .\pyswf.ps1 inspect --input archivo.swf
 .\pyswf.ps1 compile --input Main.as --profile auto-as3 --output nuevo.swf
 ```
 
-Los nombres `RustSWF.exe` y `rustswf.exe` coinciden en Windows; por ello no se
-reutiliza ese nombre para un alias de la GUI. `PySWF.exe` requiere `cli` para la
-consola y conserva los modos `worker`/`request` del sidecar.
+`pyswf.ps1` es el wrapper de la raíz del repositorio (usa `engines/pyswf/.venv`).
 
-## Empaquetar y comprobar sin GUI
+## Empaquetar y comprobar
 
-Primero se construye el worker onefile mediante
-`engines/pyswf/packaging/suite_worker.spec`. Después, desde este proyecto:
+Primero se construye el worker onefile (`.\build.ps1 -BuildWorker`, o a mano con
+`engines/pyswf/packaging/suite_worker.spec`). Después, desde este proyecto:
 
 ```powershell
 .\build.ps1 -Offline -SkipTests -SkipDependencyInstall -ExpectedWorkerSha256 <SHA256_FINAL>
-.\tools\verify-release-headless.ps1 -RunCliChecks
+.\tools\verify-release.ps1
 ```
 
 `SkipTests` se utiliza cuando las pruebas dirigidas de la misma fuente ya
-pasaron. `SkipDependencyInstall` requiere dependencias web preparadas; el build
-sigue ejecutando TypeScript y Vite. No se lanza la aplicación de escritorio.
-El comprobador histórico `verify-release.ps1` utiliza GUI y no forma parte de
-esta verificación.
-
-El portable incluye ambas CLI, el runtime Python incorporado, WebView2Loader,
-licencias y `release-manifest.json`. El build compara SHA antes/después de copiar
-el worker y la CLI, comprueba la versión reportada por RustSWF, y arma el ZIP con
-una lista explícita de artefactos. Conserva los ZIP
-`FlashUniversalStudio-portable.zip` y `RustSWFStudio-portable.zip` con bytes
-idénticos. `reports/release-artifact-hashes.json` contiene sus hashes.
+pasaron. `SkipDependencyInstall` requiere dependencias de `ui/` y `desktop/`
+preparadas; el build sigue ejecutando TypeScript y Vite. El build compara SHA
+antes/después de copiar el worker, comprueba la versión reportada por RustSWF y
+empaqueta con electron-builder. `reports/desktop-artifact-hashes.json` contiene los
+hashes del portable y del instalador. `verify-release.ps1` abre el paquete con SWF
+reales (`--open` y `--smoke-report`) y exige que la interfaz muestre un script y
+una imagen sin modificar el original; desde las fuentes, `npm run smoke --prefix desktop`.
 Los SDKs/toolpacks y el corpus no se incorporan automáticamente.

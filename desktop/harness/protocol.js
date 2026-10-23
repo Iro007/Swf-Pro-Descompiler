@@ -113,7 +113,7 @@ class Protocol {
       .join('  ');
   }
 
-  /** Per-operation deadline, in milliseconds. Same classes and variables as the Tauri host. */
+  /** Per-operation deadline, in milliseconds. Same classes and variables as the previous desktop host. */
   timeoutMs(timeoutClass, env = process.env) {
     const entry = this.raw.timeouts_seconds[timeoutClass] || this.raw.timeouts_seconds.default;
     return boundedEnv(env, entry.env, entry.seconds, 1, 600) * 1000;

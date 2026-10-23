@@ -1,7 +1,7 @@
 """Browser contract checks of the single-window shell with a controlled host bridge.
 
 Run with the engines/pyswf .venv (Playwright installed) while `npm run preview -- --port 4174` serves the
-production build. The bridge mock replaces what ui/src/api.ts calls (invoke, isTauri); no SWF is parsed and
+production build. The bridge mock replaces what ui/src/api.ts calls (window.flash, the Electron preload); no SWF is parsed and
 no player or compiler runs here. Native worker, compiler and packaged-app checks are separate.
 """
 import json
@@ -13,7 +13,6 @@ OUTPUT = Path(__file__).resolve().parents[2] / "reports"
 OUTPUT.mkdir(exist_ok=True)
 URL = "http://127.0.0.1:4174"
 MOCK = r"""
-window.isTauri = true;
 window.__calls = [];
 window.__failEdit = true;
 const sha = (c) => c.repeat(64);
@@ -44,10 +43,8 @@ const bench = {runs:[{run_id:'run-1',mode:'smoke',cases:6}],folder:'C:/controlle
     {engine:'rust',name:'RustSWF',cases:6,source:1,recompiles:1,same_trace:1,reasons:['no lee AS1/AS2']},
     {engine:'jpexs',name:'JPEXS',cases:6,source:5,recompiles:5,same_trace:5,jpexs_closeness:1,jpexs_coverage:1,reference:true,reasons:[]},
     {engine:'go',name:'GoSWF',cases:6,source:2,recompiles:2,same_trace:2,jpexs_closeness:null,jpexs_coverage:null,reasons:[]}]}}}};
-window.__TAURI_INTERNALS__ = {
- metadata:{currentWindow:{label:'main'},currentWebview:{label:'main'}}, transformCallback:()=>1, unregisterCallback:()=>{}, convertFileSrc:path=>path,
+const bridge = {
  invoke:async(command,args={})=>{
-  if(command.startsWith('plugin:'))return 1;
   if(command==='startup')return {path:'C:/controlled/demo.swf',smoke:false};
   if(command==='ui_verified')return;
   if(command==='suite_cancel')return;
@@ -80,6 +77,18 @@ window.__TAURI_INTERNALS__ = {
    default: throw new Error('Unexpected suite operation: '+args.operation);
   }
  }
+};
+// window.flash as the preload exposes it: call() resolves with the envelope, failures as {ok:false,error}.
+window.flash = {
+ call: async (op, args = {}) => {
+  try { return {ok:true, op, result: await bridge.invoke('suite_rpc', {operation:op, args})}; }
+  catch (error) { return {ok:false, error:{message:String(error && error.message || error), kind:'error'}}; }
+ },
+ cancel: () => bridge.invoke('suite_cancel'),
+ openDialog: (kind) => bridge.invoke('suite_pick', {kind}),
+ startup: () => bridge.invoke('startup'),
+ reportVerification: (evidence) => bridge.invoke('ui_verified', {evidence:{verification:evidence}}),
+ onFileDrop: () => () => undefined,
 };
 """
 

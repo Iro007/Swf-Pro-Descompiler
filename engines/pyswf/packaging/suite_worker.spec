@@ -1,4 +1,4 @@
-# Standalone Python engine; the Tauri host hides its console and supervises it.
+# Standalone Python engine; the Electron host hides its console and supervises it.
 from pathlib import Path
 root = Path(SPECPATH).parent
 a = Analysis([str(root / 'packaging/suite_worker_entry.py')], pathex=[str(root)],

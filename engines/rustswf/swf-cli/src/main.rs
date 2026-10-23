@@ -42,7 +42,7 @@ const CANONICAL_OPS: &[&str] = &[
     "disassemble",
     "decompile",
 ];
-/// RustSWF-specific operations kept for the Tauri host and the benchmarks.
+/// RustSWF-specific operations kept for the benchmarks and earlier hosts.
 const NATIVE_OPS: &[&str] = &[
     "info",
     "outline",

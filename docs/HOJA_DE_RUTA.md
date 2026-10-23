@@ -26,7 +26,7 @@ Este plan explica cómo funciona hoy (Parte 1) y propone una hoja de ruta por fa
 ## Parte 1: cómo funciona hoy
 
 ```
-                 Flash Universal Studio (Tauri + React: rust_swf/desktop + rust_swf/web)
+                 Flash Universal Studio (Electron + React: desktop/ + ui/)
                  ┌─────────────────────────────┬──────────────────────────────────────────┐
   Explorador ───▶│ rpc  → rustswf.exe worker    │ suite_rpc → FlashSuiteWorker.exe worker   │◀── Mesa de trabajo
   (App.tsx)      │ (crates swf-core/avm/        │ (= py_swf/universal.py: UniversalSuite)   │   (SuiteWorkbench.tsx)
@@ -78,7 +78,7 @@ Este plan explica cómo funciona hoy (Parte 1) y propone una hoja de ruta por fa
 | Motores | 4 registros con "auto" distinto en cada uno | `engines.py` y `decompile/backends.py` (JPEXS primero), `suite_tools.DEFINITIONS` (nativo primero), `benchmark_engines.ENGINES` |
 | JPEXS | 3 puentes Java casi iguales; flashdec además lanza una JVM por cada SWF | `tools/jpexs_application_bridge/UniversalBridge.java`, `DevelopmentReferenceBridge`, `JPEXSJsonlBridge` + `tools/jpexs_bridge.py` |
 | Orquestador | Clase gigante con cadena de `if`; herramientas escritas dentro del código; busca uno a uno en RustSWF (`_rust_unit`) | `universal.py` |
-| Interfaces | Tauri (la buena) + Qt `gui/` + pywebview `desktop.py` + FastAPI `server/` con `py_swf_editor/web/` (con su propia sesión y deshacer) | `py_swf_editor/` |
+| Interfaces | la ventana React de escritorio (la buena) + Qt `gui/` + pywebview `desktop.py` + FastAPI `server/` con `py_swf_editor/web/` (con su propia sesión y deshacer) | `py_swf_editor/` |
 | Procesos | El mismo SWF se analiza en dos procesos; dos supervisores y dos protocolos duplicados | `desktop/src/main.rs`, `suite.rs` |
 | Rutas | Cadenas de carpetas con fecha (`FlashUniversalStudio-*-20261014/17`), `vendor/references`, `toolpacks`, la carpeta `RUST SWF` con espacio (36 archivos; ya renombrada a `rust_swf`), oráculo Ruffle con nombre-hash en `%LOCALAPPDATA%` | launchers, `suite_tools.py`, `benchmark_engines.py`, `run_semantic_benchmarks.py` |
 | Benchmarks | Tiempo y memoria casi siempre N/V. No se miden compiladores, ida y vuelta de desensambladores ni exportadores de recursos. "smoke" apunta a archivos inexistentes. El catálogo crece por encima del límite | `benchmarks.py` (`SMOKE_FILES`), `benchmarkModel.ts`, `benchmark_catalog.py` |
@@ -214,7 +214,7 @@ Este plan explica cómo funciona hoy (Parte 1) y propone una hoja de ruta por fa
 - *Hecho cuando* una operación desconocida se rechaza en ambos lados y la build de release no contiene rutas del workspace.
 
 ### Fase 6: instalador, asistente de primer uso y releases (M)
-- **NSIS** (ya existe `build.ps1 -Installer`) incluye la app, `FlashSuiteWorker` en modo *onedir* (arranca antes y da menos falsos positivos de antivirus), `rustswf.exe`, Ruffle web y las licencias.
+- **NSIS** (ya existe: `build.ps1` genera el instalador NSIS y el portable con electron-builder) incluye la app, `FlashSuiteWorker` en modo *onedir* (arranca antes y da menos falsos positivos de antivirus), `rustswf.exe`, Ruffle web y las licencias.
 - **Asistente de primer uso.** Descarga desde las entradas `download` de los manifiestos: JPEXS, un JDK reducido con jlink, Flex, Haxe, RABCDAsm, Flasm y Rascal.
   - Pide consentimiento y muestra el tamaño antes de cada una.
   - Verifica el sha256.

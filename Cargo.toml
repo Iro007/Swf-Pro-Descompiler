@@ -1,5 +1,5 @@
 [workspace]
-members = ["engines/rustswf/swf-core", "engines/rustswf/swf-avm", "engines/rustswf/swf-decompile", "engines/rustswf/swf-cli", "src-tauri"]
+members = ["engines/rustswf/swf-core", "engines/rustswf/swf-avm", "engines/rustswf/swf-decompile", "engines/rustswf/swf-cli"]
 resolver = "2"
 
 [workspace.package]

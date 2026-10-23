@@ -5,7 +5,7 @@ const { StringDecoder } = require('node:string_decoder');
 const { codecFor } = require('./framing');
 const { HarnessError, KINDS } = require('./errors');
 
-// Same limits as the Tauri supervisor (src-tauri/src/suite.rs).
+// Same limits as `rustswf supervise` (engines/rustswf/swf-cli/src/supervise.rs).
 const MAX_LINE_BYTES = 16 * 1024 * 1024;
 const MAX_REQUEST_BYTES = 8 * 1024 * 1024;
 const MAX_STDERR_BYTES = 8192;

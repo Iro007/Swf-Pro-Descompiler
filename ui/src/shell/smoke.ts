@@ -23,7 +23,7 @@ async function until(check:()=>boolean,timeout=20000){
 const hasText=(selector:string)=>!!document.querySelector(`${selector} .cm-content`)?.textContent?.trim();
 
 /**
- * Packaged-release verification (tools/verify-release.ps1 starts the application with a report file).
+ * Packaged-release verification (desktop npm run smoke / try-ui --smoke start the application with a report file).
  * Opens a script and an image or shape through the real interface and reports what was visible.
  * Does nothing unless the host announced a verification run.
  */

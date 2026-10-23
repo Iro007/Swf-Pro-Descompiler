@@ -5,8 +5,7 @@ Un **arnés de descompiladores de Flash**: una sola aplicación que usa varios m
 ## Estructura
 
 ```
-desktop/     el anfitrión Electron: el arnés que lanza los motores como procesos JSONL (sustituye a src-tauri/)
-src-tauri/   la aplicación de escritorio actual (Tauri, Rust); se retira cuando la interfaz pase a Electron
+desktop/     el anfitrión Electron: el arnés que lanza los motores como procesos JSONL
 ui/          la interfaz (React)
 engines/     un motor por carpeta, cada uno con su engine.json; PROTOCOL.md es el contrato común
   pyswf/       PySWF: orquestador de herramientas, compilador, editor de recursos, benchmarks (Python)
@@ -35,7 +34,7 @@ npm ci
 npm start            # abre la ventana (muestra la consola del arnés mientras la interfaz no esté compilada)
 npm test             # pruebas del arnés; las que usan los motores reales se omiten si no están compilados
 npm run e2e          # abre un SWF del corpus y descompila una clase en «automático»
-npm run try-ui       # compila la interfaz React (sin tocar ui/) con desktop/ui-host/api.ts y la abre en Electron
+npm run try-ui       # compila la interfaz React (ui/dist) y la abre en Electron (--smoke: verificación; --smoke-report <archivo>)
 npm run smoke        # abre la ventana con un SWF y escribe reports/electron-smoke.json (una interfaz compilada informa de lo que vio)
 ```
 
@@ -51,7 +50,7 @@ npm run smoke        # abre la ventana con un SWF y escribe reports/electron-smo
 ## Preparar el entorno
 
 1. **Python**: crea `engines/pyswf/.venv` e instala con `pip install -e ".[dev,build,benchmark]"` (desde `engines/pyswf/`).
-2. **Rust**: `.\bootstrap.ps1` instala el toolchain GNU y MinGW verificados; `.\build.ps1` compila la aplicación en `dist/FlashUniversalStudio/`.
+2. **Rust**: `.\bootstrap.ps1` instala el toolchain GNU y MinGW verificados; `.\build.ps1` compila los motores y la interfaz y empaqueta la aplicación Electron (portable e instalador) en `desktop/dist/`; `-BuildWorker` compila también el worker de PySWF.
 3. **Herramientas externas** (opcional): `engines/pyswf/tools/bootstrap_references.py` (JDK + JPEXS), `setup_suite_tools.py` (Flex, Haxe, Ruffle), `setup_extra_benchmark_tools.py` (RABCDAsm), `setup_benchmark_expansion.py` (Flasm, Flex swfdump), `setup_swf_utilities.py` (swfmill, swfextract).
 
 ## Más

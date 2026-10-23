@@ -2,7 +2,7 @@
 # Todas las opciones se entregan como argumentos individuales al worker.
 $ErrorActionPreference = 'Stop'
 $suiteWorkspace = $PSScriptRoot
-$worker = Join-Path $suiteWorkspace 'dist\FlashUniversalStudio\FlashSuiteWorker.exe'
+$worker = Join-Path $suiteWorkspace 'engines\pyswf\dist\FlashSuiteWorker.exe'
 if (Test-Path -LiteralPath $worker -PathType Leaf) {
     $envBefore = $env:FLASH_SUITE_WORKSPACE
     try {

@@ -304,7 +304,7 @@ La respuesta de cada llamada (`window.flash.call`) es un sobre:
 
 `engines: ["rust", "js"]` limita la votación a esos motores.
 
-**Plazos y memoria** (los de `src-tauri/src/suite.rs`): 30 s por operación, 120 s para `assemble`, `compile`, `export_*`, `deobfuscate` y las nativas de compilación, 600 s para benchmarks; `FLASH_SUITE_TIMEOUT_SECONDS`, `FLASH_SUITE_COMPILE_TIMEOUT_SECONDS` y `FLASH_SUITE_BENCHMARK_TIMEOUT_SECONDS` los cambian (1 a 600). Al vencer, el arnés mata el proceso y todo su árbol (`taskkill /T /F`) y el siguiente uso lo reinicia y le vuelve a abrir el documento. PySWF conserva su proyecto de recuperación y su historial en `FLASH_SUITE_STATE_DIR`: tras reiniciarlo el arnés lo adopta si contiene los bytes actuales. Memoria: `rustswf supervise --memory-mib N -- <worker>` mete al worker y a sus hijos en un Job Object de Windows con ese tope (1024 MiB; 2048 PySWF; `FLASH_SUITE_MEMORY_MIB`) y `KILL_ON_JOB_CLOSE`: si el arnés muere, no queda ningún proceso. Node no puede crear Job Objects; sin `rustswf.exe` los workers corren sin tope de memoria pero con los mismos plazos y la misma muerte del árbol.
+**Plazos y memoria** (los del anfitrión de escritorio anterior, conservados): 30 s por operación, 120 s para `assemble`, `compile`, `export_*`, `deobfuscate` y las nativas de compilación, 600 s para benchmarks; `FLASH_SUITE_TIMEOUT_SECONDS`, `FLASH_SUITE_COMPILE_TIMEOUT_SECONDS` y `FLASH_SUITE_BENCHMARK_TIMEOUT_SECONDS` los cambian (1 a 600). Al vencer, el arnés mata el proceso y todo su árbol (`taskkill /T /F`) y el siguiente uso lo reinicia y le vuelve a abrir el documento. PySWF conserva su proyecto de recuperación y su historial en `FLASH_SUITE_STATE_DIR`: tras reiniciarlo el arnés lo adopta si contiene los bytes actuales. Memoria: `rustswf supervise --memory-mib N -- <worker>` mete al worker y a sus hijos en un Job Object de Windows con ese tope (1024 MiB; 2048 PySWF; `FLASH_SUITE_MEMORY_MIB`) y `KILL_ON_JOB_CLOSE`: si el arnés muere, no queda ningún proceso. Node no puede crear Job Objects; sin `rustswf.exe` los workers corren sin tope de memoria pero con los mismos plazos y la misma muerte del árbol.
 
 **Cancelar.** `window.flash.cancel()` mata los procesos, rechaza lo pendiente con `cancelled`, y el documento sigue: la próxima operación reinicia los motores sobre la misma revisión.
 
@@ -326,7 +326,7 @@ El *preload* de Electron expone solo esto; cada llamada se valida otra vez en el
 | `onFileDrop(callback)` | `(path) => …` con la ruta del primer archivo que se suelta en la ventana (nunca el `File`; si no está en disco, no llama) y una función para darse de baja |
 | `reportVerification(evidence)` | `{ok: true}`. Una verificación (`--smoke-report`) espera lo que la interfaz vio: un objeto JSON de hasta 256 KiB; con `success: true` la verificación pasa |
 
-`ui/src/api.ts` es el único módulo de la interfaz que habla con su anfitrión. Con Electron se reescribe así, función por función (la versión escrita es `desktop/ui-host/api.ts`, que exporta lo mismo que la de Tauri; `npm run try-ui` compila la interfaz con ella, sin tocar `ui/`, y la abre en Electron):
+`ui/src/api.ts` es el único módulo de la interfaz que habla con su anfitrión. Está escrito contra `window.flash`, función por función (`npm run try-ui` en `desktop/` compila la interfaz y la abre en Electron):
 
 | `api.ts` | `window.flash` |
 |---|---|

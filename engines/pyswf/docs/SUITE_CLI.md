@@ -11,7 +11,7 @@ La consola usa las mismas transacciones, compiladores y validación de la suite.
 
 El ID de unidad se copia del inventario `scripts`; el ejemplo no presupone que exista en cualquier SWF. Los nombres visibles son PySWF y RustSWF, mientras `python`, `rust` y `native` siguen siendo IDs compatibles.
 
-Desde el portable, `FlashSuiteWorker.exe cli` y su alias `PySWF.exe cli` ofrecen la misma consola sin Python instalado. El wrapper `pyswf.ps1` del portable añade automáticamente `cli`. En un checkout también funciona `.venv\Scripts\python.exe tools\flash_suite_cli.py` o `python -m py_swf.suite_cli` usando el entorno virtual.
+Con la aplicación Electron, `resources/bin/FlashSuiteWorker.exe cli` ofrece la misma consola sin Python instalado; en un checkout, el wrapper `pyswf.ps1` de la raíz usa `engines/pyswf/dist/FlashSuiteWorker.exe` si existe (y le añade `cli`). En un checkout también funciona `.venv\Scripts\python.exe tools\flash_suite_cli.py` o `python -m py_swf.suite_cli` usando el entorno virtual.
 
 ## Compilar, guardar fuentes y recompilar
 

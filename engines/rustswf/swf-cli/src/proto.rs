@@ -1,7 +1,7 @@
 //! JSONL framing of `rustswf worker` (engines/PROTOCOL.md).
 //!
 //! Protocol v2 is `{id, op, args}` -> `{id, ok:true, result}` | `{id, ok:false,
-//! error:{message, kind}}`. The legacy framing used by the Tauri host and the
+//! error:{message, kind}}`. The legacy framing used by the previous desktop host and the
 //! benchmark adapters (`{request_id, operation, args}` -> `{request_id, result}`
 //! | `{request_id, error:"text"}`) is still answered in kind, so nothing that
 //! speaks it has to change.

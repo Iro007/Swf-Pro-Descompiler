@@ -3,7 +3,7 @@
 Rust SWF Studio is GPL-3.0-or-later. The React layout, styling, PreviewSurface and Dialog derive from the user's PySWF Studio project, under GPL-3.0-or-later. The AVM tables and migration reference algorithms derive from that same project and are verified with independent fixtures.
 
 - Ruffle `swf` 0.3.0, revision bfb540427dbdacb99eac9c0adb66509ba90151d0: MIT OR Apache-2.0 (MIT option used).
-- Tauri, Wry, Tao, WebView2 bindings: MIT OR Apache-2.0. Microsoft Edge WebView2 Runtime is supplied by Microsoft under its own terms and is a desktop prerequisite.
+- Electron (with Chromium and Node.js) and electron-builder: MIT; the packaged application carries `LICENSE.electron.txt` and `LICENSES.chromium.html` with the licences of Chromium's own components, and the dependency licence texts under `resources/licenses`.
 - Rust standard library and tools: MIT OR Apache-2.0.
 - React / React DOM / Vite / Lucide / Motion: MIT. Tailwind: MIT.
 - flate2, lzma-rs, serde, serde_json, image, sha2 and their transitive dependencies retain their own licenses; see Cargo.lock and the license inventory in the delivery.

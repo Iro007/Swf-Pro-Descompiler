@@ -323,7 +323,7 @@ test('missing protocol.json is a clear error', () => {
   }
 });
 
-test('timeouts and memory follow the Tauri host: 30 s, 120 s for compilers, 600 s for benchmarks; 1 GiB / 2 GiB', () => {
+test('timeouts and memory keep the limits of the previous host: 30 s, 120 s for compilers, 600 s for benchmarks; 1 GiB / 2 GiB', () => {
   const protocol = Protocol.load([REPO]);
   assert.equal(protocol.timeoutMs('default', {}), 30000);
   assert.equal(protocol.timeoutMs('compile', {}), 120000);

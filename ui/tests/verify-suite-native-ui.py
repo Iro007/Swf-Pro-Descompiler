@@ -1,11 +1,11 @@
-"""Packaged application + real Python worker, driven through the explicitly enabled DevTools (CDP) port.
+"""Electron application + real Python worker, driven through the explicitly enabled DevTools (CDP) port.
 
-No bridge mocks. Start the application with WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS=--remote-debugging-port=9335
-and `--open <small AS3 fixture>`, then run this file with the engines/pyswf .venv (Playwright installed).
+No bridge mocks. Start the application (the packaged one, or `npm start --prefix desktop` after building ui/dist)
+with `--remote-debugging-port=9335 --open <small AS3 fixture>`, then run this file with the engines/pyswf .venv (Playwright installed).
 It uses the same selectors as verify-suite-ui.py (the mocked-host contract test of the single-window shell).
 
-The bridge calls below (`__TAURI_INTERNALS__.invoke`) belong to the Tauri host; when the host changes only
-`invoke` here has to change, never the interface selectors.
+The bridge call below (`window.flash.call`, the Electron preload) is the only host-specific line; when the host
+changes only `rpc` here has to change, never the interface selectors.
 """
 import argparse
 import hashlib
@@ -25,7 +25,7 @@ NUMERIC_RETURN = r"\breturn\s+(?:(?:int|uint|Number)\s*\(\s*|\(\s*)?([0-9]+)\s*\
 
 
 def rpc(page, operation, arguments=None):
-    return page.evaluate("async([operation,args])=>await window.__TAURI_INTERNALS__.invoke('suite_rpc',{operation,args})", [operation, arguments or {}])
+    return page.evaluate("async([operation,args])=>{const reply=await window.flash.call(operation,args);if(!reply.ok)throw new Error(reply.error.message);return reply.result;}", [operation, arguments or {}])
 
 
 def modified_source(source):
@@ -47,8 +47,8 @@ with sync_playwright() as playwright:
     browser = playwright.chromium.connect_over_cdp(args.cdp)
     pages = [page for context in browser.contexts for page in context.pages]
     if not pages:
-        raise RuntimeError("No WebView2 page is exposed by the packaged application")
-    page = next((candidate for candidate in pages if "localhost" in candidate.url), pages[0])
+        raise RuntimeError("No page is exposed by the application (was it started with --remote-debugging-port?)")
+    page = next((candidate for candidate in pages if "app://ui" in candidate.url), pages[0])
     page.set_default_timeout(15000)
     console, errors = [], []
     page.on("console", lambda message: console.append({"type": message.type, "text": message.text}))
@@ -135,4 +135,4 @@ with sync_playwright() as playwright:
         (output / "ui-shell-native-verification.json").write_text(json.dumps(evidence, indent=2, ensure_ascii=False), encoding="utf-8")
         print(json.dumps({"passed": evidence["passed"], "checks": evidence["checks"], "report": str(output / "ui-shell-native-verification.json")}, ensure_ascii=False))
         # The context manager stops the driver connection. Do not send Browser.close
-        # to the user-owned WebView2 instance.
+        # to the user-owned application.

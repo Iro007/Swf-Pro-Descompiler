@@ -42,6 +42,7 @@
       "package.json"
     ],
     "extraResources": [
+      { "from": "../dist/licenses", "to": "licenses" },
       { "from": "../ui/dist", "to": "ui" },
       { "from": "../engines", "to": "engines", "filter": ["protocol.json", "*/engine.json", "jsswf/src/*.mjs"] },
       { "from": "../target/x86_64-pc-windows-gnu/release/rustswf.exe", "to": "bin/rustswf.exe" },

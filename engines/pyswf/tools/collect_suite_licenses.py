@@ -17,7 +17,7 @@ def main():
     roots = {row[0].split('.')[0] for row in toc[-1] if isinstance(row,tuple) and row and isinstance(row[0],str)}
     mapping = metadata.packages_distributions()
     distributions = sorted({name for root in roots for name in mapping.get(root,[])})
-    destination = WORKSPACE / 'dist/FlashUniversalStudio/licenses/flash-suite-python/dependencies'
+    destination = WORKSPACE / 'dist/licenses/flash-suite-python/dependencies'
     destination.mkdir(parents=True,exist_ok=True)
     rows = []
     for name in distributions:

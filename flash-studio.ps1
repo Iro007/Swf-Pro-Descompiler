@@ -16,16 +16,24 @@ $pythonProjectFlash = Join-Path $workspaceFlash 'engines\pyswf'
 $pythonFlash = Join-Path $pythonProjectFlash '.venv/Scripts/python.exe'
 # 'Python' y 'Rust' abren la misma aplicación: PySWF y RustSWF forman parte de la suite.
 if ($Accion -eq 'Suite' -or $Accion -eq 'Rust' -or $Accion -eq 'Python') {
-    # Entrega única de build.ps1; si no existe, la compilación de desarrollo.
-    $suiteFlash = Join-Path $workspaceFlash 'dist/FlashUniversalStudio/FlashUniversalStudio.exe'
+    # La aplicación Electron: el paquete que genera build.ps1 (desktop/dist/win-unpacked) o, si no existe,
+    # Electron sobre las fuentes (desktop/node_modules, tras `npm ci --prefix desktop` y compilar ui/dist).
+    $suiteFlash = Join-Path $workspaceFlash 'desktop/dist/win-unpacked/Flash Universal Studio.exe'
+    $suiteArguments = @()
     if (-not (Test-Path -LiteralPath $suiteFlash -PathType Leaf)) {
-        $suiteFlash = Join-Path $workspaceFlash 'target/x86_64-pc-windows-gnu/release/rust-swf-studio.exe'
+        $suiteFlash = Join-Path $workspaceFlash 'desktop/node_modules/electron/dist/electron.exe'
+        $suiteArguments = @('"' + (Join-Path $workspaceFlash 'desktop') + '"')
+        if (-not (Test-Path -LiteralPath (Join-Path $workspaceFlash 'ui/dist/index.html') -PathType Leaf)) {
+            Write-Warning 'Falta ui/dist: la ventana mostrará solo la consola del arnés (npm run build --prefix ui).'
+        }
     }
-    if (-not (Test-Path -LiteralPath $suiteFlash -PathType Leaf)) { throw 'Falta el ejecutable de la suite. Ejecute build.ps1.' }
+    if (-not (Test-Path -LiteralPath $suiteFlash -PathType Leaf)) { throw 'Falta la aplicación de la suite. Ejecute build.ps1 (o npm ci --prefix desktop).' }
     $suiteWorkspaceBeforeFlash = $env:FLASH_SUITE_WORKSPACE
     try {
         $env:FLASH_SUITE_WORKSPACE = $workspaceFlash
-        Start-Process -FilePath $suiteFlash -WorkingDirectory (Split-Path $suiteFlash)
+        $start = @{ FilePath = $suiteFlash; WorkingDirectory = (Split-Path $suiteFlash) }
+        if ($suiteArguments.Count -gt 0) { $start.ArgumentList = $suiteArguments }
+        Start-Process @start
     } finally {
         $env:FLASH_SUITE_WORKSPACE = $suiteWorkspaceBeforeFlash
     }

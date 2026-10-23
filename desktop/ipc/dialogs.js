@@ -1,6 +1,6 @@
 'use strict';
 /**
- * The file pickers of the application, kind by kind (the same kinds the Tauri host's
+ * The file pickers of the application, kind by kind (the same kinds the previous desktop host's
  * `suite_pick` had). Pure option builders; main.js hands them to Electron's `dialog`.
  */
 const path = require('node:path');

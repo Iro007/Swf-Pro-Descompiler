@@ -5,8 +5,8 @@
 //! stdout and stderr. Node cannot create Job Objects, so the Electron harness
 //! launches workers through this command: when the harness (or this process)
 //! dies, the whole tree dies with it, and a runaway worker is stopped by the
-//! operating system instead of exhausting memory. Same limits as the Tauri
-//! host's `suite.rs`.
+//! operating system instead of exhausting memory. Same limits as the previous
+//! desktop host.
 use anyhow::{Context, Result, bail, ensure};
 use std::process::{Command, Stdio};
 

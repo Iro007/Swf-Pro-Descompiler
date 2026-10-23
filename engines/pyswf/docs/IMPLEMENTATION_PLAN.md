@@ -26,7 +26,7 @@ Timeline muestra display list/SVG estático. Preview ejecuta explícitamente un 
 
 ## 4. Módulos, exportación y distribución — capacidades acotadas
 
-Tauri reúne procesos RustSWF/PySWF y módulos externos. Los workers tienen límites/cancelación y recuperación; Windows Job acota recursos y no constituye un sandbox completo. RABCDAsm exporta/importa ABC estructural; otras herramientas especializadas se habilitan por operación. Los proveedores comerciales son asistidos y requieren una instalación/licencia del usuario; los instaladores no acreditan disponibilidad ni calidad del motor.
+El anfitrión Electron reúne procesos RustSWF/PySWF y módulos externos. Los workers tienen límites/cancelación y recuperación; Windows Job acota recursos y no constituye un sandbox completo. RABCDAsm exporta/importa ABC estructural; otras herramientas especializadas se habilitan por operación. Los proveedores comerciales son asistidos y requieren una instalación/licencia del usuario; los instaladores no acreditan disponibilidad ni calidad del motor.
 
 El paquete de recursos ZIP se identifica como tal. JPEXS puede producir scripts, XML y archivos FLA/XFL: **abrirlos y verificarlos en Animate sigue pendiente**. No presentar un paquete JSON como FLA ni una exportación como proyecto ya verificado en Animate.
 

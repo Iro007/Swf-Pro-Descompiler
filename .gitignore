@@ -13,8 +13,6 @@ __pycache__/
 /dist/
 build/
 /ui/dist/
-/src-tauri/binaries/
-/src-tauri/gen/
 
 # Escritorio (Electron): dependencias, paquetes (portable e instalador) y el icono que genera npm run icon
 /desktop/node_modules/

@@ -1,5 +1,5 @@
-//! The `rustswf worker` JSONL session as the Electron harness and the Tauri
-//! host see it: both framings, error kinds, and the protocol v2 operations.
+//! The `rustswf worker` JSONL session as the Electron harness and the previous
+//! desktop host see it: both framings, error kinds, and the protocol v2 operations.
 use serde_json::{Value, json};
 use std::{
     collections::BTreeSet,

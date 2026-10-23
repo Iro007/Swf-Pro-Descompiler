@@ -132,15 +132,13 @@ test('ui/src/api.ts, the only module of the interface that talks to its host, ma
   }
 });
 
-test('desktop/ui-host/api.ts exports exactly what ui/src/api.ts exports, so it can take its place', () => {
-  const names = (file) => [...fs.readFileSync(file, 'utf8').matchAll(/^export (?:const|interface|function) (\w+)/gm)].map((m) => m[1]).sort();
-  const electron = names(path.join(ROOT, 'desktop', 'ui-host', 'api.ts'));
-  assert.ok(electron.length >= 7, 'the Electron host module was found');
-  assert.deepEqual(electron, names(path.join(ROOT, 'ui', 'src', 'api.ts')));
-  const source = fs.readFileSync(path.join(ROOT, 'desktop', 'ui-host', 'api.ts'), 'utf8');
+test('every window.flash function ui/src/api.ts calls is exposed by the preload, and nothing else of the host is imported', () => {
+  const source = fs.readFileSync(path.join(ROOT, 'ui', 'src', 'api.ts'), 'utf8');
   const preload = fs.readFileSync(path.join(ROOT, 'desktop', 'preload.js'), 'utf8');
   const exposed = new Set([...preload.matchAll(/^ {2}(\w+): /gm)].map((m) => m[1]));
   const used = [...source.matchAll(/host\(\)!\.(\w+)\(/g)].map((m) => m[1]);
   assert.ok(used.length >= 6);
   for (const name of used) assert.ok(exposed.has(name), `window.flash.${name} exists`);
+  const imports = [...source.matchAll(/^import .* from '([^']+)'/gm)].map((m) => m[1]);
+  assert.deepEqual(imports, ['./types'], 'the host module only imports interface types');
 });

@@ -1,12 +1,12 @@
 # Flash Universal Studio
 
-Suite local de descompilación, edición y compilación SWF/Flash para Windows. Entrega siguiente 0.3.0. Una ventana Tauri/React reúne los motores RustSWF y PySWF y módulos opcionales de JPEXS, Flex, Haxe/HaxeFlixel y herramientas especializadas. Los nombres visibles cambian; los IDs del protocolo y proyectos existentes mantienen compatibilidad.
+Suite local de descompilación, edición y compilación SWF/Flash para Windows. Entrega siguiente 0.3.0. Una ventana Electron/React reúne los motores RustSWF y PySWF y módulos opcionales de JPEXS, Flex, Haxe/HaxeFlixel y herramientas especializadas. Los nombres visibles cambian; los IDs del protocolo y proyectos existentes mantienen compatibilidad.
 
 ## Abrir la suite
 
-Ejecuta dist/FlashUniversalStudio/FlashUniversalStudio.exe (la carpeta única que genera build.ps1). El ZIP portable es dist/FlashUniversalStudio-portable.zip: extrae toda la carpeta y conserva FlashSuiteWorker.exe, rustswf.exe, WebView2Loader.dll y licenses junto al programa.
+build.ps1 genera en desktop/dist el ejecutable portable (FlashUniversalStudio-<versión>-portable.exe, un solo archivo) y el instalador NSIS (FlashUniversalStudio-<versión>-setup.exe); desktop/dist/win-unpacked contiene la misma aplicación sin empaquetar. En `resources` van la interfaz (ui), los motores (bin: rustswf.exe, FlashSuiteWorker.exe y, si se compilaron, goswf.exe y asmswf.exe) y licenses.
 
-Los motores nativos incluyen su runtime; no necesitan Python, Rust, Node ni Java instalados en el equipo. Windows 10/11 x64 y WebView2 Runtime son los requisitos. Los motores externos conservan sus propios requisitos y se configuran en **Herramientas → Motores…**. Desde la carpeta compartida, flash-studio.ps1 abre la suite por defecto.
+Los motores nativos incluyen su runtime; no necesitan Python, Rust, Node ni Java instalados en el equipo. Windows 10/11 x64 es el requisito (Electron incluye su propio Chromium). Los motores externos conservan sus propios requisitos y se configuran en **Herramientas → Motores…**. Desde la carpeta compartida, flash-studio.ps1 abre la suite por defecto.
 
 ## Ventana única
 
@@ -55,13 +55,15 @@ Primero, desde py_swf_editor:
 
     .venv\Scripts\python.exe -m PyInstaller packaging\suite_worker.spec --noconfirm
 
-Después, desde rust_swf:
+Después, desde la raíz del repositorio:
 
     .\build.ps1
 
-JSONL v1 une motores. Tauri gobierna procesos y cancelación mediante Windows Job. Límites: 30 s/1 GiB normalmente; compilación 120 s/2 GiB; benchmark 600 s/2 GiB. FLASH_SUITE_TIMEOUT_SECONDS, FLASH_SUITE_COMPILE_TIMEOUT_SECONDS, FLASH_SUITE_BENCHMARK_TIMEOUT_SECONDS y FLASH_SUITE_MEMORY_MIB ajustan presupuestos acotados. El Job limita recursos; no es un sandbox de seguridad completo.
+build.ps1 compila RustSWF, comprueba el worker, compila la interfaz (ui/dist) y empaqueta con electron-builder (`-BuildWorker` compila también el worker con PyInstaller; `-SkipPackage` omite el empaquetado). `.\tools\verify-release.ps1` abre el paquete con SWF reales y comprueba lo que la interfaz mostró; desde las fuentes, `npm run smoke --prefix desktop`.
 
-CLI compartida: ../engines/pyswf/tools/flash_suite_cli.py y entrada de fuente `flash-suite`. La consola empaquetada usa `FlashSuiteWorker.exe cli OPERACIÓN [opciones]`, con alias `PySWF.exe` y wrapper `pyswf.ps1`. Ofrece operaciones de fuentes, recursos, historial, proyectos y RPC sin abrir la GUI, además de inspección, compilación, validación, exportación y campañas. Usa identidades del inventario del archivo actual.
+JSONL v1 une motores. El arnés de Electron (desktop/) gobierna procesos y cancelación; `rustswf supervise` aplica el Windows Job. Límites: 30 s/1 GiB normalmente; compilación 120 s/2 GiB; benchmark 600 s/2 GiB. FLASH_SUITE_TIMEOUT_SECONDS, FLASH_SUITE_COMPILE_TIMEOUT_SECONDS, FLASH_SUITE_BENCHMARK_TIMEOUT_SECONDS y FLASH_SUITE_MEMORY_MIB ajustan presupuestos acotados. El Job limita recursos; no es un sandbox de seguridad completo.
+
+CLI compartida: ../engines/pyswf/tools/flash_suite_cli.py y entrada de fuente `flash-suite`. La consola usa `FlashSuiteWorker.exe cli OPERACIÓN [opciones]` (en el paquete, `resources\bin`) o, desde el repositorio, `.\pyswf.ps1`. Ofrece operaciones de fuentes, recursos, historial, proyectos y RPC sin abrir la GUI, además de inspección, compilación, validación, exportación y campañas. Usa identidades del inventario del archivo actual.
 
 Las ediciones por consola requieren `--project-output` o `--state-dir` para conservar la sesión. `source-files` obtiene las identidades de las fuentes; `source-edit` guarda texto y `compile-saved` recompila lo guardado. Los destinos de compilación/exportación deben ser nuevos. `--help` muestra los argumentos; la [guía de consola](../engines/pyswf/docs/SUITE_CLI.md) incluye ejemplos de compilación, recursos, proyectos e historial.
 
@@ -75,5 +77,5 @@ No se declara paridad ni superioridad general sobre JPEXS. PySWF, RustSWF y Ruff
 
 ## Licencia
 
-GPL-3.0-or-later. Se conservan procedencia y avisos de PySWF Studio, Ruffle, Tauri, WebView2 y dependencias. JPEXS/Java, SDKs, bibliotecas Flash y herramientas propietarias permanecen módulos locales separados. El corpus SWF no se distribuye.
+GPL-3.0-or-later. Se conservan procedencia y avisos de PySWF Studio, Ruffle, Electron/Chromium y dependencias. JPEXS/Java, SDKs, bibliotecas Flash y herramientas propietarias permanecen módulos locales separados. El corpus SWF no se distribuye.
 

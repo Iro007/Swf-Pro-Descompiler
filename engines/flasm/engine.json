@@ -1,0 +1,17 @@
+{
+  "id": "flasm",
+  "order": 8,
+  "name": "Flasm 1.62",
+  "category": "disassembler",
+  "operations": [
+    "disassemble"
+  ],
+  "languages": [
+    "as2"
+  ],
+  "website": "https://www.nowrap.de/flasm.html",
+  "color": "#287dac",
+  "license": "BSD-style; retain distribution notices",
+  "delivery": "download",
+  "root": ""
+}

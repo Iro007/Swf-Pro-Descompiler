@@ -128,69 +128,6 @@ def invoke(command,cwd,timeout=110):
     return completed.stdout,completed.stderr.decode("utf-8",errors="replace")[-4000:],(time.perf_counter()-started)*1000
 
 
-def flashdec_observations(canonical,report,output):
-    """Unit rows from a flashdec report.
-
-    flashdec names, for each emitted file, the class or action it covers and
-    the evidence its own parser derived: the action bytecode hash, or the ABC
-    hash plus class name. Only evidence that matches the canonical inventory
-    is expanded to member methods (class files) or nested functions (action
-    files). A file with any error marker leaves all its units unavailable:
-    the score is per file, so one failed method is not hidden by the others.
-    """
-    units={u["document_id"]:u for u in canonical["units"]}
-    children={}
-    for unit in canonical["units"]:
-        if unit.get("parent_unit_id"):
-            children.setdefault(unit["parent_unit_id"],[]).append(unit)
-    skip_extra=bool(report.get("summary",{}).get("extra_native_only"))
-    rows,seen=[],set()
-    for item in report.get("scripts",[]):
-        if item.get("only_native") and skip_extra:
-            continue  # written to extra/, not part of the delivered scripts/
-        chosen=(item.get("scores") or {}).get(item.get("engine")) or {}
-        value=chosen.get("value")
-        generation="available" if value is not None and value>=100 else "partial"
-        file=output/"scripts"/item["path"]
-        source_sha=hashlib.sha256(file.read_bytes()).hexdigest() if file.is_file() else None
-        for claim in item.get("units",[]):
-            unit=units.get(claim.get("document_id"))
-            if unit is None:
-                continue
-            evidence=(claim.get("bytecode_sha256")==unit["bytecode_sha256"] if "bytecode_sha256" in claim
-                      else claim.get("abc_sha256")==unit.get("abc_sha256") and claim.get("name")==unit.get("name"))
-            members=[unit]
-            if evidence and unit["scope"]=="class":
-                prefix=unit["document_id"].rsplit("/class:",1)[0]
-                members+=[units[f"{prefix}/method:{m}"] for m in unit["context"].get("method_indices",[]) if f"{prefix}/method:{m}" in units]
-            elif evidence:
-                queue=[unit]
-                while queue:
-                    current=queue.pop()
-                    for child in children.get(current["unit_id"],[]):
-                        members.append(child);queue.append(child)
-            for member in members:
-                if member["document_id"] in seen:
-                    continue
-                seen.add(member["document_id"])
-                rows.append({"document_id":member["document_id"],"scope":member["scope"],
-                             "bytecode_sha256":member["bytecode_sha256"] if evidence else claim.get("bytecode_sha256"),
-                             "identity_verified":bool(evidence),"generation":generation,
-                             "source_kind":"class_member" if member["scope"]=="method" else "file",
-                             "output_file":"scripts/"+item["path"],"source_sha256":source_sha,
-                             "flashdec_engine":item.get("engine"),"flashdec_score":value,
-                             "coverage_basis":"class file" if unit["scope"]=="class" else "action file"})
-    # Every other canonical unit is reported as not emitted, so the denominator
-    # stays complete. Code inside JPEXS-only files has no unit claim and is
-    # therefore counted as missing: conservative, never inflated.
-    for unit in canonical["units"]:
-        if unit["document_id"] in seen or unit.get("identity_status")=="diagnostic":
-            continue
-        rows.append({"document_id":unit["document_id"],"scope":unit["scope"],"bytecode_sha256":unit["bytecode_sha256"],
-                     "generation":"failed","diagnostic":"No flashdec file claims this unit"})
-    return rows
-
-
 def resource_operation(engine,config,data,operation):
     """Tag-level resource extraction or XML round trip (benchmark_resource_tools)."""
     from .benchmark_resource_tools import extract, xml_roundtrip
@@ -315,44 +252,6 @@ def perform(engine,config,data,operation,include_source=False):
                                 raise ValueError('External source evidence is outside its bounded output folder')
                             row['source']=source_path.read_text(encoding='utf-8')
                 observations=attach_observations(canonical,raw['rows'],engine=engine,adapter_mode=adapter_mode)
-        elif engine in ("flashdec_py","flashdec_rs"):
-            # Hybrid CLI: native engine + JPEXS, best file per script. Scripts
-            # only; JPEXS is located by the tool inside the shared workspace.
-            output=folder / "output"
-            options=[str(input_file),"-o",str(output),"--no-resources","--no-pcode","-q",
-                     "--timeout",str(int(config.get("jpexs_timeout",600)))]
-            if engine=="flashdec_py":
-                bootstrap=("import sys;sys.path.insert(0,sys.argv.pop(1));"
-                           "from flashdec.cli import main;sys.exit(main())")
-                command=[config["executable"],"-I","-c",bootstrap,config["module_root"],*options]
-            else:
-                command=[config["executable"],*options]
-            _,warning,elapsed=invoke(command,folder,timeout=int(config.get("jpexs_timeout",600))+120)
-            cli_ms+=elapsed
-            warnings.append(warning)
-            files=sorted((output/"scripts").rglob("*.as"))
-            report_path=output/"report.json"
-            if not report_path.is_file():
-                raise ValueError("flashdec emitted no report.json; output cannot be attributed to its engines")
-            report=json.loads(report_path.read_text(encoding="utf-8"))
-            summary=report.get("summary",{})
-            extra_summary={"scripts":summary.get("scripts"),"clean_scripts":summary.get("clean_scripts"),
-                           "chosen_by_engine":summary.get("chosen_by_engine"),"extra_native_only":summary.get("extra_native_only"),
-                           "engine_errors":{k:v.get("error") for k,v in report.get("engines",{}).items() if v.get("error")},
-                           "score_policy":"error-marker score; does not prove recompilation or behavior"}
-            for engine_name,info in report.get("engines",{}).items():
-                if info.get("error"):
-                    warnings.append(f"{engine_name}: {info['error']}")
-            observations=attach_observations(canonical,flashdec_observations(canonical,report,output),
-                                             engine=engine,adapter_mode="flashdec_report")
-            adapter_mode="flashdec_report"
-            if include_source:
-                for file in files:
-                    contents=file.read_bytes()
-                    if len(contents)>4*1024**2:
-                        raise ValueError('flashdec source evidence exceeds its bounded 4 MiB output limit')
-                    raw_sources.append({'file':file.relative_to(folder).as_posix(),'sha256':hashlib.sha256(contents).hexdigest(),
-                                        'bytes':len(contents),'encoding':'utf-8','source':contents.decode('utf-8','replace')})
         else:
             raise ValueError("Unsupported external engine")
         for file in files:
@@ -389,7 +288,7 @@ def perform(engine,config,data,operation,include_source=False):
 
 def main():
     parser=argparse.ArgumentParser()
-    parser.add_argument("--engine",choices=("flare","flasm","rabcdasm","pyflashkit","flex_swfdump","flashdec_py","flashdec_rs","swfmill","swfextract"),required=True)
+    parser.add_argument("--engine",choices=("flare","flasm","rabcdasm","pyflashkit","flex_swfdump","swfmill","swfextract"),required=True)
     parser.add_argument("--config",required=True)
     args=parser.parse_args()
     config=checked_tool(args.engine,args.config)

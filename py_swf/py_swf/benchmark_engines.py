@@ -2,6 +2,7 @@
 from dataclasses import asdict, dataclass
 import hashlib
 import json
+import os
 from pathlib import Path
 import sys
 import tomllib
@@ -24,29 +25,33 @@ class BenchmarkEngine:
     license: str
 
 
-ENGINES = {
-    "rust": BenchmarkEngine("rust", "RustSWF", "decompiler", ("source", "disassemble"), ("as2", "as3"), "", "#b66a38", "See LICENSE and THIRD_PARTY_NOTICES.md"),
-    "native": BenchmarkEngine("native","PySWF","decompiler",("source","disassemble"),("as2","as3"),"","#167252","GPL-3.0"),
-    "js": BenchmarkEngine("js", "JsSWF", "decompiler", ("source", "disassemble"), ("as2", "as3"), "", "#d4940a", "GPL-3.0; Node.js ESM JSONL worker"),
-    "go": BenchmarkEngine("go", "GoSWF", "decompiler", ("source", "disassemble"), ("as2", "as3"), "", "#00add8", "GPL-3.0; Go native JSONL worker"),
-    "asm": BenchmarkEngine("asm", "AsmSWF (x86_64)", "decompiler", ("source", "disassemble"), ("as2", "as3"), "", "#9b4dca", "GPL-3.0; x86_64 GNU Assembly + C JSONL worker"),
-    "jpexs": BenchmarkEngine("jpexs","JPEXS 26.3.0","decompiler",("source",),("as2","as3"),"https://github.com/jindrapetrik/jpexs-decompiler","#7961b6","GPL-3.0 / LGPL-3.0"),
-    "pyflashkit": BenchmarkEngine("pyflashkit","pyflashkit 1.3.0","decompiler",("source","disassemble"),("as3",),"https://github.com/bitalizer/pyflashkit","#448899","MIT; isolated development runtime only"),
-    "flare": BenchmarkEngine("flare","Flare 0.6","decompiler",("source",),("as2",),"https://www.nowrap.de/flare.html","#ba781c","Copyrighted freeware; not bundled or adapted"),
-    "flasm": BenchmarkEngine("flasm","Flasm 1.62","disassembler",("disassemble",),("as2",),"https://www.nowrap.de/flasm.html","#287dac","BSD-style; retain distribution notices"),
-    "rabcdasm": BenchmarkEngine("rabcdasm","RABCDAsm 1.18","disassembler",("disassemble",),("as3",),"https://github.com/CyberShadow/RABCDAsm","#b05277","GPL-3.0-or-later; component exceptions"),
-    "flex_swfdump": BenchmarkEngine("flex_swfdump","Apache Flex swfdump 4.16.1","disassembler",("disassemble",),("as2","as3"),"https://github.com/apache/flex-sdk","#526fa8","Apache-2.0; retain SDK LICENSE and NOTICE for dependencies"),
-    "sothink": BenchmarkEngine("sothink","Sothink SWF Decompiler","commercial_decompiler",("source",),("as2","as3"),"https://www.sothink.com/product/flashdecompiler/","#47748b","Commercial; no user license/trial installed"),
-    "trillix": BenchmarkEngine("trillix","Flash Decompiler Trillix","commercial_decompiler",("source",),("as2","as3"),"https://www.eltima.com/products/flashdecompiler/","#a56349","Commercial; no user license/trial installed"),
-    "decompiler_com": BenchmarkEngine("decompiler_com","Decompiler.com","remote_service",("source",),("as2","as3"),"https://www.decompiler.com/swf","#566fab","Remote service; public corpus only with explicit approval"),
-    "as3_sorcerer": BenchmarkEngine("as3_sorcerer","AS3 Sorcerer 6.78","restricted_decompiler",("source",),("as3",),"https://www.buraks.com/as3sorcerer/","#865eb3","Restricted free personal non-commercial license advertised by publisher; not open source"),
-    "asv": BenchmarkEngine("asv","Action Script Viewer (ASV)","restricted_decompiler",("source",),("as2","as3"),"https://www.buraks.com/asv/","#827e38","Restricted free personal non-commercial license advertised by publisher; not open source"),
-    "swfmill": BenchmarkEngine("swfmill","swfmill","xml_converter",("xml",),("as2","as3"),"https://www.swfmill.org/","#638b3f","GPL; XML conversion is not ActionScript decompilation"),
-    "swfextract": BenchmarkEngine("swfextract","swfextract (SWFTools)","resource_extractor",("extract",),("as2","as3"),"https://www.swftools.org/","#49907e","GPL; resource extraction is not source decompilation"),
-    "flashdec_py": BenchmarkEngine("flashdec_py","flashdec-py 1.0 (PySWF + JPEXS)","hybrid_decompiler",("source",),("as2","as3"),"","#2f8f6f","GPL-3.0; orchestrates PySWF and JPEXS, best file per script"),
-    "flashdec_rs": BenchmarkEngine("flashdec_rs","flashdec-rs 1.0 (RustSWF + JPEXS)","hybrid_decompiler",("source",),("as2","as3"),"","#d8622a","GPL-3.0; orchestrates RustSWF and JPEXS, best file per script"),
-    "ruffle": BenchmarkEngine("ruffle","Ruffle","runtime",("execute",),("as2","as3"),"https://ruffle.rs/","#d17b35","MIT OR Apache-2.0; independent execution reference, not decompiler"),
-}
+def engines_directory():
+    """engines/ holds one folder per engine with its engine.json manifest."""
+    override = os.environ.get("FLASH_ENGINES_DIR")
+    return Path(override) if override else ROOT.parent / "engines"
+
+
+def load_engines(directory=None):
+    """Read every engines/*/engine.json; a manifest is the only place an engine is declared."""
+    directory = Path(directory) if directory else engines_directory()
+    manifests = []
+    for path in sorted(directory.glob("*/engine.json")):
+        data = json.loads(path.read_text(encoding="utf-8"))
+        missing = {"id", "name", "category", "operations", "languages"} - data.keys()
+        if missing:
+            raise ValueError(f"{path}: missing {sorted(missing)}")
+        manifests.append(data)
+    manifests.sort(key=lambda m: (m.get("order", 999), m["id"]))
+    result = {}
+    for m in manifests:
+        if m["id"] in result:
+            raise ValueError("Duplicate engine id: " + m["id"])
+        result[m["id"]] = BenchmarkEngine(m["id"], m["name"], m["category"], tuple(m["operations"]), tuple(m["languages"]),
+                                          m.get("website", ""), m.get("color", "#566"), m.get("license", ""))
+    return result
+
+
+ENGINES = load_engines()
 
 
 def tools_config(path=None):
@@ -81,9 +86,9 @@ RUST_EXECUTABLE_CANDIDATES = ('dist/FlashUniversalStudio/rustswf.exe',
 
 PEER_EXECUTABLE_CANDIDATES = {
     "rust": RUST_EXECUTABLE_CANDIDATES,
-    "js": ('Js_swf/dist/jsswf.exe', 'dist/FlashUniversalStudio/jsswf.exe'),
-    "go": ('Go_swf/dist/goswf.exe', 'dist/FlashUniversalStudio/goswf.exe'),
-    "asm": ('Asm_swf/dist/asmswf.exe', 'dist/FlashUniversalStudio/asmswf.exe'),
+    "js": ('engines/jsswf/dist/jsswf.exe', 'dist/FlashUniversalStudio/jsswf.exe'),
+    "go": ('engines/goswf/dist/goswf.exe', 'dist/FlashUniversalStudio/goswf.exe'),
+    "asm": ('engines/asmswf/dist/asmswf.exe', 'dist/FlashUniversalStudio/asmswf.exe'),
 }
 
 
@@ -129,9 +134,7 @@ def describe_engines(config_path=None):
                                 "flasm":"AVM1 assembly with timeline/event containers",
                                 "flex_swfdump":"SWFX file with AVM1 assembly and AVM2 ABC bytecode listings; canonical unit coverage remains unknown",
                                 "pyflashkit":"Pinned public API for every ABC block, class and method; separate scopes with exact bytecode identity checks. Historical cli_first_abc mode remains available.",
-                                "flare":"Consolidated legacy ActionScript text, no canonical unit mapping",
-                                "flashdec_py":"Hybrid project export: one .as file per class/script, best of PySWF and JPEXS by error-marker score; file-level, no canonical unit mapping",
-                                "flashdec_rs":"Hybrid project export: one .as file per class/script, best of RustSWF and JPEXS by error-marker score; file-level, no canonical unit mapping"}.get(engine.id,"Not yet measured in a reproducible local adapter")
+                                "flare":"Consolidated legacy ActionScript text, no canonical unit mapping"}.get(engine.id,"Not yet measured in a reproducible local adapter")
         record["configured"] = engine.id == "native"
         if engine.id == "native":
             try:
@@ -163,7 +166,7 @@ def describe_engines(config_path=None):
             except (OSError, ValueError, KeyError, WorkerError) as error:
                 record["configured"] = False
                 record["setup_diagnostic"] = str(error)
-        if engine.id in ("flasm","flare","rabcdasm","pyflashkit","flex_swfdump","flashdec_py","flashdec_rs","swfmill","swfextract"):
+        if engine.id in ("flasm","flare","rabcdasm","pyflashkit","flex_swfdump","swfmill","swfextract"):
             try:
                 config = checked_tool(engine.id,config_path)
                 record.update(configured=True,version=config.get("version"),artifact_sha256=list(config["artifact_sha256"].values()))

@@ -1,0 +1,18 @@
+{
+  "id": "ruffle",
+  "order": 20,
+  "name": "Ruffle",
+  "category": "runtime",
+  "operations": [
+    "execute"
+  ],
+  "languages": [
+    "as2",
+    "as3"
+  ],
+  "website": "https://ruffle.rs/",
+  "color": "#d17b35",
+  "license": "MIT OR Apache-2.0; independent execution reference, not decompiler",
+  "delivery": "download",
+  "root": ""
+}

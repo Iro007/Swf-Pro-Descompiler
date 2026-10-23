@@ -1,0 +1,19 @@
+{
+  "id": "asm",
+  "order": 4,
+  "name": "AsmSWF (x86_64)",
+  "category": "decompiler",
+  "operations": [
+    "source",
+    "disassemble"
+  ],
+  "languages": [
+    "as2",
+    "as3"
+  ],
+  "website": "",
+  "color": "#9b4dca",
+  "license": "GPL-3.0; x86_64 GNU Assembly + C JSONL worker",
+  "delivery": "repo",
+  "root": "."
+}

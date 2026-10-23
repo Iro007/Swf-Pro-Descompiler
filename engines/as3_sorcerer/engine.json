@@ -1,0 +1,17 @@
+{
+  "id": "as3_sorcerer",
+  "order": 14,
+  "name": "AS3 Sorcerer 6.78",
+  "category": "restricted_decompiler",
+  "operations": [
+    "source"
+  ],
+  "languages": [
+    "as3"
+  ],
+  "website": "https://www.buraks.com/as3sorcerer/",
+  "color": "#865eb3",
+  "license": "Restricted free personal non-commercial license advertised by publisher; not open source",
+  "delivery": "user_install",
+  "root": ""
+}

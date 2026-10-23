@@ -1,6 +1,6 @@
 $ErrorActionPreference = "Stop"
 $Root = Split-Path -Parent $MyInvocation.MyCommand.Path
-$RepoRoot = Split-Path -Parent $Root
+$RepoRoot = Split-Path -Parent (Split-Path -Parent $Root)
 $MinGWBin = Join-Path $RepoRoot "tools\bootstrap\mingw\mingw64\bin"
 $GccExe = Join-Path $MinGWBin "gcc.exe"
 

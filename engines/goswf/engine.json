@@ -1,0 +1,19 @@
+{
+  "id": "go",
+  "order": 3,
+  "name": "GoSWF",
+  "category": "decompiler",
+  "operations": [
+    "source",
+    "disassemble"
+  ],
+  "languages": [
+    "as2",
+    "as3"
+  ],
+  "website": "",
+  "color": "#00add8",
+  "license": "GPL-3.0; Go native JSONL worker",
+  "delivery": "repo",
+  "root": "."
+}

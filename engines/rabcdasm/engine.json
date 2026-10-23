@@ -1,0 +1,17 @@
+{
+  "id": "rabcdasm",
+  "order": 9,
+  "name": "RABCDAsm 1.18",
+  "category": "disassembler",
+  "operations": [
+    "disassemble"
+  ],
+  "languages": [
+    "as3"
+  ],
+  "website": "https://github.com/CyberShadow/RABCDAsm",
+  "color": "#b05277",
+  "license": "GPL-3.0-or-later; component exceptions",
+  "delivery": "download",
+  "root": ""
+}

@@ -1,0 +1,19 @@
+{
+  "id": "rust",
+  "order": 0,
+  "name": "RustSWF",
+  "category": "decompiler",
+  "operations": [
+    "source",
+    "disassemble"
+  ],
+  "languages": [
+    "as2",
+    "as3"
+  ],
+  "website": "",
+  "color": "#b66a38",
+  "license": "See LICENSE and THIRD_PARTY_NOTICES.md",
+  "delivery": "repo",
+  "root": "../../crates"
+}

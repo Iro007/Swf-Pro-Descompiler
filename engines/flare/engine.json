@@ -1,0 +1,17 @@
+{
+  "id": "flare",
+  "order": 7,
+  "name": "Flare 0.6",
+  "category": "decompiler",
+  "operations": [
+    "source"
+  ],
+  "languages": [
+    "as2"
+  ],
+  "website": "https://www.nowrap.de/flare.html",
+  "color": "#ba781c",
+  "license": "Copyrighted freeware; not bundled or adapted",
+  "delivery": "download",
+  "root": ""
+}

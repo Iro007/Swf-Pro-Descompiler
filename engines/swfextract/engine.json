@@ -1,0 +1,18 @@
+{
+  "id": "swfextract",
+  "order": 17,
+  "name": "swfextract (SWFTools)",
+  "category": "resource_extractor",
+  "operations": [
+    "extract"
+  ],
+  "languages": [
+    "as2",
+    "as3"
+  ],
+  "website": "https://www.swftools.org/",
+  "color": "#49907e",
+  "license": "GPL; resource extraction is not source decompilation",
+  "delivery": "download",
+  "root": ""
+}

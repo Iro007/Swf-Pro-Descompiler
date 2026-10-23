@@ -18,7 +18,7 @@ build/
 
 # Toolchains que descargan los bootstrap (MinGW, Go...) y copias de terceros
 /tools/bootstrap/
-*/tools/bootstrap/
+**/tools/bootstrap/
 /third_party/
 /jpexs-decompiler-master/
 /toolpacks/
@@ -33,9 +33,7 @@ build/
 reports/
 
 # Binarios compilados de los motores propios
-Go_swf/dist/
-Asm_swf/dist/
-Js_swf/dist/
+engines/*/dist/
 
 # Configuración local de editores y agentes
 .claude/

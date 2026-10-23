@@ -1,0 +1,19 @@
+{
+  "id": "js",
+  "order": 2,
+  "name": "JsSWF",
+  "category": "decompiler",
+  "operations": [
+    "source",
+    "disassemble"
+  ],
+  "languages": [
+    "as2",
+    "as3"
+  ],
+  "website": "",
+  "color": "#d4940a",
+  "license": "GPL-3.0; Node.js ESM JSONL worker",
+  "delivery": "repo",
+  "root": "."
+}

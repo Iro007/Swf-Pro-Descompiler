@@ -1,0 +1,18 @@
+{
+  "id": "asv",
+  "order": 15,
+  "name": "Action Script Viewer (ASV)",
+  "category": "restricted_decompiler",
+  "operations": [
+    "source"
+  ],
+  "languages": [
+    "as2",
+    "as3"
+  ],
+  "website": "https://www.buraks.com/asv/",
+  "color": "#827e38",
+  "license": "Restricted free personal non-commercial license advertised by publisher; not open source",
+  "delivery": "user_install",
+  "root": ""
+}

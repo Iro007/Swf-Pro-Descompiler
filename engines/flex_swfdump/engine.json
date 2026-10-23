@@ -1,0 +1,18 @@
+{
+  "id": "flex_swfdump",
+  "order": 10,
+  "name": "Apache Flex swfdump 4.16.1",
+  "category": "disassembler",
+  "operations": [
+    "disassemble"
+  ],
+  "languages": [
+    "as2",
+    "as3"
+  ],
+  "website": "https://github.com/apache/flex-sdk",
+  "color": "#526fa8",
+  "license": "Apache-2.0; retain SDK LICENSE and NOTICE for dependencies",
+  "delivery": "download",
+  "root": ""
+}

@@ -1,0 +1,18 @@
+{
+  "id": "decompiler_com",
+  "order": 13,
+  "name": "Decompiler.com",
+  "category": "remote_service",
+  "operations": [
+    "source"
+  ],
+  "languages": [
+    "as2",
+    "as3"
+  ],
+  "website": "https://www.decompiler.com/swf",
+  "color": "#566fab",
+  "license": "Remote service; public corpus only with explicit approval",
+  "delivery": "remote",
+  "root": ""
+}

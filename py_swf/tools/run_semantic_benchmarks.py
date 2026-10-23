@@ -38,7 +38,7 @@ from py_swf.validation import validate_swf_bytes
 from run_ruffle_trace_probe import bounded_run, probe
 from verify_parity_source_semantics import compile_shared_project, generated_project
 
-SOURCE_ENGINES = ("native", "rust", "js", "go", "asm", "jpexs", "flashdec_py", "flashdec_rs", "pyflashkit", "flare")
+SOURCE_ENGINES = ("native", "rust", "js", "go", "asm", "jpexs", "pyflashkit", "flare")
 REFERENCE_ENGINES = ("rabcdasm", "flasm", "flex_swfdump")
 ALL_ENGINES = SOURCE_ENGINES + REFERENCE_ENGINES
 SCHEMA_VERSION = 1

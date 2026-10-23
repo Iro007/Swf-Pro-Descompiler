@@ -1236,7 +1236,7 @@ class UniversalSuite:
             output /= "benchmark-" + uuid.uuid4().hex[:8]
         selected = args.get("engines", ["native", "rust", "jpexs"])
         selected = ["native" if key == "python" else key for key in selected]
-        external_engines = ("pyflashkit", "flare", "flasm", "rabcdasm", "flex_swfdump", "flashdec_py", "flashdec_rs", "swfmill", "swfextract")
+        external_engines = ("pyflashkit", "flare", "flasm", "rabcdasm", "flex_swfdump", "swfmill", "swfextract")
         if not selected or any(key not in ("native", "rust", "jpexs", *external_engines) for key in selected):
             raise ValueError("Selecciona motores con un adaptador de benchmark local")
         tool_config = args.get("tool_config") or PROJECT / ".dev-references/extra-tools.json"

@@ -91,7 +91,7 @@ def command_for(engine, config_path=None, tool_config=None):
         if engine != "rust":
             cmd.extend(["--engine", engine])
         return cmd
-    if engine in ("flasm","flare","rabcdasm","pyflashkit","flex_swfdump","flashdec_py","flashdec_rs","swfmill","swfextract"):
+    if engine in ("flasm","flare","rabcdasm","pyflashkit","flex_swfdump","swfmill","swfextract"):
         return external_command(engine,tool_config)
     if engine in ("sothink","trillix","as3_sorcerer","asv"):
         raise WorkerError("Licensed installation and reproducible GUI/CLI adapter not available; no result measured")

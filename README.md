@@ -9,7 +9,7 @@ src-tauri/   la aplicación de escritorio (Tauri, Rust)
 ui/          la interfaz (React)
 crates/      RustSWF: leer/escribir SWF, desensamblar AVM1/AVM2, descompilar
 py_swf/      PySWF: orquestador de herramientas, compilador, editor de recursos, benchmarks
-Js_swf/ Go_swf/ Asm_swf/    motores propios en JS, Go y ensamblador x86_64
+engines/     motores propios en JS (jsswf), Go (goswf) y ensamblador x86_64 (asmswf)
 benchmark_inputs/           corpus de prueba (SWF, fuentes originales y escenarios)
 shared/      contratos que leen Python y Rust por igual (reglas de puntuación)
 tools/       scripts de compilación de la app

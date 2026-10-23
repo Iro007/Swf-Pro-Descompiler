@@ -1,0 +1,18 @@
+{
+  "id": "jpexs",
+  "order": 5,
+  "name": "JPEXS 26.3.0",
+  "category": "decompiler",
+  "operations": [
+    "source"
+  ],
+  "languages": [
+    "as2",
+    "as3"
+  ],
+  "website": "https://github.com/jindrapetrik/jpexs-decompiler",
+  "color": "#7961b6",
+  "license": "GPL-3.0 / LGPL-3.0",
+  "delivery": "download",
+  "root": ""
+}

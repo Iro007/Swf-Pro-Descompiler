@@ -1,0 +1,18 @@
+{
+  "id": "swfmill",
+  "order": 16,
+  "name": "swfmill",
+  "category": "xml_converter",
+  "operations": [
+    "xml"
+  ],
+  "languages": [
+    "as2",
+    "as3"
+  ],
+  "website": "https://www.swfmill.org/",
+  "color": "#638b3f",
+  "license": "GPL; XML conversion is not ActionScript decompilation",
+  "delivery": "download",
+  "root": ""
+}

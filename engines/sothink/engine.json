@@ -1,0 +1,18 @@
+{
+  "id": "sothink",
+  "order": 11,
+  "name": "Sothink SWF Decompiler",
+  "category": "commercial_decompiler",
+  "operations": [
+    "source"
+  ],
+  "languages": [
+    "as2",
+    "as3"
+  ],
+  "website": "https://www.sothink.com/product/flashdecompiler/",
+  "color": "#47748b",
+  "license": "Commercial; no user license/trial installed",
+  "delivery": "user_install",
+  "root": ""
+}

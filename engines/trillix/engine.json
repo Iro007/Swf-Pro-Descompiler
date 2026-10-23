@@ -1,0 +1,18 @@
+{
+  "id": "trillix",
+  "order": 12,
+  "name": "Flash Decompiler Trillix",
+  "category": "commercial_decompiler",
+  "operations": [
+    "source"
+  ],
+  "languages": [
+    "as2",
+    "as3"
+  ],
+  "website": "https://www.eltima.com/products/flashdecompiler/",
+  "color": "#a56349",
+  "license": "Commercial; no user license/trial installed",
+  "delivery": "user_install",
+  "root": ""
+}

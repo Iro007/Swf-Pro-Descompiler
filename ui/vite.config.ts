@@ -10,6 +10,6 @@ export default defineConfig({
       '@': path.resolve(__dirname, '.'),
     },
   },
-  build: {rollupOptions:{input:{main:path.resolve(__dirname,'index.html'),analysis:path.resolve(__dirname,'analysis.html')}}},
+  
   server: { host: '127.0.0.1', port: 1420, strictPort: true, proxy:{'/api':'http://127.0.0.1:8000'} },
 });

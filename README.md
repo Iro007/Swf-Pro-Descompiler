@@ -24,7 +24,7 @@ Las herramientas de terceros (JPEXS, JDK, Flex, Haxe, instaladores comerciales�
 .\flash-studio.ps1            # abre la aplicación
 .\pyswf.ps1 engines           # CLI: lista los motores disponibles
 .\pyswf.ps1 inspect --input juego.swf
-.\medir-codigo.ps1            # benchmarks de recompilación y comportamiento
+.\medir-codigo.ps1            # benchmark: recompila y misma traza en Ruffle (-Completo para todo)
 ```
 
 ## Preparar el entorno

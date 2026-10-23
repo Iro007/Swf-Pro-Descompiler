@@ -1,0 +1,6 @@
+.bench-table{width:100%;border-collapse:collapse;margin:.5rem 0 1rem}
+.bench-table th,.bench-table td{padding:.4rem .6rem;border-bottom:1px solid var(--line,#e3e5e5);text-align:right}
+.bench-table th:first-child,.bench-table td:first-child{text-align:left}
+.bench-best{font-weight:700}
+.bench-reasons{margin:.2rem 0 .6rem 1rem;color:#6b7070;font-size:.85em}
+.bench-unavailable li{margin:.2rem 0}

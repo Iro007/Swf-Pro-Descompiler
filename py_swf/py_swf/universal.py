@@ -1418,6 +1418,9 @@ class UniversalSuite:
         if operation == 'benchmark_tools':
             from .benchmark_engines import describe_engines
             return {'engines': describe_engines(args.get('tool_config')), 'scope': 'Read-only local adapter discovery; no decompilation executed'}
+        if operation == 'bench_results':
+            from .bench_results import read_bench
+            return read_bench(args.get('run'))
         if operation == 'benchmark_catalog_units':
             return benchmark_catalog_details(args, 'units')
         if operation == 'benchmark_catalog_evidence':

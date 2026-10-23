@@ -15,5 +15,125 @@
   "color": "#167252",
   "license": "GPL-3.0",
   "delivery": "repo",
-  "root": "."
+  "root": ".",
+  "worker": {
+    "protocol": "jsonl",
+    "framing": "suite",
+    "command": [
+      "bin/FlashSuiteWorker.exe",
+      "worker"
+    ],
+    "dev_command": [
+      "engines/pyswf/.venv/Scripts/python.exe",
+      "-m",
+      "py_swf.universal_worker",
+      "worker"
+    ],
+    "cwd": "engines/pyswf",
+    "env": {
+      "FLASH_SUITE_WORKSPACE": "{workspace}",
+      "FLASH_SUITE_STATE_DIR": "{state_dir}",
+      "FLASH_SUITE_RUFFLE_WEB": "1",
+      "PYTHONUTF8": "1",
+      "PYTHONUNBUFFERED": "1"
+    },
+    "memory_mib": 2048,
+    "authority": true,
+    "ops": [
+      "capabilities",
+      "open",
+      "header",
+      "tag_tree",
+      "raw",
+      "resources",
+      "resource_info",
+      "resource_preview",
+      "sprite_frames",
+      "scripts",
+      "disassemble",
+      "decompile",
+      "assemble",
+      "compile",
+      "replace_resource",
+      "undo",
+      "redo",
+      "save",
+      "export_fla",
+      "export_xfl",
+      "export_xml"
+    ],
+    "derived_ops": [
+      "disassemble"
+    ],
+    "native_ops": {
+      "ping": {
+        "document": false
+      },
+      "state": {},
+      "save_project": {},
+      "export_swf": {},
+      "validate": {},
+      "code_documents": {},
+      "compare": {},
+      "source_files": {},
+      "timeline": {},
+      "preview_data": {},
+      "engines": {
+        "document": false
+      },
+      "configure_engine": {
+        "document": false
+      },
+      "bench_results": {
+        "document": false
+      },
+      "benchmark_tools": {
+        "document": false
+      },
+      "launch_tool": {
+        "document": false
+      },
+      "import_result": {
+        "document": false
+      },
+      "load_project": {
+        "mutates": true
+      },
+      "edit": {
+        "mutates": true
+      },
+      "resource_edit": {
+        "mutates": true
+      },
+      "snapshot": {
+        "mutates": true
+      },
+      "restore_snapshot": {
+        "mutates": true
+      },
+      "source_edit": {
+        "timeout": "compile",
+        "mutates": true
+      },
+      "compile_saved": {
+        "timeout": "compile",
+        "mutates": true
+      },
+      "compile_project": {
+        "timeout": "compile",
+        "mutates": true
+      },
+      "compile_code_document": {
+        "timeout": "compile",
+        "mutates": true
+      },
+      "tool_operation": {
+        "timeout": "compile",
+        "mutates": true
+      },
+      "export": {
+        "timeout": "compile"
+      }
+    }
+  }
 }

@@ -461,8 +461,20 @@ fn category(code: u16) -> &'static str {
         _ => "others",
     }
 }
+/// The name of a tag as PySWF spells it, so a tag reads the same whichever engine lists it.
+/// The `swf` crate's own names are used where they agree.
 fn tag_name(code: u16) -> String {
     match code {
+        3 => "FreeCharacter".into(),
+        8 => "JPEGTables".into(),
+        38 => "DefineVideo".into(),
+        40 => "NameCharacter".into(),
+        42 => "DefineTextFormat".into(),
+        49 => "GenCommand".into(),
+        51 => "CharacterSet".into(),
+        52 => "FontRef".into(),
+        63 => "DebugID".into(),
+        74 => "CSMTextSettings".into(),
         72 => "DoABC1".into(),
         82 => "DoABC".into(),
         21 => "DefineBitsJPEG2".into(),

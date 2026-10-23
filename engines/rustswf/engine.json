@@ -15,5 +15,55 @@
   "color": "#b66a38",
   "license": "See LICENSE and THIRD_PARTY_NOTICES.md",
   "delivery": "repo",
-  "root": "."
+  "root": ".",
+  "worker": {
+    "protocol": "jsonl",
+    "framing": "v2",
+    "command": [
+      "bin/rustswf.exe",
+      "worker"
+    ],
+    "dev_command": [
+      [
+        "target/x86_64-pc-windows-gnu/release/rustswf.exe",
+        "worker"
+      ],
+      [
+        "target/x86_64-pc-windows-gnu/debug/rustswf.exe",
+        "worker"
+      ]
+    ],
+    "supervisor": true,
+    "memory_mib": 1024,
+    "ops": [
+      "capabilities",
+      "open",
+      "header",
+      "tag_tree",
+      "raw",
+      "resources",
+      "resource_info",
+      "extract_image",
+      "extract_sound",
+      "extract_font",
+      "extract_text",
+      "shape_svg",
+      "scripts",
+      "disassemble",
+      "decompile"
+    ],
+    "native_ops": {
+      "info": {},
+      "outline": {},
+      "metadata": {},
+      "abc_metadata": {},
+      "method_context": {},
+      "decompile_document": {},
+      "source_document": {},
+      "roundtrip": {},
+      "asset": {},
+      "export_resource": {},
+      "export_script": {}
+    }
+  }
 }

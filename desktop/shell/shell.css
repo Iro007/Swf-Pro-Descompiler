@@ -1,0 +1,57 @@
+:root {
+  color-scheme: dark;
+  --bg: #0b1018;
+  --panel: #111923;
+  --line: #243142;
+  --text: #dbe5f0;
+  --muted: #8da0b5;
+  --accent: #62dab1;
+  --bad: #ff8a80;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 14px/1.45 "Segoe UI", system-ui, sans-serif;
+}
+header { padding: 20px 28px 8px; }
+h1 { margin: 0; font-size: 22px; letter-spacing: 0.2px; }
+h2 { margin: 0 0 8px; font-size: 15px; color: var(--accent); }
+#status, .hint { margin: 4px 0 0; color: var(--muted); }
+main { display: grid; gap: 16px; padding: 12px 28px 28px; max-width: 1180px; }
+section { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; }
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 5px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--muted); font-weight: 600; }
+.ok { color: var(--accent); }
+.bad { color: var(--bad); }
+.muted { color: var(--muted); }
+.row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
+button, select {
+  background: #1a2634;
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 7px 12px;
+  font: inherit;
+}
+button:hover:not(:disabled) { border-color: var(--accent); cursor: pointer; }
+button:disabled { opacity: 0.5; }
+button.secondary { background: transparent; }
+select { min-width: 280px; max-width: 100%; }
+pre {
+  margin: 0;
+  padding: 10px 12px;
+  background: #0b121b;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: auto;
+  max-height: 340px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font: 12.5px/1.45 Consolas, "Cascadia Mono", monospace;
+}
+@media (max-width: 720px) {
+  header, main { padding-left: 16px; padding-right: 16px; }
+}

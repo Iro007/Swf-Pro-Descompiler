@@ -15,5 +15,30 @@
   "color": "#9b4dca",
   "license": "GPL-3.0; x86_64 GNU Assembly + C JSONL worker",
   "delivery": "repo",
-  "root": "."
+  "root": ".",
+  "worker": {
+    "protocol": "jsonl",
+    "framing": "legacy",
+    "command": [
+      "bin/asmswf.exe",
+      "worker"
+    ],
+    "dev_command": [
+      "engines/asmswf/dist/asmswf.exe",
+      "worker"
+    ],
+    "memory_mib": 1024,
+    "class_units": false,
+    "ops": [
+      "capabilities",
+      "open",
+      "header",
+      "scripts",
+      "disassemble",
+      "decompile"
+    ],
+    "native_ops": {
+      "info": {}
+    }
+  }
 }

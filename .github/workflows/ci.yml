@@ -69,3 +69,23 @@ jobs:
         npm ci
         npm run lint
         npm run build
+
+  desktop:
+    # The Electron host: engine registry, JSONL workers, routing and fallback, scoring, IPC checks.
+    # Tests against the real engines skip, with their reason, when those are not built.
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: desktop
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '24'
+    - name: Install and test
+      # The tests drive the harness with plain Node; none of them starts Electron, so its binary is not downloaded.
+      env:
+        ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+      run: |
+        npm ci
+        npm test

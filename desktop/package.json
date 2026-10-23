@@ -1,0 +1,73 @@
+{
+  "name": "flash-universal-studio-desktop",
+  "productName": "Flash Universal Studio",
+  "version": "0.3.0",
+  "private": true,
+  "description": "Flash Universal Studio: Electron host that runs every decompiler engine as a JSONL worker process",
+  "license": "GPL-3.0-or-later",
+  "author": "Byirosaleshd",
+  "main": "main.js",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test",
+    "e2e": "node scripts/e2e.js",
+    "try-ui": "node scripts/try-ui.js",
+    "smoke": "electron . --smoke-report ../reports/electron-smoke.json --open ../corpus/parity-20261014/optimized/swf/dev-as3-classes-namespaces/release.fws.swf",
+    "icon": "node scripts/make-icon.js",
+    "predist": "node scripts/make-icon.js",
+    "dist": "electron-builder --win portable nsis"
+  },
+  "devDependencies": {
+    "electron": "44.7.0",
+    "electron-builder": "26.17.0"
+  },
+  "build": {
+    "appId": "com.flashuniversalstudio.app",
+    "productName": "Flash Universal Studio",
+    "copyright": "GPL-3.0-or-later",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "asar": true,
+    "files": [
+      "main.js",
+      "preload.js",
+      "harness/**",
+      "ipc/**",
+      "shell/**",
+      "package.json"
+    ],
+    "extraResources": [
+      { "from": "../ui/dist", "to": "ui" },
+      { "from": "../engines", "to": "engines", "filter": ["protocol.json", "*/engine.json", "jsswf/src/*.mjs"] },
+      { "from": "../target/x86_64-pc-windows-gnu/release/rustswf.exe", "to": "bin/rustswf.exe" },
+      { "from": "../engines/pyswf/dist/FlashSuiteWorker.exe", "to": "bin/FlashSuiteWorker.exe" },
+      { "from": "../engines/goswf/dist/goswf.exe", "to": "bin/goswf.exe" },
+      { "from": "../engines/asmswf/dist/asmswf.exe", "to": "bin/asmswf.exe" },
+      { "from": "../LICENSE", "to": "LICENSE" },
+      { "from": "../THIRD_PARTY_NOTICES.md", "to": "THIRD_PARTY_NOTICES.md" }
+    ],
+    "win": {
+      "icon": "build/icon.png",
+      "target": [
+        { "target": "portable", "arch": ["x64"] },
+        { "target": "nsis", "arch": ["x64"] }
+      ]
+    },
+    "portable": {
+      "artifactName": "FlashUniversalStudio-${version}-portable.exe"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "artifactName": "FlashUniversalStudio-${version}-setup.exe",
+      "language": "3082"
+    },
+    "publish": null
+  }
+}

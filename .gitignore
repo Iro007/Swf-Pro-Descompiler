@@ -16,6 +16,11 @@ build/
 /src-tauri/binaries/
 /src-tauri/gen/
 
+# Escritorio (Electron): dependencias, paquetes (portable e instalador) y el icono que genera npm run icon
+/desktop/node_modules/
+/desktop/dist/
+/desktop/build/
+
 # Toolchains que descargan los bootstrap (MinGW, Go...)
 /tools/bootstrap/
 **/tools/bootstrap/

@@ -14,5 +14,15 @@
   "color": "#7961b6",
   "license": "GPL-3.0 / LGPL-3.0",
   "delivery": "download",
-  "root": ""
+  "root": "",
+  "worker": {
+    "via": "native",
+    "args": {
+      "engine": "jpexs"
+    },
+    "ops": [
+      "decompile",
+      "compile"
+    ]
+  }
 }

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Flash Universal Studio</title>
+    <link rel="stylesheet" href="shell.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Flash Universal Studio</h1>
+      <p id="status">Arnés de motores</p>
+    </header>
+    <main>
+      <section>
+        <h2>Motores</h2>
+        <p class="hint">Cada motor es un proceso que habla JSONL. Niveles: L1 lectura, L2 recursos, L3 código, L4 edición, L5 avanzado.</p>
+        <table id="engines">
+          <thead><tr><th>Motor</th><th>Estado</th><th>Niveles</th><th>Detalle</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </section>
+      <section>
+        <h2>Documento</h2>
+        <div class="row">
+          <button id="open" type="button">Abrir SWF…</button>
+          <button id="cancel" type="button" class="secondary">Cancelar operación</button>
+          <span id="served"></span>
+        </div>
+        <pre id="document">Ningún documento abierto.</pre>
+      </section>
+      <section>
+        <h2>Código</h2>
+        <div class="row">
+          <select id="units" aria-label="Unidad de código"></select>
+          <button id="decompile" type="button" disabled>Descompilar (automático)</button>
+        </div>
+        <table id="votes" hidden>
+          <thead><tr><th>Motor</th><th>Puntuación</th><th>Estado</th><th>ms</th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <pre id="source"></pre>
+      </section>
+    </main>
+    <script src="shell.js"></script>
+  </body>
+</html>

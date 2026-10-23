@@ -15,5 +15,30 @@
   "color": "#00add8",
   "license": "GPL-3.0; Go native JSONL worker",
   "delivery": "repo",
-  "root": "."
+  "root": ".",
+  "worker": {
+    "protocol": "jsonl",
+    "framing": "legacy",
+    "command": [
+      "bin/goswf.exe",
+      "worker"
+    ],
+    "dev_command": [
+      "engines/goswf/dist/goswf.exe",
+      "worker"
+    ],
+    "memory_mib": 1024,
+    "class_units": false,
+    "ops": [
+      "capabilities",
+      "open",
+      "header",
+      "scripts",
+      "disassemble",
+      "decompile"
+    ],
+    "native_ops": {
+      "info": {}
+    }
+  }
 }

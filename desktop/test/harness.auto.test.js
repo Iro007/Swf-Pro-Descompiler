@@ -152,7 +152,8 @@ test('an engine that hangs is dropped from the vote at its deadline and the rest
   const rustCandidate = reply.result.selection.candidates.find((c) => c.engine === 'rust');
   assert.deepEqual([rustCandidate.ok, rustCandidate.kind], [false, 'timeout']);
   const again = await w.harness.call('decompile', { unit_id: UNIT });
-  assert.equal(again.served_by, 'rust', 'RustSWF restarted and is back in the vote');
+  const back = again.result.selection.candidates.find((c) => c.engine === 'rust');
+  assert.deepEqual([back.ok, back.score], [true, 100], 'RustSWF restarted and is back in the vote');
 });
 
 test('the engines argument limits the vote; an explicit engine skips it', async (t) => {

@@ -408,7 +408,7 @@ class Harness extends EventEmitter {
 
   /**
    * Ask every source engine at once and keep the best source by the common score. Ties go
-   * to the lower manifest order. JPEXS (through PySWF) is asked only when no native engine
+   * to an editable result (PySWF), then to the lower manifest order. JPEXS (through PySWF) is asked only when no native engine
    * produced a clean result, unless `include_jpexs` says `always` or `never`.
    */
   async _auto(spec, args, ctx) {
@@ -436,7 +436,7 @@ class Harness extends EventEmitter {
     };
     const outcomes = await Promise.all(runnable.map(run));
     this._checkEpoch(ctx);
-    const best = () => pickBest(outcomes.filter((o) => o.ok).map((o) => ({ engine: o.info.id, text: o.result.source, order: o.info.order, outcome: o })));
+    const best = () => pickBest(outcomes.filter((o) => o.ok).map((o) => ({ engine: o.info.id, text: o.result.source, order: o.info.order, editable: o.result.editable === true, outcome: o })));
     const jpexs = this.registry.engine('jpexs');
     const mode = args.include_jpexs ?? 'if_needed';
     if (jpexs && jpexs.implements('decompile') && mode !== 'never' && !asClass && (!wanted || wanted.includes('jpexs'))) {

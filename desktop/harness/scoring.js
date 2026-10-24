@@ -100,8 +100,9 @@ function isClean(result) {
 }
 
 /**
- * Choose among candidates `{engine, text, order}`: the highest score wins, a
- * tie goes to the lower manifest `order`. Candidates without text never win.
+ * Choose among candidates `{engine, text, order, editable?}`: the highest score wins; on a
+ * tie an editable result beats a read-only one (so the person can edit what they see),
+ * then the lower manifest `order`. Candidates without text never win.
  * @returns {null | {engine, score, candidate}}
  */
 function pickBest(candidates) {
@@ -109,10 +110,13 @@ function pickBest(candidates) {
   for (const candidate of candidates) {
     const result = score(candidate.text);
     if (result === null) continue;
+    const editable = candidate.editable === true;
+    const bestEditable = best !== null && best.candidate.editable === true;
     const better =
       best === null ||
       result.value > best.score.value ||
-      (result.value === best.score.value && (candidate.order ?? 0) < (best.candidate.order ?? 0));
+      (result.value === best.score.value &&
+        (editable !== bestEditable ? editable : (candidate.order ?? 0) < (best.candidate.order ?? 0)));
     if (better) best = { engine: candidate.engine, score: result, candidate };
   }
   return best;

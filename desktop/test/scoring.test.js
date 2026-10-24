@@ -74,3 +74,16 @@ test('pickBest takes the highest score and breaks ties by manifest order', () =>
   // Candidates without an order sort as 0 and keep their position on a tie.
   assert.equal(pickBest([{ engine: 'x', text: clean }, { engine: 'y', text: clean }]).engine, 'x');
 });
+
+test('pickBest prefers an editable result on a tie, but never over a higher score', () => {
+  const clean = 'class A { function f() { return 1; } }';
+  const broken = 'class A { §§push(1); }';
+  const tie = [
+    { engine: 'rust', text: clean, order: 0 },
+    { engine: 'native', text: clean, order: 1, editable: true },
+    { engine: 'js', text: clean, order: 2 },
+  ];
+  assert.equal(pickBest(tie).engine, 'native');
+  assert.equal(pickBest([...tie].reverse()).engine, 'native');
+  assert.equal(pickBest([{ engine: 'rust', text: clean, order: 0 }, { engine: 'native', text: broken, order: 1, editable: true }]).engine, 'rust');
+});

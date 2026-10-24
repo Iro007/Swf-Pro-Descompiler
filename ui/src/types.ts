@@ -53,12 +53,25 @@ export interface SuitePreview {
   width?:number;height?:number;frame?:number;frame_count?:number;ratio?:number;glyphs?:number;tag_index:number;name:string;revision:string;
 }
 
-/** Benchmarks (operations `bench_results` and `benchmark_tools`). */
+/**
+ * Benchmarks (operations `bench_results` and `benchmark_tools`). Runs written before schema 2 lack the optional fields
+ * (times, `comparable`, `flash_index`, rows): the interface says "sin datos en esta corrida" instead of inventing them.
+ */
 export interface BenchLine {
   engine:string;name:string;cases:number;source?:number;recompiles?:number;same_trace?:number;ok?:number;
-  jpexs_closeness?:number|null;jpexs_coverage?:number|null;reference?:boolean;reasons:string[];
+  jpexs_closeness?:number|null;jpexs_coverage?:number|null;reference?:boolean;reasons:string[];details?:string[];
+  median_seconds?:number|null;timed_cases?:number;comparable?:boolean;flash_index?:number|null;
+  units_total?:number|null;units_with_source?:number|null;unit_coverage?:number|null;
 }
-export interface BenchTable {unit:string;winner:string|null;note:string|null;engines:BenchLine[]}
-export interface BenchResults {run_id:string;mode:string;created_utc:string;seconds:number;corpus:string;cases:number;tables:Record<string,BenchTable>}
-export interface BenchData {runs:{run_id:string;mode:string;cases:number}[];results:BenchResults|null;folder:string}
+export interface BenchTable {unit:string;winner:string|null;note:string|null;corpus_cases?:number;engines:BenchLine[]}
+export interface BenchRow {
+  engine:string;family:string;case:string;reason:string;measured?:boolean;ok?:boolean|null;source?:boolean;
+  recompiles?:boolean|null;same_trace?:boolean|null;seconds?:number|null;language?:string;units_total?:number|null;units_with_source?:number|null;
+}
+export interface BenchResults {
+  schema_version?:number;run_id:string;mode:string;created_utc:string;seconds:number;corpus:string;cases:number;
+  oracle?:{runtime:string;runtime_sha256:string|null};tables:Record<string,BenchTable>;rows?:Record<string,BenchRow[]>;
+}
+export interface BenchRun {run_id:string;mode:string;cases:number;seconds?:number;created_utc?:string;categories?:string[];winner?:string|null}
+export interface BenchData {runs:BenchRun[];results:BenchResults|null;folder:string}
 export interface BenchmarkEngine {id:string;name:string;category:string;configured:boolean;operations:string[];setup_diagnostic?:string}

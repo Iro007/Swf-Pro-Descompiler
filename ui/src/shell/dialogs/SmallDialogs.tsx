@@ -3,7 +3,7 @@ import Dialog from '../../components/Dialog';
 import SuiteBenchmarks from '../../components/SuiteBenchmarks';
 
 export function BenchmarksDialog({onClose}:{onClose:()=>void}){
-  return <Dialog title="Benchmarks" onClose={onClose} size="xl"><SuiteBenchmarks/></Dialog>;
+  return <Dialog title="Benchmarks" onClose={onClose} size="full"><SuiteBenchmarks/></Dialog>;
 }
 
 export function AboutDialog({onClose}:{onClose:()=>void}){

@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 from types import SimpleNamespace
 import sys
+import time
 
 import pytest
 
@@ -242,3 +243,17 @@ def test_new_program_bootstrap_admission_keeps_all_opcode_guards_and_original_sc
     script.traits.append(SimpleNamespace(kind_flags=0))
     with pytest.raises(ValueError, match="non-class package"):
         runner.prove_declaration_bootstraps(suite, [])
+
+
+def test_timed_adds_up_what_the_engine_spent_even_when_a_call_fails():
+    record = {"timing": {"source_seconds": None}}
+    assert runner.timed(record, lambda value: time.sleep(0.02) or value, 7) == 7
+    first = record["timing"]["source_seconds"]
+    assert first >= 0.02
+
+    def refuses():
+        time.sleep(0.02)
+        raise ValueError("no source")
+    with pytest.raises(ValueError):
+        runner.timed(record, refuses)
+    assert record["timing"]["source_seconds"] >= first + 0.019, "the failed call counts too, and the total accumulates"

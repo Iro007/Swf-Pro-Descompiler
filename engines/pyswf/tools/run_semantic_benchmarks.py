@@ -457,6 +457,17 @@ def compile_shared_actions(data, documents, folder, engine):
             "mode": "Every original AVM1 action container recompiled from generated source; original non-code tags retained"}
 
 
+def timed(record, call, *args):
+    """Run call(*args), adding its wall time to the job's `timing.source_seconds`: what the engine spent producing
+    its source, from the SWF it is handed to its answer. Recompiling and the Ruffle runs are not part of it."""
+    started = time.perf_counter()
+    try:
+        return call(*args)
+    finally:
+        timing = record["timing"]
+        timing["source_seconds"] = round((timing["source_seconds"] or 0.0) + time.perf_counter() - started, 4)
+
+
 def evaluate_job(request):
     folder = Path(request["folder"])
     pins, engine, case, scenario = (request[key] for key in ("pins", "engine", "case", "scenario"))
@@ -472,7 +483,7 @@ def evaluate_job(request):
                          "source_fidelity": "not_verified",
                          "completeness_scope": "All generated project declarations/containers present; semantic fidelity is tested separately and bounded"},
               "compilations": [], "claims": {"semantic_parity": False, "superiority": False},
-              "provenance_sha256": digest(pins), "status": "not_run"}
+              "provenance_sha256": digest(pins), "status": "not_run", "timing": {"source_seconds": None}}
     source_pin = pins["source_tools"][engine]
     if source_pin.get("status") == "not_configured":
         return {**record, "status": "not_configured", "diagnostic": source_pin.get("diagnostic")}
@@ -486,22 +497,27 @@ def evaluate_job(request):
     suite = UniversalSuite(folder / "state", folder / "tools.json")
     suite.registry = registry
     try:
-        suite.open(original)
+        # PySWF's own parse is part of its time (the other engines parse inside their process); for the rest the
+        # suite opens the SWF only to list its units, which is not what they are timed on.
+        if engine == "native":
+            timed(record, suite.open, original)
+        else:
+            suite.open(original)
         response = None
         if engine == "rust":
             suite.registry.tools["rust"] = {"path": source_pin["path"], "sha256": source_pin["sha256"]}
         elif engine in ("js", "go", "asm"):
-            response = peer_output(engine, data, source_pin, folder)
+            response = timed(record, peer_output, engine, data, source_pin, folder)
         elif engine == "jpexs":
-            response = reference_output(data, source_pin, folder)
+            response = timed(record, reference_output, data, source_pin, folder)
         elif engine not in ("native", "rust"):
-            response = external_output(engine, data, source_pin, folder)
+            response = timed(record, external_output, engine, data, source_pin, folder)
         if engine in REFERENCE_ENGINES:
             return {**record, "status": response.get("status", "observed"), "disassembly": response,
                     "diagnostic": "Instruction listings are retained separately; no source compilation quality rank"}
         if case["language"] == "as3":
             if engine in ("native", "rust"):
-                documents = native_documents(suite, engine)
+                documents = timed(record, native_documents, suite, engine)
             else:
                 documents = [dict(unit) for unit in response.get("units", []) if unit.get("scope") in ("class", "script")]
                 for document in documents:
@@ -536,7 +552,7 @@ def evaluate_job(request):
         else:
             if engine == "flare":
                 from py_swf.flare_source import flare_complete_action_source
-                extracted = flare_complete_action_source(data, response)
+                extracted = timed(record, flare_complete_action_source, data, response)
                 write_json(folder / "flare-source-admission.json", extracted)
                 if extracted.get("status") != "complete_generated_actions":
                     record["source"].update(status=extracted.get("status", "unverified"), diagnostic=extracted.get("diagnostic"))
@@ -550,7 +566,7 @@ def evaluate_job(request):
                 complete = True
                 record["source"]["admission"] = {key: value for key, value in extracted.items() if key != "source"}
             else:
-                documents, complete = complete_as2_sources(suite, engine, response, data)
+                documents, complete = timed(record, complete_as2_sources, suite, engine, response, data)
             record["source"]["documents"] = save_documents(documents, folder)
             if not complete:
                 record["source"].update(status="not_supported", diagnostic="At least one enclosing AVM1 action has no complete generated source")

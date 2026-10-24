@@ -1,7 +1,7 @@
 import {ReactNode,useEffect,useId,useRef} from 'react';
 import {X} from 'lucide-react';
 
-type Size='sm'|'md'|'lg'|'xl';
+type Size='sm'|'md'|'lg'|'xl'|'full';
 
 /** Modal dialog on the native <dialog> element: focus is trapped and Escape closes it. */
 export default function Dialog({title,onClose,children,size='md',footer}:{title:string;onClose:()=>void;children:ReactNode;size?:Size;footer?:ReactNode}) {

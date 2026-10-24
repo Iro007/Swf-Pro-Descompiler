@@ -1,0 +1,593 @@
+/*
+ * Benchmarks window: sorted bar charts in the manner of an analysis site's leaderboards. Surfaces and ink come from the
+ * application's variables (index.css); --bench-1..8 are the categorical hues, one per engine in every chart. They are the
+ * validated palette (scripts/validate_palette.js, both themes, on the card surfaces --bg-raised): in the light theme orange,
+ * aqua, yellow and magenta fall under 3:1, which the labels at the tip of every bar and the table under the charts relieve.
+ */
+:root {
+  --bench-1: #3987e5;
+  --bench-2: #d95926;
+  --bench-3: #199e70;
+  --bench-4: #c98500;
+  --bench-5: #d55181;
+  --bench-6: #008300;
+  --bench-7: #9085e9;
+  --bench-8: #e66767;
+}
+:root[data-theme="light"] {
+  --bench-1: #2a78d6;
+  --bench-2: #eb6834;
+  --bench-3: #1baf7a;
+  --bench-4: #eda100;
+  --bench-5: #e87ba4;
+  --bench-6: #008300;
+  --bench-7: #6250d6;
+  --bench-8: #e34948;
+}
+
+.bench {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+  transition: opacity 0.15s;
+}
+.bench[data-loading="true"] {
+  opacity: 0.55;
+}
+.bench h3,
+.bench h4,
+.bench p,
+.bench figure,
+.bench ul {
+  margin: 0;
+}
+.bench ul {
+  padding: 0;
+}
+.bench-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* header */
+.bench-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 28px;
+}
+.bench-title {
+  font-size: 24px;
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+.bench-lead {
+  margin-top: 5px;
+  max-width: 78ch;
+  color: var(--fg-dim);
+  line-height: 1.55;
+}
+.bench-run {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: min(100%, 300px);
+  font-size: 12px;
+  color: var(--fg-dim);
+}
+.bench-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  list-style: none;
+}
+.bench-chip {
+  padding: 3px 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--bg-raised);
+  color: var(--fg-dim);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.bench-chip b {
+  color: var(--fg);
+  font-weight: 600;
+}
+
+/* highlight cards */
+.bench-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
+  gap: 12px;
+  list-style: none;
+}
+.bench-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 14px 16px 15px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg-raised);
+  min-width: 0;
+}
+.bench-stat[data-empty="true"] .bench-stat-value {
+  color: var(--fg-dim);
+}
+.bench-stat-label {
+  color: var(--fg-dim);
+  font-size: 12px;
+  font-weight: 600;
+}
+.bench-stat-value {
+  font-size: 30px;
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.bench-stat-engine {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.bench-stat-sub {
+  color: var(--fg-dim);
+  font-size: 12px;
+  line-height: 1.45;
+}
+.bench-stat.tile {
+  border: 0;
+  padding: 0;
+  background: none;
+}
+
+/* sections and panels */
+.bench-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px 20px 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg-raised);
+  min-width: 0;
+}
+.bench-card .bench-panel {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+.bench-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  min-width: 0;
+}
+.bench-section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px 24px;
+}
+.bench-section-head h3 {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.bench-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr));
+  gap: 12px;
+}
+.bench-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px 13px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg-raised);
+  min-width: 0;
+}
+.bench-panel.wide {
+  grid-column: 1 / -1;
+}
+.bench-panel.tile-panel {
+  max-width: 520px;
+}
+/* Two columns wide where the grid has at least two (below that, one column would grow an implicit second). */
+@media (min-width: 840px) {
+  .bench-panel.span2 {
+    grid-column: span 2;
+  }
+}
+.bench-panel-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.bench-panel-head h4 {
+  font-size: 14px;
+  font-weight: 650;
+}
+.bench-tag {
+  color: var(--fg-dim);
+  font-size: 11px;
+  white-space: nowrap;
+}
+.bench-note {
+  color: var(--fg-dim);
+  font-size: 11.5px;
+  line-height: 1.55;
+}
+.bench-empty {
+  padding: 22px 8px;
+  text-align: center;
+  color: var(--fg-dim);
+  border: 1px dashed var(--line-strong);
+  border-radius: 8px;
+}
+.bench-unmeasured {
+  color: var(--fg-dim);
+  font-size: 12px;
+  line-height: 1.55;
+}
+.bench-how {
+  color: var(--fg-dim);
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+.bench-how > p,
+.bench-how > ul {
+  margin-top: 8px;
+}
+.bench-how ul {
+  padding-left: 18px;
+}
+.bench-how strong {
+  color: var(--fg);
+}
+.bench-details > summary,
+.bench-how > summary {
+  cursor: pointer;
+  width: fit-content;
+  color: var(--accent);
+  font-weight: 600;
+  list-style: none;
+}
+.bench-details > summary::-webkit-details-marker,
+.bench-how > summary::-webkit-details-marker {
+  display: none;
+}
+.bench-details > summary::before,
+.bench-how > summary::before {
+  content: "▸";
+  display: inline-block;
+  width: 14px;
+  transition: transform 0.12s;
+}
+.bench-details[open] > summary::before,
+.bench-how[open] > summary::before {
+  transform: rotate(90deg);
+}
+.bench-details > .table-scroll {
+  margin-top: 8px;
+}
+.bench-details > p,
+.bench-details > div:not(.table-scroll) {
+  margin-top: 8px;
+}
+
+/* the colour key */
+.bench-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  list-style: none;
+}
+.bench-legend button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 2px 10px 2px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  font-size: 12px;
+}
+.bench-legend button:hover,
+.bench-legend button[aria-pressed="true"] {
+  background: var(--bg-hover);
+  border-color: var(--line-strong);
+}
+.bench-legend small {
+  color: var(--fg-dim);
+  font-size: 11px;
+}
+.bench-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 6px;
+  border-radius: 50%;
+  flex: none;
+}
+.bench-legend .bench-dot,
+.bench-stat-engine .bench-dot {
+  margin-right: 0;
+}
+.bench-dot.s1 { background: var(--bench-1); }
+.bench-dot.s2 { background: var(--bench-2); }
+.bench-dot.s3 { background: var(--bench-3); }
+.bench-dot.s4 { background: var(--bench-4); }
+.bench-dot.s5 { background: var(--bench-5); }
+.bench-dot.s6 { background: var(--bench-6); }
+.bench-dot.s7 { background: var(--bench-7); }
+.bench-dot.s8 { background: var(--bench-8); }
+
+/* charts */
+.bench-chart {
+  position: relative;
+  min-width: 0;
+}
+.bench-chart svg {
+  display: block;
+  max-width: 100%;
+  overflow: visible;
+}
+.bench-chart text {
+  font-family: var(--sans);
+}
+.bc-grid {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+.bc-base {
+  stroke: var(--line-strong);
+  stroke-width: 1;
+}
+.bc-tick,
+.bc-axis,
+.bc-divider,
+.bc-none {
+  fill: var(--fg-dim);
+  font-size: 11px;
+}
+.bc-tick {
+  font-variant-numeric: tabular-nums;
+}
+.bc-none {
+  font-size: 12px;
+  font-style: italic;
+}
+.bc-name {
+  fill: var(--fg);
+  font-size: 12.5px;
+}
+.bc-name .tag {
+  fill: var(--fg-dim);
+  font-size: 11px;
+}
+.bc-sub {
+  fill: var(--fg-dim);
+  font-size: 10.5px;
+}
+.bc-value {
+  fill: var(--fg);
+  font-size: 12.5px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+.bc-rank {
+  fill: var(--fg-dim);
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+}
+.bc-row {
+  outline: none;
+  transition: opacity 0.12s;
+}
+.bc-hit {
+  fill: transparent;
+}
+.bc-row:hover .bc-hit {
+  fill: var(--bg-hover);
+  opacity: 0.6;
+}
+.bc-ring {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  opacity: 0;
+}
+.bc-row:focus-visible .bc-ring {
+  opacity: 1;
+}
+.bc-row.muted .bc-bar {
+  opacity: 0.45;
+}
+.bc-row.muted .bc-name,
+.bc-row.muted .bc-value {
+  fill: var(--fg-dim);
+}
+.bc-row.dim {
+  opacity: 0.3;
+}
+.bc-bar.s1 { fill: var(--bench-1); }
+.bc-bar.s2 { fill: var(--bench-2); }
+.bc-bar.s3 { fill: var(--bench-3); }
+.bc-bar.s4 { fill: var(--bench-4); }
+.bc-bar.s5 { fill: var(--bench-5); }
+.bc-bar.s6 { fill: var(--bench-6); }
+.bc-bar.s7 { fill: var(--bench-7); }
+.bc-bar.s8 { fill: var(--bench-8); }
+.hatch-bg {
+  fill: var(--bg-hover);
+}
+.hatch-line {
+  stroke: var(--fg-dim);
+  stroke-width: 2.4;
+}
+.hatch-line.s1 { stroke: var(--bench-1); }
+.hatch-line.s2 { stroke: var(--bench-2); }
+.hatch-line.s3 { stroke: var(--bench-3); }
+.hatch-line.s4 { stroke: var(--bench-4); }
+.hatch-line.s5 { stroke: var(--bench-5); }
+.hatch-line.s6 { stroke: var(--bench-6); }
+.hatch-line.s7 { stroke: var(--bench-7); }
+.hatch-line.s8 { stroke: var(--bench-8); }
+
+/* scatter */
+.sc-dot {
+  outline: none;
+  pointer-events: none;
+  transition: opacity 0.12s;
+}
+.sc-dot.dim {
+  opacity: 0.3;
+}
+.sc-halo {
+  fill: transparent;
+}
+.sc-dot:focus-visible .sc-halo {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+.sc-mark {
+  stroke: var(--bg-raised);
+  stroke-width: 2;
+}
+.sc-mark.s1 { fill: var(--bench-1); }
+.sc-mark.s2 { fill: var(--bench-2); }
+.sc-mark.s3 { fill: var(--bench-3); }
+.sc-mark.s4 { fill: var(--bench-4); }
+.sc-mark.s5 { fill: var(--bench-5); }
+.sc-mark.s6 { fill: var(--bench-6); }
+.sc-mark.s7 { fill: var(--bench-7); }
+.sc-mark.s8 { fill: var(--bench-8); }
+.sc-mark.hollow {
+  fill: var(--bg-raised);
+  stroke-width: 2.5;
+}
+.sc-mark.hollow.s1 { stroke: var(--bench-1); }
+.sc-mark.hollow.s2 { stroke: var(--bench-2); }
+.sc-mark.hollow.s3 { stroke: var(--bench-3); }
+.sc-mark.hollow.s4 { stroke: var(--bench-4); }
+.sc-mark.hollow.s5 { stroke: var(--bench-5); }
+.sc-mark.hollow.s6 { stroke: var(--bench-6); }
+.sc-mark.hollow.s7 { stroke: var(--bench-7); }
+.sc-mark.hollow.s8 { stroke: var(--bench-8); }
+.sc-ref {
+  fill: var(--fg-dim);
+  stroke: var(--bg-raised);
+  stroke-width: 2;
+}
+.sc-ref.s1 { fill: var(--bench-1); }
+.sc-ref.s2 { fill: var(--bench-2); }
+.sc-ref.s3 { fill: var(--bench-3); }
+.sc-ref.s4 { fill: var(--bench-4); }
+.sc-ref.s5 { fill: var(--bench-5); }
+.sc-ref.s6 { fill: var(--bench-6); }
+.sc-ref.s7 { fill: var(--bench-7); }
+.sc-ref.s8 { fill: var(--bench-8); }
+.sc-label {
+  fill: var(--fg);
+  font-size: 12px;
+}
+.sc-dot.muted .sc-label {
+  fill: var(--fg-dim);
+}
+
+/* tooltip */
+.bench-tip {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  width: max-content;
+  max-width: 240px;
+  padding: 8px 11px 9px;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: var(--bg-panel);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  font-size: 12px;
+  line-height: 1.45;
+  pointer-events: none;
+}
+.bench-tip .v {
+  font-size: 15px;
+  font-weight: 700;
+}
+.bench-tip .t {
+  color: var(--fg-dim);
+}
+.bench-tip .l {
+  margin-top: 2px;
+  color: var(--fg-dim);
+  font-size: 11.5px;
+}
+
+/* table */
+.table-scroll {
+  overflow-x: auto;
+}
+.bench-table td,
+.bench-table th {
+  text-align: right;
+  white-space: nowrap;
+}
+.bench-table td {
+  font-variant-numeric: tabular-nums;
+}
+.bench-table td:first-child,
+.bench-table th:first-child {
+  text-align: left;
+}
+.bench-table td.best {
+  font-weight: 700;
+  color: var(--accent);
+}
+.bench-table .badge {
+  margin-left: 8px;
+}
+.reasons {
+  margin: 4px 0 10px 18px;
+  padding: 0;
+  color: var(--fg-dim);
+  font-size: 12px;
+}
+.reasons li {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 520px) {
+  .bench-title {
+    font-size: 20px;
+  }
+  .bench-card {
+    padding: 14px 12px 12px;
+  }
+  .bench-panel {
+    padding: 12px 10px 11px;
+  }
+  .bench-stat-value {
+    font-size: 26px;
+  }
+}

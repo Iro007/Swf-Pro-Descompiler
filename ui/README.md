@@ -6,6 +6,7 @@ Una sola ventana con el aspecto de JPEXS (`src/shell/`): menú, barra de herrami
 
 - `shell/MainWindow.tsx` reúne menú, árbol, panel y diálogos alrededor de un único documento. `useSession.ts` guarda ese documento (estado de la suite, árbol, catálogo de motores, borradores) y serializa las operaciones que lo modifican.
 - `shell/TagTree.tsx` (árbol virtualizado con filtro y teclado), `DisplayPanel.tsx` (elige la tarjeta según el nodo), `ScriptPanel.tsx` (fuente | P-code con CodeMirror 6), `PreviewPanel.tsx`, `HexPanel.tsx`, `HeaderPanel.tsx`, `TagInfoPanel.tsx` + `ResourceEditor.tsx`, `SourceFilePanel.tsx`, `StatusBar.tsx` y `dialogs/` (compilar, exportar, motores, benchmarks, ensamblado ABC).
+- `components/SuiteBenchmarks.tsx` y `components/bench/` son la ventana Benchmarks, una clasificación al estilo de un sitio de análisis: `model.ts` calcula todo lo que se dibuja a partir de `bench_results` (métricas, orden, qué motores se pueden ordenar juntos, tarjetas), `BarChart.tsx` y `ScatterChart.tsx` dibujan SVG propio a su tamaño real, `Sections.tsx` compone las secciones y `bench.css` trae los 8 colores categóricos (uno por motor, validados en claro y oscuro).
 - `api.ts` es el único módulo que habla con el anfitrión de escritorio, Electron (`window.flash` del preload: operaciones de la suite, selectores de archivo, arranque, arrastrar y soltar). El resto de la interfaz no importa nada del anfitrión: cambiar de anfitrión es reescribir ese archivo.
 - `displayNames.ts` cambia únicamente los nombres de presentación: los identificadores `rust`, `python` y `native` permanecen en el protocolo, las campañas y los proyectos existentes.
 
@@ -21,6 +22,7 @@ Los colores salen de variables en `index.css`; `data-theme` (`light`/`dark`) la 
 
 - `npm run lint` (TypeScript) y `npm run build`.
 - `tests/verify-suite-ui.py`: contrato de la ventana con un anfitrión simulado (Playwright; sirve la compilación con `npm run preview -- --port 4174`).
+- `tests/capture-bench.py`: capturas de la ventana Benchmarks en la aplicación Electron real (claro y oscuro, ancha y estrecha, con información emergente y con la tabla abierta) en `reports/ui-bench/`.
 - `tests/verify-suite-native-ui.py`: aplicación Electron con el worker real a través del puerto de depuración (`--remote-debugging-port`; requiere la aplicación empaquetada o `npm start --prefix desktop`; no se ejecuta en esta campaña).
 
 La edición de fuentes aportadas y la reconstrucción desde SWF son capacidades distintas: un proyecto Haxe conserva sus `.hx` originales y el visor no promete recuperarlos desde bytecode. Los tipos de recursos sin edición compatible mantienen sus bytes y diagnósticos. La vista de contornos limita el dibujo a 3000 puntos; el índice permite editar cualquiera de los puntos que entrega el backend.

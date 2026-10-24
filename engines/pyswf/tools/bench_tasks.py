@@ -1,6 +1,7 @@
 """One task per benchmark category other than decompilers. Each returns rows of
-the same shape: {engine, family, case, ok, detail, reason}. ok is True/False, or
-None when the task does not apply (the reason says why).
+the same shape: {engine, family, case, ok, detail, reason, seconds}. ok is True/False, or
+None when the task does not apply (the reason says why). seconds is the time of the tool's
+own step (not of the Ruffle check that judges it), None when the tool did not finish.
 
 compilers      compile the family's own source; Ruffle must print the expected trace
 disassemblers  disassemble -> assemble -> Ruffle prints the original's trace
@@ -12,6 +13,7 @@ from __future__ import annotations
 import re
 import shutil
 import tempfile
+import time
 from pathlib import Path
 
 from py_swf.benchmark_engines import checked_tool
@@ -22,8 +24,9 @@ from py_swf.validation import validate_swf_bytes
 from run_semantic_benchmarks import runtime_check
 
 
-def row(engine, family, case, ok=None, detail="", reason=""):
-    return {"engine": engine, "family": family, "case": case, "ok": ok, "detail": detail, "reason": reason}
+def row(engine, family, case, ok=None, detail="", reason="", seconds=None):
+    return {"engine": engine, "family": family, "case": case, "ok": ok, "detail": detail, "reason": reason,
+            "seconds": None if seconds is None else round(seconds, 3)}
 
 
 def tool(name, ctx):
@@ -61,16 +64,18 @@ def converters(case, original, ctx):
     with tempfile.TemporaryDirectory(prefix="fs-swfmill-") as folder:
         folder = Path(folder)
         (folder / "in.swf").write_bytes(data)
+        started = time.perf_counter()
         try:
             run_tool([str(executable), "swf2xml", "in.swf", "m.xml"], cwd=folder, timeout=60)
             run_tool([str(executable), "xml2swf", "m.xml", "out.swf"], cwd=folder, timeout=60)
             rebuilt = (folder / "out.swf").read_bytes()
         except (ValueError, OSError) as error:
             return [row("swfmill", case["family_id"], case["relative"], False, reason=str(error).splitlines()[0][:200])]
+        seconds = time.perf_counter() - started
     units, _ = xml_roundtrip(str(executable), data)
     same = sum(unit["generation"] == "available" for unit in units)
     ok, reason = same_trace(original, rebuilt, case, ctx)
-    return [row("swfmill", case["family_id"], case["relative"], ok, "%d/%d tags idénticos" % (same, len(units)), reason)]
+    return [row("swfmill", case["family_id"], case["relative"], ok, "%d/%d tags idénticos" % (same, len(units)), reason, seconds)]
 
 
 # --- extractors -------------------------------------------------------------
@@ -79,12 +84,14 @@ def extractors(case, original, ctx):
     executable, why = tool("swfextract", ctx)
     if not executable:
         return [row("swfextract", case["family_id"], case["relative"], reason=why)]
+    started = time.perf_counter()
     units, _ = extract(str(executable), original.read_bytes())
+    seconds = time.perf_counter() - started
     if not units:
         return [row("swfextract", case["family_id"], case["relative"], reason="el SWF no contiene recursos extraíbles")]
     valid = sum(unit["generation"] == "available" for unit in units)
     reasons = sorted({unit["diagnostic"] for unit in units if unit.get("diagnostic")})
-    return [row("swfextract", case["family_id"], case["relative"], valid == len(units), "%d/%d" % (valid, len(units)), "; ".join(reasons)[:200])]
+    return [row("swfextract", case["family_id"], case["relative"], valid == len(units), "%d/%d" % (valid, len(units)), "; ".join(reasons)[:200], seconds)]
 
 
 # --- disassemblers: round trip ---------------------------------------------
@@ -144,12 +151,14 @@ def disassemblers(case, original, ctx):
         if not executable:
             rows.append(row(name, family, relative, reason=why))
             continue
+        started = time.perf_counter()
         rebuilt, reason = task(executable, original, data, case, ctx)
+        seconds = time.perf_counter() - started
         if rebuilt is None:
             rows.append(row(name, family, relative, False, reason=reason))
             continue
         ok, reason = same_trace(original, rebuilt, case, ctx)
-        rows.append(row(name, family, relative, ok, reason=reason))
+        rows.append(row(name, family, relative, ok, reason=reason, seconds=seconds))
     for name in ("flex_swfdump", "pyflashkit", "native", "rust", "js", "go", "asm"):
         rows.append(row(name, family, relative, reason="lista pero no reensambla: no hay ida y vuelta"))
     return rows
@@ -164,12 +173,12 @@ def compilers(family, project, ctx):
     case = {"expected_trace": family["expected_trace"]}
     original = ctx["original_of"](family["family_id"])
 
-    def done(name, built, reason=""):
+    def done(name, built, reason="", seconds=None):
         if built is None:
             rows.append(row(name, family["family_id"], family["entry"], False, reason=reason))
         else:
             ok, why = same_trace(original, built, case, ctx)
-            rows.append(row(name, family["family_id"], family["entry"], ok, reason=why))
+            rows.append(row(name, family["family_id"], family["entry"], ok, reason=why, seconds=seconds))
 
     def skip(name, reason):
         rows.append(row(name, family["family_id"], family["entry"], reason=reason))
@@ -180,9 +189,10 @@ def compilers(family, project, ctx):
         out = Path(folder) / "out.swf"
 
         def run(command, env=None):
+            started = time.perf_counter()
             try:
                 run_tool(command, cwd=folder, env=env, timeout=110)
-                return out.read_bytes(), ""
+                return out.read_bytes(), "", time.perf_counter() - started
             except (ValueError, OSError) as error:
                 return None, str(error).splitlines()[0][:200]
 
@@ -222,13 +232,15 @@ def compilers(family, project, ctx):
         if family["language"] == "as3" and suffix == ".as":
             try:
                 from py_swf.compiler.class_compiler import class_program_swf, compile_class_program
+                started = time.perf_counter()
                 sources = {p.relative_to(project).as_posix(): p.read_text(encoding="utf-8") for p in project.rglob("*.as")
                            if "builds" not in p.relative_to(project).parts and p != entry}
                 compiled = compile_class_program(entry.read_text(encoding="utf-8"), sources=sources)
                 main = next((n for n in compiled.class_names if n.rsplit(".", 1)[-1] == entry.stem), None)
                 if main is None:
                     raise ValueError("sin clase principal " + entry.stem)
-                done("native", class_program_swf(compiled, document_class=main))
+                built = class_program_swf(compiled, document_class=main)
+                done("native", built, "", time.perf_counter() - started)
             except Exception as error:  # the native compiler rejects what it cannot handle
                 done("native", None, str(error).splitlines()[0][:200] if str(error) else type(error).__name__)
         else:

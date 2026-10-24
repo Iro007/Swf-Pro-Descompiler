@@ -1,61 +1,75 @@
-import {useEffect,useState} from 'react';
+import {useEffect,useId,useMemo,useState} from 'react';
 import * as api from '../api';
-import {BenchData,BenchLine,BenchmarkEngine} from '../types';
-import {displayEngineName} from '../displayNames';
-import {percentText,problem} from '../shell/util';
+import {BenchData,BenchResults,BenchmarkEngine} from '../types';
+import {problem} from '../shell/util';
+import Highlights from './bench/Highlights';
+import {CategorySection,DecompilersSection,IndexSection} from './bench/Sections';
+import {categoryOrder,dateLabel,highlights,modeLabel,runIdToIso,runLabel} from './bench/model';
+import {FocusContext} from './bench/shared';
+import './bench/bench.css';
 
-const categories:Record<string,string>={decompilers:'Descompiladores',compilers:'Compiladores',disassemblers:'Desensambladores',converters:'Conversores XML',extractors:'Extractores'};
-const engineName=(engine:string)=>displayEngineName(engine==='native'?'python':engine);
-
-/** Behaviour counts per engine plus, for decompilers, how close its text is to JPEXS and how many JPEXS units it also emits. */
-export function DecompilerRow({line,best}:{line:BenchLine;best:boolean}){
-  return <tr>
-    <td className={best?'best':''}>{engineName(line.engine)}{line.reference?<span className="badge" title="JPEXS actúa de referencia: vale 100 % por definición">referencia</span>:null}</td>
-    <td>{line.cases}</td><td>{line.source}</td><td>{line.recompiles}</td>
-    <td className={best?'best':''}>{line.same_trace}</td>
-    <td data-testid={`closeness-${line.engine}`}>{percentText(line.jpexs_closeness)}</td>
-    <td data-testid={`coverage-${line.engine}`}>{percentText(line.jpexs_coverage)}</td>
-  </tr>;
+/** What identifies a run: when, how, on what, and the Ruffle build that judged it. */
+function RunFacts({results}:{results:BenchResults}){
+  const sha=results.oracle?.runtime_sha256;
+  const when=dateLabel(results.created_utc??runIdToIso(results.run_id));
+  return <ul className="bench-meta" aria-label="Datos de la ejecución">
+    <li className="bench-chip"><b>{modeLabel(results.mode)}</b></li>
+    {when?<li className="bench-chip">{when}</li>:null}
+    <li className="bench-chip">Corpus <b>{results.corpus}</b></li>
+    <li className="bench-chip"><b>{results.cases}</b> casos</li>
+    <li className="bench-chip"><b>{results.seconds}</b> s en total</li>
+    {results.oracle?<li className="bench-chip" title={sha?`SHA-256 ${sha}`:undefined}>Oráculo Ruffle <b>{results.oracle.runtime}</b>{sha?` · ${sha.slice(0,10)}`:''}</li>:null}
+    <li className="bench-chip" title={(results.schema_version??1)<2?'Corrida anterior a la medición de tiempos: los gráficos de velocidad quedan sin datos.':'Esquema con tiempos por caso'}>Esquema <b>{results.schema_version??1}</b></li>
+  </ul>;
 }
 
+/**
+ * The Benchmarks window: a leaderboard in the manner of an analysis site. Highlights, the Índice Flash, then one section per
+ * category with a chart for every metric, the scatter of closeness against speed and, behind a toggle, the full table.
+ */
 export default function SuiteBenchmarks(){
   const [bench,setBench]=useState<BenchData|null>(null);
   const [engines,setEngines]=useState<BenchmarkEngine[]>([]);
   const [error,setError]=useState('');
-  const load=(run?:string)=>api.suiteRpc<BenchData>('bench_results',run?{run}:{}).then(value=>{setBench(value);setError('');}).catch(failure=>setError(problem(failure)));
+  const [loading,setLoading]=useState(false);
+  const [hover,setHover]=useState<string|null>(null);
+  const [pinned,setPinned]=useState<string|null>(null);
+  const runField=useId();
+  const load=(run?:string)=>{
+    setLoading(true);
+    return api.suiteRpc<BenchData>('bench_results',run?{run}:{}).then(value=>{setBench(value);setError('');}).catch(failure=>setError(problem(failure))).finally(()=>setLoading(false));
+  };
   useEffect(()=>{
     if(!api.native)return;
     void load();
     void api.suiteRpc<{engines:BenchmarkEngine[]}>('benchmark_tools').then(result=>setEngines(result.engines)).catch(()=>undefined);
   },[]);
   const results=bench?.results??null;
+  useEffect(()=>setHover(null),[results]);
+  const cards=useMemo(()=>results?highlights(results):[],[results]);
   const missing=engines.filter(item=>!item.configured);
-  return <div className="bench">
-    <p className="panel-muted">¿Lo que genera cada descompilador se vuelve a compilar y se comporta igual en Ruffle? Si la diferencia es menor que el ruido no se declara ganador.</p>
-    {error?<p className="panel-error" role="alert">{error}</p>:null}
-    {!api.native?<p className="panel-muted">Los resultados requieren la aplicación de escritorio y sus motores locales.</p>:null}
-    {!results?<p className="panel-muted">Aún no hay resultados. Ejecuta <code>.\medir-codigo.ps1</code> (modo rápido) o <code>.\medir-codigo.ps1 -Completo</code>.</p>:<>
-      {bench!.runs.length>1?<label className="field"><span>Ejecución</span>
-        <select value={results.run_id} onChange={event=>void load(event.target.value)}>{bench!.runs.map(item=><option key={item.run_id} value={item.run_id}>{item.run_id} · {item.mode} · {item.cases} casos</option>)}</select></label>:null}
-      <p className="panel-muted">{results.mode==='full'?'Completa':'Rápida'} · {results.cases} casos de {results.corpus} · {results.seconds} s</p>
-      {Object.entries(results.tables).map(([key,table])=><section key={key} className="card">
-        <h3>{categories[key]??key}</h3>
-        <p className="panel-muted small">{table.unit}</p>
-        <div className="table-scroll"><table className="data-table bench-table">
-          {key==='decompilers'
-            ?<thead><tr><th scope="col">Motor</th><th scope="col">Casos</th><th scope="col">Genera fuente</th><th scope="col">Recompila</th><th scope="col">Misma traza</th><th scope="col" title="Similitud media del texto generado con el de JPEXS, unidad por unidad">% cerca de JPEXS</th><th scope="col" title="Fracción de las unidades de JPEXS que el motor también emitió">% de unidades de JPEXS</th></tr></thead>
-            :<thead><tr><th scope="col">Motor</th><th scope="col">Casos</th><th scope="col">Correctos</th></tr></thead>}
-          <tbody>{table.engines.map(line=>{
-            const best=line.engine===table.winner;
-            return key==='decompilers'?<DecompilerRow key={line.engine} line={line} best={best}/>
-              :<tr key={line.engine}><td className={best?'best':''}>{engineName(line.engine)}</td><td>{line.cases}</td><td className={best?'best':''}>{line.cases?line.ok:'—'}</td></tr>;
-          })}</tbody>
-        </table></div>
-        {table.engines.filter(line=>line.reasons?.length).map(line=><div key={line.engine}><strong>{engineName(line.engine)}</strong><ul className="reasons">{line.reasons.map(reason=><li key={reason}>{reason}</li>)}</ul></div>)}
-        {key==='decompilers'?<p className="panel-muted small">Las dos últimas columnas miden parecido con JPEXS, que actúa de referencia; no miden corrección. El ganador se decide solo por comportamiento (recompila y misma traza en Ruffle). «—» indica que no hay medida: JPEXS no estaba disponible o ninguna unidad verificada coincide.</p>:null}
-        <p className="panel-muted small">{table.winner?`Mejor: ${engineName(table.winner)}`:table.note}</p>
-      </section>)}
-    </>}
-    {missing.length?<section className="card"><h3>Sin medir</h3><ul className="reasons">{missing.map(item=><li key={item.id}><strong>{item.name}</strong> · {item.setup_diagnostic??'sin configurar en este equipo'}</li>)}</ul></section>:null}
-  </div>;
+  const categories=results?[...categoryOrder.filter(key=>key in results.tables),...Object.keys(results.tables).filter(key=>!categoryOrder.includes(key))]:[];
+  const focus={engine:hover??pinned,set:setHover,pinned,pin:setPinned};
+  return <FocusContext.Provider value={focus}>
+    <div className="bench" aria-busy={loading||undefined} data-loading={loading?'true':undefined} onPointerLeave={()=>setHover(null)}>
+      {error?<p className="panel-error" role="alert">{error}</p>:null}
+      {!api.native?<p className="panel-muted">Los resultados requieren la aplicación de escritorio y sus motores locales.</p>:null}
+      {!results?<p className="panel-muted">Aún no hay resultados. Ejecuta <code>.\medir-codigo.ps1</code> (modo rápido) o <code>.\medir-codigo.ps1 -Completo</code>.</p>:<>
+        <header className="bench-head">
+          <div>
+            <h3 className="bench-title">Clasificación de motores</h3>
+            <p className="bench-lead">¿Lo que genera cada motor se vuelve a compilar y se comporta igual en Ruffle? Mismo corpus y mismo oráculo para todos; los motores que no se midieron sobre los mismos casos no se ordenan entre sí.</p>
+          </div>
+          <div className="bench-run"><label htmlFor={runField}>Ejecución</label>
+            <select id={runField} value={results.run_id} onChange={event=>void load(event.target.value)}>{bench!.runs.map(run=><option key={run.run_id} value={run.run_id}>{runLabel(run)}</option>)}</select></div>
+        </header>
+        <RunFacts results={results}/>
+        <Highlights cards={cards}/>
+        <IndexSection results={results}/>
+        {categories.map(key=>key==='decompilers'?<DecompilersSection key={key} results={results}/>:<CategorySection key={key} category={key} results={results}/>)}
+      </>}
+      {missing.length?<section className="bench-section"><header className="bench-section-head"><div><h3>Sin medir en este equipo</h3></div></header>
+        <ul className="reasons">{missing.map(item=><li key={item.id}><strong>{item.name}</strong> · {item.setup_diagnostic??'sin configurar en este equipo'}</li>)}</ul></section>:null}
+    </div>
+  </FocusContext.Provider>;
 }

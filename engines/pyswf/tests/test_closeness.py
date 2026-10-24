@@ -61,6 +61,25 @@ def test_scope_must_match_and_nothing_to_compare_gives_none(monkeypatch):
     assert empty["coverage"] is None and empty["weighted"] is None
 
 
+def test_the_units_of_the_swf_that_can_be_documents_are_counted_without_any_reference_decompiler(monkeypatch):
+    fake_inventory(monkeypatch, [("c0", "class", "h0"), ("s0", "script", "hs"), ("a0", "action", "ha"), ("m0", "method", "hm")])
+    canonical = closeness.canonical_units(b"")
+    assert set(canonical) == {("c0", "class"), ("s0", "script"), ("a0", "action"), ("m0", "method")}
+    engine = [unit("c0", "h0", A), unit("s0", "WRONG", A, scope="script"), unit("a0", "ha", None, scope="action"), unit("zz", "hz", A)]
+    assert closeness.inventory_coverage(engine, canonical) == {"units": 3, "with_source": 1}, "methods are inside their class, a wrong hash or no source is not a unit"
+    assert closeness.inventory_coverage([], canonical) == {"units": 3, "with_source": 0}
+
+
+def test_compare_can_reuse_the_units_of_the_swf_instead_of_building_the_inventory_again(monkeypatch):
+    fake_inventory(monkeypatch, [("c0", "class", "h0")])
+    canonical = closeness.canonical_units(b"")
+
+    def refuse(data):
+        raise AssertionError("the inventory was built a second time")
+    monkeypatch.setattr(closeness, "build_inventory", refuse)
+    assert compare([unit("c0", "h0", A)], [unit("c0", "h0", A)], b"", canonical)["closeness"] == 1.0
+
+
 def test_documents_without_a_hash_are_verified_by_the_methods_they_own(monkeypatch):
     fake_inventory(monkeypatch, [("tag:3/class:0", "class", "h")])
     reference = [unit("tag:3/class:0", "h", A)]

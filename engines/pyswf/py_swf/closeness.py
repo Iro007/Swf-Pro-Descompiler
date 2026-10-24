@@ -3,6 +3,10 @@
 This measures textual similarity per verified unit plus how many of the reference's
 units the engine also produced. It says nothing about correctness: behavior is judged
 elsewhere (recompile and compare the Ruffle trace).
+
+It also counts how many of the SWF's own code units (its ABC/action inventory, no
+decompiler involved) an engine emitted verified source for: a figure every engine,
+JPEXS included, is judged on equally.
 """
 from __future__ import annotations
 
@@ -83,15 +87,33 @@ def _verified(units, canonical):
     return good, bad
 
 
-def compare(engine_units, reference_units, data):
-    inventory = build_inventory(data)
+# What a decompiler emits as a document; methods and nested functions travel inside their class or action.
+DOCUMENT_SCOPES = ("class", "script", "action")
+
+
+def canonical_units(data):
+    """The code units of the SWF, keyed by (document_id, scope), from its own inventory."""
     canonical = {}
-    for u in inventory["units"]:
+    for u in build_inventory(data)["units"]:
         if u.get("identity_status") == "diagnostic":
             continue
         prefix = u["document_id"].rsplit("/", 1)[0]
         methods = {"%s/method:%d" % (prefix, i) for i in (u.get("context") or {}).get("method_indices", [])}
         canonical[(u["document_id"], u["scope"])] = {"sha": u["bytecode_sha256"], "methods": methods}
+    return canonical
+
+
+def inventory_coverage(engine_units, canonical):
+    """Of the units of the SWF that can be a document (classes, scripts and actions), how many the engine
+    emitted verified source for. The units come from the SWF's inventory, never from another decompiler."""
+    documents = {key: known for key, known in canonical.items() if key[1] in DOCUMENT_SCOPES}
+    emitted, _ = _verified(engine_units, documents)
+    return {"units": len(documents), "with_source": len(emitted)}
+
+
+def compare(engine_units, reference_units, data, canonical=None):
+    if canonical is None:
+        canonical = canonical_units(data)
     engine, engine_bad = _verified(engine_units, canonical)
     reference, reference_bad = _verified(reference_units, canonical)
     per_unit = []

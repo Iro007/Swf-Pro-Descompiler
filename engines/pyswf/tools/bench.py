@@ -6,11 +6,19 @@ one index.json listing the runs. Every cell that is not a number says why.
     python tools/bench.py --smoke      # one case per development family, ~minutes
     python tools/bench.py --full       # every development and validation case
 
-Decompilers only for now: each engine decompiles the original SWF, the emitted
-source is recompiled by an independent compiler (Flex for AS3, Rascal for AS2)
-and Ruffle must print the same trace as the original. The per-job machinery is
-shared with run_semantic_benchmarks.py (its --worker mode); this file only
-chooses the jobs, keeps the verdicts and drops the heavy evidence.
+Decompilers: each engine decompiles the original SWF, the emitted source is
+recompiled by an independent compiler (Flex for AS3, Rascal for AS2) and Ruffle
+must print the same trace as the original. The per-job machinery is shared with
+run_semantic_benchmarks.py (its --worker mode); this file only chooses the jobs,
+keeps the verdicts and drops the heavy evidence. The other categories (compilers,
+disassemblers, converters, extractors) are tasks in bench_tasks.py.
+
+Schema 2 also records the time each engine spent per case (`seconds`, median per
+engine), how many of the SWF's own units each decompiler emitted source for and
+which engines were measured on the same cases (`comparable`); the decompilers get
+the Índice Flash, JPEXS included. JPEXS runs once per case: that one job is its own
+row and the reference the closeness of the others is measured against.
+py_swf/bench_results.py holds the scoring and docs/BENCHMARKS_CODIGO.md defines it.
 """
 from __future__ import annotations
 
@@ -31,8 +39,9 @@ sys.path.insert(0, str(PROJECT / "tools"))
 from py_swf import paths
 WORKSPACE = paths.WORKSPACE
 
+from py_swf.bench_results import SCHEMA_VERSION, comparable_engines, flash_index, median_seconds, timed_cases
 from py_swf.benchmark_engines import ENGINES
-from py_swf.closeness import compare
+from py_swf.closeness import canonical_units, compare, inventory_coverage
 from py_swf.corpus import read_immutable_manifest
 from py_swf.suite_tools import fingerprint
 from run_ruffle_trace_probe import bounded_run
@@ -40,7 +49,6 @@ from py_swf.suite_tools import ToolRegistry
 from run_semantic_benchmarks import SOURCE_ENGINES, discover_pins, select_cases, write_json
 import bench_tasks
 
-SCHEMA_VERSION = 1
 OUT = WORKSPACE / "reports" / "bench"
 CORPUS = paths.CORPUS / "parity-20261014" / "optimized"
 RUNTIME = Path(os.environ.get("LOCALAPPDATA", Path.home())) / (
@@ -58,9 +66,14 @@ def settings(engines, job_timeout):
 
 
 def verdict(job):
-    """Collapse one finished job into the three facts the table counts, plus the reason."""
+    """Collapse one finished job into the three facts the table counts, plus the reason. `seconds` is what the engine
+    spent producing its source (None when it never finished); `measured` is False when it never ran on the case."""
     row = {"engine": job["engine"], "family": job["family_id"], "case": job["case_id"],
-           "language": job["language"], "source": False, "recompiles": None, "same_trace": None, "reason": ""}
+           "language": job["language"], "source": False, "recompiles": None, "same_trace": None, "reason": "",
+           "measured": job["status"] not in ("not_configured", "not_applicable"), "seconds": None}
+    seconds = (job.get("timing") or {}).get("source_seconds")
+    if seconds is not None:
+        row["seconds"] = round(seconds, 3)
     if job["status"] in ("not_configured", "not_applicable", "not_supported", "timeout", "failed"):
         text = job.get("diagnostic") or job.get("source", {}).get("diagnostic") or job["status"]
         row["reason"] = str(text).strip().splitlines()[-1][:240]
@@ -120,7 +133,14 @@ def documents_of(result):
     return units
 
 
-def closeness_row(engine_job, reference_job, data):
+def units_row(engine_job, canonical):
+    """The units of the SWF (its own ABC/action inventory, no decompiler involved) and how many of them the
+    engine emitted verified source for, even when its project was refused as a whole."""
+    found = inventory_coverage(documents_of(engine_job), canonical)
+    return {"units_total": found["units"], "units_with_source": found["with_source"]}
+
+
+def closeness_row(engine_job, reference_job, data, canonical=None):
     """Fields the table reads: similarity to JPEXS and how much of JPEXS's output the engine covers."""
     if reference_job is None:
         return {"jpexs_closeness": None, "jpexs_coverage": None, "jpexs_reason": "JPEXS no se ejecutó para este caso"}
@@ -130,7 +150,7 @@ def closeness_row(engine_job, reference_job, data):
         return {"jpexs_closeness": None, "jpexs_coverage": None, "jpexs_reason": "JPEXS: " + str(why).strip().splitlines()[-1][:200]}
     engine = documents_of(engine_job)
     try:
-        found = compare(engine, reference, data)
+        found = compare(engine, reference, data, canonical)
     except Exception as error:
         return {"jpexs_closeness": None, "jpexs_coverage": None, "jpexs_reason": "comparación fallida: " + str(error)[:160]}
     return {"jpexs_closeness": found["closeness"], "jpexs_coverage": found["coverage"],
@@ -143,30 +163,50 @@ def mean(values):
     return sum(values) / len(values) if values else None
 
 
+def total(values):
+    values = [v for v in values if v is not None]
+    return sum(values) if values else None
+
+
+def share(count, cases):
+    return count / cases if cases else 0.0
+
+
 def table(rows):
-    """One line per engine; the winner is named only when the lead exceeds the noise."""
+    """One line per engine, counted over the cases it was measured on. Engines measured on the same cases are
+    ranked together and the winner is named only when its lead exceeds the noise; JPEXS competes like the
+    others (it is only the reference of the closeness columns); an engine measured on other cases is listed
+    with `comparable: false` and is not ranked."""
     by_engine = defaultdict(list)
     for row in rows:
         by_engine[row["engine"]].append(row)
+    together = comparable_engines(rows)
     lines = []
     for engine, items in by_engine.items():
         reference = engine == "jpexs"
-        lines.append({"engine": engine, "name": ENGINES[engine].name, "cases": len(items),
-                      "source": sum(r["source"] for r in items),
-                      "recompiles": sum(r["recompiles"] is True for r in items),
-                      "same_trace": sum(r["same_trace"] is True for r in items),
-                      "jpexs_closeness": 1.0 if reference else mean(r.get("jpexs_closeness") for r in items),
-                      "jpexs_coverage": 1.0 if reference else mean(r.get("jpexs_coverage") for r in items),
-                      **({"reference": True} if reference else {}),
-                      "reasons": sorted({r["reason"] for r in items if r["reason"]})[:3]})
-    lines.sort(key=lambda l: (-l["same_trace"], -l["recompiles"], -l["source"]))
-    if len(lines) > 1:
-        lead = lines[0]["same_trace"] - lines[1]["same_trace"]
-        winner = lines[0]["engine"] if lead > NOISE_CASES else None
-    else:
-        winner = None
+        ran = [r for r in items if r.get("measured", True)]
+        line = {"engine": engine, "name": ENGINES[engine].name, "cases": len(ran),
+                "source": sum(r["source"] for r in ran),
+                "recompiles": sum(r["recompiles"] is True for r in ran),
+                "same_trace": sum(r["same_trace"] is True for r in ran),
+                "jpexs_closeness": 1.0 if reference else mean(r.get("jpexs_closeness") for r in items),
+                "jpexs_coverage": 1.0 if reference else mean(r.get("jpexs_coverage") for r in items),
+                "units_total": total(r.get("units_total") for r in ran), "units_with_source": total(r.get("units_with_source") for r in ran),
+                "unit_coverage": mean(r["units_with_source"] / r["units_total"] for r in ran if r.get("units_total")),
+                "median_seconds": median_seconds(ran), "timed_cases": timed_cases(ran),
+                "comparable": engine in together,
+                **({"reference": True} if reference else {}),
+                "reasons": sorted({r["reason"] for r in items if r["reason"]})[:3]}
+        line["flash_index"] = flash_index(line)
+        lines.append(line)
+    lines.sort(key=lambda l: (not l["comparable"], -share(l["same_trace"], l["cases"]),
+                              -share(l["recompiles"], l["cases"]), -share(l["source"], l["cases"])))
+    rivals = [l for l in lines if l["comparable"]]
+    winner = rivals[0]["engine"] if len(rivals) > 1 and rivals[0]["same_trace"] - rivals[1]["same_trace"] > NOISE_CASES else None
+    note = None if winner else ("sin ganador claro: la ventaja es de %d caso(s) o menos" % NOISE_CASES if len(rivals) > 1
+                                else "sin ganador: ningún par de motores se midió sobre los mismos casos")
     return {"unit": "casos en que el fuente generado recompila y Ruffle imprime la misma traza que el original",
-            "winner": winner, "note": None if winner else "sin ganador claro: la ventaja es de %d caso(s) o menos" % NOISE_CASES,
+            "winner": winner, "note": note, "corpus_cases": len({(r.get("family"), r.get("case")) for r in rows}),
             "engines": lines}
 
 
@@ -190,32 +230,38 @@ def simple_table(rows, category):
     by_engine = defaultdict(list)
     for item in rows:
         by_engine[item["engine"]].append(item)
+    together = comparable_engines(rows)
     lines = []
     for engine, items in by_engine.items():
+        ran = [i for i in items if i["ok"] is not None]
         lines.append({"engine": engine, "name": ENGINES[engine].name if engine in ENGINES else engine,
-                      "cases": len([i for i in items if i["ok"] is not None]),
-                      "ok": sum(i["ok"] is True for i in items),
+                      "cases": len(ran), "ok": sum(i["ok"] is True for i in ran),
+                      "median_seconds": median_seconds(ran), "timed_cases": timed_cases(ran),
+                      "comparable": engine in together,
                       "details": sorted({i["detail"] for i in items if i["detail"]})[:3],
                       "reasons": sorted({i["reason"] for i in items if i["reason"]})[:3]})
-    lines.sort(key=lambda l: (l["cases"] == 0, -l["ok"], l["engine"]))
+    lines.sort(key=lambda l: (l["cases"] == 0, not l["comparable"], -share(l["ok"], l["cases"]), l["engine"]))
     measured = [l for l in lines if l["cases"]]
-    winner = None
-    comparable = len({l["cases"] for l in measured}) == 1
-    if len(measured) > 1 and comparable and measured[0]["ok"] - measured[1]["ok"] > NOISE_CASES:
-        winner = measured[0]["engine"]
+    rivals = [l for l in measured if l["comparable"]]
+    winner = rivals[0]["engine"] if len(rivals) > 1 and rivals[0]["ok"] - rivals[1]["ok"] > NOISE_CASES else None
     if winner:
         note = None
     elif len(measured) < 2:
         note = "un solo motor medido: no hay con qué compararlo"
-    elif not comparable:
+    elif len(rivals) < 2:
         note = "sin ganador: los motores se midieron sobre casos distintos (leen lenguajes distintos)"
     else:
         note = "sin ganador claro: la ventaja es de %d caso(s) o menos" % NOISE_CASES
-    return {"unit": UNITS[category], "winner": winner, "note": note, "engines": lines}
+    return {"unit": UNITS[category], "winner": winner, "note": note,
+            "corpus_cases": len({(i.get("family"), i.get("case")) for i in rows}), "engines": lines}
 
 
 def percent(value):
     return "—" if value is None else "%.0f%%" % (100 * value)
+
+
+def number(value, template="%.1f"):
+    return "—" if value is None else template % value
 
 
 def show(tables):
@@ -223,17 +269,23 @@ def show(tables):
         print()
         print("== %s ==  (%s)" % (CATEGORIES[category], data["unit"]))
         if category == "decompilers":
-            print("%-12s %5s %8s %10s %11s %11s %11s" % ("motor", "casos", "fuente", "recompila", "misma traza", "cerca JPEXS", "cubre JPEXS"))
+            print("%-12s %5s %8s %10s %11s %9s %11s %11s %7s %8s" % ("motor", "casos", "fuente", "recompila", "misma traza", "unidades", "cerca JPEXS", "cubre JPEXS", "índice", "s/caso"))
         else:
-            print("%-12s %5s %9s" % ("motor", "casos", "correctos"))
+            print("%-12s %5s %9s %8s" % ("motor", "casos", "correctos", "s/caso"))
+        ranked = any(line["comparable"] for line in data["engines"])
         for line in data["engines"]:
+            name = line["engine"] + (" *" if ranked and line["cases"] and not line["comparable"] else "")
+            seconds = number(line["median_seconds"], "%.2f")
             if category == "decompilers":
-                print("%-12s %5d %8d %10d %11d %11s %11s" % (line["engine"], line["cases"], line["source"], line["recompiles"], line["same_trace"],
-                                                           percent(line.get("jpexs_closeness")), percent(line.get("jpexs_coverage"))))
+                print("%-12s %5d %8d %10d %11d %9s %11s %11s %7s %8s" % (name, line["cases"], line["source"], line["recompiles"], line["same_trace"],
+                                                                         percent(line.get("unit_coverage")), percent(line.get("jpexs_closeness")),
+                                                                         percent(line.get("jpexs_coverage")), number(line["flash_index"]), seconds))
             else:
-                print("%-12s %5d %9d" % (line["engine"], line["cases"], line["ok"]))
+                print("%-12s %5d %9d %8s" % (name, line["cases"], line["ok"], seconds))
             for reason in line["reasons"]:
                 print("    - " + reason)
+        if ranked and any(not line["comparable"] and line["cases"] for line in data["engines"]):
+            print("* medido sobre otros casos: no se ordena con el resto")
         print("ganador: " + data["winner"] if data["winner"] else data["note"])
 
 
@@ -243,7 +295,8 @@ def main():
     mode.add_argument("--smoke", action="store_true", help="un caso por familia de desarrollo (por defecto)")
     mode.add_argument("--full", action="store_true", help="todos los casos de desarrollo y validación")
     parser.add_argument("--only", nargs="+", choices=list(CATEGORIES), default=list(CATEGORIES), help="categorías a medir")
-    parser.add_argument("--engines", nargs="+", choices=SOURCE_ENGINES, default=list(SOURCE_ENGINES), help="descompiladores")
+    parser.add_argument("--engines", nargs="+", choices=SOURCE_ENGINES, default=list(SOURCE_ENGINES),
+                        help="descompiladores (JPEXS se mide siempre: es la referencia de cercanía y compite como los demás)")
     parser.add_argument("--job-timeout", type=int, default=240)
     parser.add_argument("--keep-evidence", action="store_true", help="conserva las carpetas de cada trabajo (grandes)")
     args = parser.parse_args()
@@ -270,7 +323,7 @@ def main():
             results, case_rows = {}, {}
             for engine in runnable:
                 base = {"engine": engine, "family": case["family_id"], "case": case["relative"], "language": case["language"],
-                        "source": False, "recompiles": None, "same_trace": None}
+                        "source": False, "recompiles": None, "same_trace": None, "measured": False, "seconds": None}
                 if pins["source_tools"].get(engine, {}).get("status") == "not_configured":
                     row = {**base, "reason": "no instalado: " + str(pins["source_tools"][engine].get("diagnostic", ""))[:200]}
                 elif case["language"] not in ENGINES[engine].languages:
@@ -282,12 +335,18 @@ def main():
                     print("descompilador", case["family_id"], engine, row["same_trace"], flush=True)
                 case_rows[engine] = row
             data = (CORPUS / case["relative"]).read_bytes()
-            for engine in args.engines:
+            canonical = canonical_units(data)
+            # JPEXS ran once for this case: that job is its own row and the reference for the closeness of the rest.
+            for engine in runnable:
                 row = case_rows[engine]
+                if engine in results:
+                    row.update(units_row(results[engine], canonical))
+                else:
+                    row.update(units_total=None, units_with_source=None)
                 if engine == "jpexs":
                     row.update(jpexs_closeness=1.0 if "jpexs" in results else None, jpexs_coverage=1.0 if "jpexs" in results else None)
                 elif engine in results:
-                    row.update(closeness_row(results[engine], results.get("jpexs"), data))
+                    row.update(closeness_row(results[engine], results.get("jpexs"), data, canonical))
                 else:
                     row.update(jpexs_closeness=None, jpexs_coverage=None)
                 rows.append(row)
@@ -322,6 +381,7 @@ def main():
     index_path = OUT / "index.json"
     index = json.loads(index_path.read_text(encoding="utf-8")) if index_path.is_file() else []
     index.append({"run_id": run_id, "mode": results["mode"], "cases": len(cases), "seconds": results["seconds"],
+                  "created_utc": results["created_utc"], "categories": list(tables),
                   "winner": tables.get("decompilers", {}).get("winner")})
     write_json(index_path, index)
     show(tables)

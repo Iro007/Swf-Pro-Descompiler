@@ -37,12 +37,29 @@ const engines = {default_engine:'auto',engines:[
   {id:'jpexs',name:'JPEXS',available:false,version:null,category:'decompiler',path:null,detail:'Not configured in fixture',operations:['decompile','edit','fla','xfl']},
   ...['haxe','haxeflixel','flex','mtasc'].map(id=>({id,name:id,available:false,version:null,category:'compiler',path:null,detail:'Not configured in fixture',operations:['compile_project']})),
 ]};
-const bench = {runs:[{run_id:'run-1',mode:'smoke',cases:6}],folder:'C:/controlled/bench',results:{run_id:'run-1',mode:'smoke',created_utc:'2026-10-23T00:00:00Z',seconds:12,corpus:'controlled',cases:6,tables:{
+const benchRuns = [{run_id:'run-2',mode:'smoke',cases:6,seconds:20,created_utc:'2026-10-24T01:00:00Z',categories:['decompilers','compilers','extractors']},{run_id:'run-1',mode:'smoke',cases:6}];
+// A run written before schema 2: no times, no `comparable`, no Indice Flash.
+const benchOld = {runs:benchRuns,folder:'C:/controlled/bench',results:{run_id:'run-1',mode:'smoke',created_utc:'2026-10-23T00:00:00Z',seconds:12,corpus:'controlled',cases:6,tables:{
   decompilers:{unit:'casos que recompilan',winner:null,note:'Sin ganador: la diferencia es de un caso.',engines:[
     {engine:'native',name:'PySWF',cases:6,source:4,recompiles:4,same_trace:4,jpexs_closeness:0.874,jpexs_coverage:0.64,reasons:[]},
     {engine:'rust',name:'RustSWF',cases:6,source:1,recompiles:1,same_trace:1,reasons:['no lee AS1/AS2']},
     {engine:'jpexs',name:'JPEXS',cases:6,source:5,recompiles:5,same_trace:5,jpexs_closeness:1,jpexs_coverage:1,reference:true,reasons:[]},
     {engine:'go',name:'GoSWF',cases:6,source:2,recompiles:2,same_trace:2,jpexs_closeness:null,jpexs_coverage:null,reasons:[]}]}}}};
+// Schema 2: PySWF, GoSWF and JPEXS (which competes like the others and is only the reference of the closeness) are ranked together;
+// Flare read only 2 of the 6 cases; pyflashkit is not installed.
+const benchNew = {runs:benchRuns,folder:'C:/controlled/bench',results:{schema_version:2,run_id:'run-2',mode:'smoke',created_utc:'2026-10-24T01:00:00Z',seconds:20,corpus:'controlled',cases:6,
+  oracle:{runtime:'ruffle-tests.exe',runtime_sha256:'ab'.repeat(32)},tables:{
+  decompilers:{unit:'casos que recompilan',winner:null,note:'sin ganador claro: la ventaja es de 1 caso(s) o menos',corpus_cases:6,engines:[
+    {engine:'native',name:'PySWF',cases:6,source:4,recompiles:4,same_trace:4,units_total:20,units_with_source:16,unit_coverage:0.8,jpexs_closeness:0.8,jpexs_coverage:0.6,median_seconds:0.15,timed_cases:6,comparable:true,flash_index:70,reasons:[]},
+    {engine:'jpexs',name:'JPEXS',cases:6,source:5,recompiles:5,same_trace:5,units_total:20,units_with_source:18,unit_coverage:0.9,jpexs_closeness:1,jpexs_coverage:1,reference:true,median_seconds:2,timed_cases:6,comparable:true,flash_index:85,reasons:[]},
+    {engine:'go',name:'GoSWF',cases:6,source:2,recompiles:2,same_trace:2,units_total:20,units_with_source:8,unit_coverage:0.4,jpexs_closeness:0.9,jpexs_coverage:0.3,median_seconds:0.07,timed_cases:6,comparable:true,flash_index:35,reasons:['faltan clases']},
+    {engine:'flare',name:'Flare 0.6',cases:2,source:2,recompiles:2,same_trace:2,units_total:4,units_with_source:4,unit_coverage:1,jpexs_closeness:0.99,jpexs_coverage:1,median_seconds:0.13,timed_cases:2,comparable:false,flash_index:100,reasons:['no lee AS3']},
+    {engine:'pyflashkit',name:'pyflashkit',cases:0,source:0,recompiles:0,same_trace:0,units_total:null,units_with_source:null,unit_coverage:null,jpexs_closeness:null,jpexs_coverage:null,median_seconds:null,timed_cases:0,comparable:false,flash_index:null,reasons:['no instalado']}]},
+  compilers:{unit:'proyectos que compilan',winner:null,note:'sin ganador claro: la ventaja es de 1 caso(s) o menos',corpus_cases:3,engines:[
+    {engine:'flex',name:'flex',cases:3,ok:3,median_seconds:2,timed_cases:3,comparable:true,details:[],reasons:[]},
+    {engine:'native',name:'PySWF',cases:3,ok:3,median_seconds:0.02,timed_cases:3,comparable:true,details:[],reasons:[]}]},
+  extractors:{unit:'SWF cuyos recursos se extraen todos',winner:null,note:'un solo motor medido: no hay con que compararlo',corpus_cases:1,engines:[
+    {engine:'swfextract',name:'swfextract',cases:1,ok:1,median_seconds:2.3,timed_cases:1,comparable:false,details:[],reasons:[]}]}}}};
 const bridge = {
  invoke:async(command,args={})=>{
   if(command==='startup')return {path:'C:/controlled/demo.swf',smoke:false};
@@ -72,7 +89,7 @@ const bridge = {
    case 'timeline': return {frame:0,frame_count:2,display_list:[],svg:null,actionscript_executed:false};
    case 'compile_project': state={...state,filename:'compiled.swf',working_path:a.output,revision:sha('d'),dirty:false}; return {...state,path:a.output,engine:'python',validation:{valid:true,errors:[],warnings:[]},log:'Controlled UI fixture; compiler not executed'};
    case 'export': return {path:a.path,engine:'python',diagnostics:[]};
-   case 'bench_results': return bench;
+   case 'bench_results': return a.run==='run-1'?benchOld:benchNew;
    case 'benchmark_tools': return {engines:[{id:'native',name:'PySWF',category:'decompiler',configured:true,operations:['source']},{id:'flare',name:'Flare',category:'decompiler',configured:false,operations:['source'],setup_diagnostic:'sin configurar en el fixture'}]};
    default: throw new Error('Unexpected suite operation: '+args.operation);
   }
@@ -100,6 +117,13 @@ def item(page, label):
 
 def opens(page):
     return page.evaluate("window.__calls.filter(c=>c.operation==='open').length")
+
+
+def open_table(dialog):
+    """The full table of the first category is behind a toggle: open it unless it already is."""
+    details = dialog.locator("details.bench-details").first
+    if not details.evaluate("element => element.open"):
+        details.locator("summary").click()
 
 
 def wait_text(page, selector):
@@ -200,6 +224,59 @@ with sync_playwright() as p:
 
     page.get_by_role("menuitem", name="Herramientas").click()
     page.get_by_role("menuitem", name="Benchmarks").click()
+    dialog = page.get_by_role("dialog")
+    expect(dialog.get_by_role("heading", name="Clasificación de motores")).to_be_visible()
+    # Highlights: only engines measured on the same cases compete. JPEXS competes too, except for being the closest to itself.
+    cards = dialog.get_by_label("Destacados").locator(".bench-stat")
+    expect(cards.nth(0)).to_contain_text("Mejor Índice Flash")
+    expect(cards.nth(0)).to_contain_text("85,0")
+    expect(cards.nth(0)).to_contain_text("JPEXS")
+    expect(cards.nth(0)).to_contain_text("15,0 puntos sobre PySWF")
+    expect(cards.nth(1)).to_contain_text("90 %")
+    expect(cards.nth(1)).to_contain_text("GoSWF")
+    expect(cards.nth(2)).to_contain_text("0,070 s")
+    expect(cards.nth(3)).to_contain_text("5 de 6")
+    expect(cards.nth(3)).to_contain_text("Ventaja de 1 caso sobre PySWF: dentro del ruido")
+    # The Índice Flash chart: sorted with JPEXS in it, the engine measured on other cases apart and marked.
+    index_marks = dialog.locator('svg:has(> title:text-is("Índice Flash por motor")) [data-mark]')
+    assert [mark.get_attribute("data-engine") for mark in index_marks.all()] == ["jpexs", "native", "go", "flare"]
+    assert "muted" in index_marks.nth(3).get_attribute("class")
+    expect(index_marks.nth(0)).to_have_attribute("aria-label", re.compile(r"^JPEXS: 85,0\."))
+    expect(index_marks.nth(1)).to_have_attribute("aria-label", re.compile(r"fuente 67\s%\s·\srecompila 67\s%\s·\smisma traza 67\s%\s·\sunidades 80\s%"))
+    expect(dialog.get_by_text("Medidos sobre otros casos").first).to_be_visible()
+    # Closeness and coverage: JPEXS is the reference bar (100 % by definition, hatched, not ranked), nobody else is above it.
+    close_marks = dialog.locator('svg:has(> title:text-is("Cercanía a JPEXS por motor")) [data-mark]')
+    assert [mark.get_attribute("data-engine") for mark in close_marks.all()] == ["jpexs", "go", "native", "flare"]
+    expect(close_marks.nth(0)).to_have_attribute("aria-label", re.compile(r"^JPEXS: 100,0\s%\. .*Referencia"))
+    assert dialog.locator('svg:has(> title:text-is("Cercanía a JPEXS por motor")) path.bc-bar.ref').count() == 1
+    assert dialog.locator('svg:has(> title:text-is("Misma traza por motor")) path.bc-bar.ref').count() == 0, "elsewhere JPEXS is a plain bar in its own colour"
+    # Hover shows the exact value and the number of cases, focus shows the same, arrows move between bars.
+    index_marks.nth(1).hover()
+    expect(dialog.locator(".bench-tip")).to_contain_text("70,0")
+    expect(dialog.locator(".bench-tip")).to_contain_text("6 casos")
+    index_marks.nth(0).focus()
+    page.keyboard.press("ArrowDown")
+    assert page.evaluate("document.activeElement.dataset.engine") == "native"
+    # Speed is drawn for every engine of the table; a category with one engine is a tile, not a one-bar chart.
+    expect(dialog.locator('svg:has(> title:text-is("Velocidad por motor")) [data-mark]').first).to_be_visible()
+    expect(dialog.get_by_text("Un solo motor medido").first).to_be_visible()
+    expect(dialog.locator(".bench-unmeasured").first).to_contain_text("pyflashkit (no instalado)")
+    # The table is behind a toggle; opened, it carries the same numbers, the closeness columns and the times.
+    open_table(dialog)
+    expect(page.get_by_role("columnheader", name="% cerca de JPEXS")).to_be_visible()
+    expect(page.get_by_role("columnheader", name="% de unidades de JPEXS")).to_be_visible()
+    expect(page.get_by_test_id("index-native")).to_have_text("70,0")
+    expect(page.get_by_test_id("index-jpexs")).to_have_text("85,0")
+    expect(page.get_by_test_id("units-native")).to_have_text("80%")
+    expect(page.get_by_test_id("seconds-go")).to_have_text("0,070 s")
+    expect(page.get_by_test_id("closeness-native")).to_have_text("80%")
+    page.screenshot(path=str(OUTPUT / "ui-shell-controlled-benchmarks.png"))
+
+    # A run written before schema 2 still reads: no times and no index, said instead of drawn.
+    dialog.get_by_role("combobox", name="Ejecución").select_option("run-1")
+    expect(dialog.get_by_text("Sin datos en esta corrida").first).to_be_visible()
+    expect(dialog.locator('svg:has(> title:text-is("Velocidad por motor"))')).to_have_count(0)
+    open_table(dialog)
     expect(page.get_by_role("columnheader", name="% cerca de JPEXS")).to_be_visible()
     expect(page.get_by_role("columnheader", name="% de unidades de JPEXS")).to_be_visible()
     expect(page.get_by_test_id("closeness-native")).to_have_text("87%")
@@ -207,7 +284,9 @@ with sync_playwright() as p:
     expect(page.get_by_test_id("closeness-rust")).to_have_text("—")
     expect(page.get_by_test_id("coverage-go")).to_have_text("—")
     expect(page.get_by_test_id("closeness-jpexs")).to_have_text("100%")
-    page.screenshot(path=str(OUTPUT / "ui-shell-controlled-benchmarks.png"))
+    expect(page.get_by_test_id("index-native")).to_have_text("—")
+    expect(page.get_by_test_id("units-native")).to_have_text("—")
+    page.screenshot(path=str(OUTPUT / "ui-shell-controlled-benchmarks-old-run.png"))
     page.keyboard.press("Escape")
 
     page.get_by_role("menuitem", name="Herramientas").click()
@@ -235,7 +314,8 @@ with sync_playwright() as p:
         "checks": ["tree keyboard model and quick filter", "class view with source and P-code", "draft survives a rejected edit and member switches",
                    "edit enables undo without reopening the document", "engine comparison dialog", "SVG preview without inline scripts",
                    "hex view pages through raw", "unavailable HaxeFlixel profile disabled", "compile adopts the new document",
-                   "benchmark closeness columns show percentages and dashes", "theme switch and remembered tree width"],
+                   "benchmark page: highlights, sorted Índice Flash, tooltip, keyboard, table toggle, engines on other cases apart, old run without data",
+                   "theme switch and remembered tree width"],
         "page_errors": errors, "calls": page.evaluate("window.__calls"),
     }
     (OUTPUT / "ui-shell-controlled-contract.json").write_text(json.dumps(evidence, indent=2), encoding="utf-8")

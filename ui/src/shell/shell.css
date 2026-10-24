@@ -1016,6 +1016,7 @@ dialog.modal::backdrop {
 dialog.modal.modal-sm { width: min(440px, calc(100vw - 32px)); }
 dialog.modal.modal-lg { width: min(900px, calc(100vw - 32px)); }
 dialog.modal.modal-xl { width: min(1180px, calc(100vw - 32px)); }
+dialog.modal.modal-full { width: min(1240px, calc(100vw - 32px)); height: calc(100dvh - 32px); }
 .modal-header {
   display: flex;
   align-items: center;
@@ -1150,36 +1151,6 @@ dialog.modal.modal-xl { width: min(1180px, calc(100vw - 32px)); }
 }
 .compare-code .code-editor {
   flex: 1;
-}
-
-/* benchmarks */
-.bench .card {
-  margin-top: 12px;
-}
-.table-scroll {
-  overflow-x: auto;
-}
-.bench-table td,
-.bench-table th {
-  text-align: right;
-  white-space: nowrap;
-}
-.bench-table td:first-child,
-.bench-table th:first-child {
-  text-align: left;
-}
-.bench-table td.best {
-  font-weight: 700;
-  color: var(--accent);
-}
-.bench-table .badge {
-  margin-left: 8px;
-}
-.reasons {
-  margin: 4px 0 10px 18px;
-  padding: 0;
-  color: var(--fg-dim);
-  font-size: 12px;
 }
 
 /* Narrow windows: the tree sits above the display panel and source above P-code, without splitters. */

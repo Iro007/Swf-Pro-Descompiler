@@ -3,8 +3,8 @@ import * as api from '../api';
 import {BenchData,BenchResults,BenchmarkEngine} from '../types';
 import {problem} from '../shell/util';
 import Highlights from './bench/Highlights';
-import {CategorySection,DecompilersSection,IndexSection} from './bench/Sections';
-import {categoryOrder,dateLabel,highlights,modeLabel,runIdToIso,runLabel} from './bench/model';
+import {CategorySection,DecompilersSection,IndexSection,RobustnessSection,UnitFidelitySection} from './bench/Sections';
+import {categoryOrder,dateLabel,decompilerQuestions,highlights,modeLabel,runIdToIso,runLabel} from './bench/model';
 import {FocusContext} from './bench/shared';
 import './bench/bench.css';
 
@@ -19,7 +19,7 @@ function RunFacts({results}:{results:BenchResults}){
     <li className="bench-chip"><b>{results.cases}</b> casos</li>
     <li className="bench-chip"><b>{results.seconds}</b> s en total</li>
     {results.oracle?<li className="bench-chip" title={sha?`SHA-256 ${sha}`:undefined}>Oráculo Ruffle <b>{results.oracle.runtime}</b>{sha?` · ${sha.slice(0,10)}`:''}</li>:null}
-    <li className="bench-chip" title={(results.schema_version??1)<2?'Corrida anterior a la medición de tiempos: los gráficos de velocidad quedan sin datos.':'Esquema con tiempos por caso'}>Esquema <b>{results.schema_version??1}</b></li>
+    <li className="bench-chip" title={(results.schema_version??1)<2?'Corrida anterior a la medición de tiempos: los gráficos de velocidad quedan sin datos.':(results.schema_version??1)<3?'Corrida anterior a la medición de robustez y de fidelidad por unidad: esas secciones quedan sin datos.':'Esquema con tiempos por caso, robustez ante archivos dañados y fidelidad por unidad'}>Esquema <b>{results.schema_version??1}</b></li>
   </ul>;
 }
 
@@ -48,7 +48,8 @@ export default function SuiteBenchmarks(){
   useEffect(()=>setHover(null),[results]);
   const cards=useMemo(()=>results?highlights(results):[],[results]);
   const missing=engines.filter(item=>!item.configured);
-  const categories=results?[...categoryOrder.filter(key=>key in results.tables),...Object.keys(results.tables).filter(key=>!categoryOrder.includes(key))]:[];
+  // The two new questions about the decompilers always get a section, with "sin datos en esta corrida" for a run that predates them.
+  const categories=results?[...categoryOrder.filter(key=>key in results.tables||(decompilerQuestions.includes(key)&&'decompilers' in results.tables)),...Object.keys(results.tables).filter(key=>!categoryOrder.includes(key))]:[];
   const focus={engine:hover??pinned,set:setHover,pinned,pin:setPinned};
   return <FocusContext.Provider value={focus}>
     <div className="bench" aria-busy={loading||undefined} data-loading={loading?'true':undefined} onPointerLeave={()=>setHover(null)}>
@@ -66,7 +67,7 @@ export default function SuiteBenchmarks(){
         <RunFacts results={results}/>
         <Highlights cards={cards}/>
         <IndexSection results={results}/>
-        {categories.map(key=>key==='decompilers'?<DecompilersSection key={key} results={results}/>:<CategorySection key={key} category={key} results={results}/>)}
+        {categories.map(key=>key==='decompilers'?<DecompilersSection key={key} results={results}/>:key==='robustness'?<RobustnessSection key={key} results={results}/>:key==='unit_fidelity'?<UnitFidelitySection key={key} results={results}/>:<CategorySection key={key} category={key} results={results}/>)}
       </>}
       {missing.length?<section className="bench-section"><header className="bench-section-head"><div><h3>Sin medir en este equipo</h3></div></header>
         <ul className="reasons">{missing.map(item=><li key={item.id}><strong>{item.name}</strong> · {item.setup_diagnostic??'sin configurar en este equipo'}</li>)}</ul></section>:null}

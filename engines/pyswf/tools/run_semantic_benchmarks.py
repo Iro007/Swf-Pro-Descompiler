@@ -209,11 +209,11 @@ def cached_result(root, key):
     return None
 
 
-def save_documents(documents, folder):
+def save_documents(documents, folder, name="source"):
     for index, document in enumerate(documents):
         text = document.get("source")
         if text is not None:
-            target = folder / "source" / (str(index).zfill(4) + ".as")
+            target = folder / name / (str(index).zfill(4) + ".as")
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(text.encode("utf-8"))
             document.update(source_file=str(target), source_sha256=fingerprint(target))
@@ -234,6 +234,28 @@ def native_documents(suite, engine):
             if not page["items"]:
                 raise ValueError("Source pagination stalled; incomplete projects cannot be compiled")
     return documents
+
+
+METHOD_KEYS = ("document_id", "scope", "bytecode_sha256", "generation", "identity_verified", "source")
+
+
+def method_records(engine, suite, response, wanted):
+    """The method-level source an engine emitted for the units the per-unit benchmark will judge (tools/bench_units.py):
+    {document_id, scope, bytecode_sha256, generation, source}. Most engines answer with it in `response`; PySWF rebuilds
+    each method, and RustSWF's answer comes from a second pass of its worker (the first one asked for whole classes)."""
+    wanted = set(wanted)
+    if response is not None:
+        return [{key: unit[key] for key in METHOD_KEYS if key in unit} for unit in response.get("units", [])
+                if unit.get("scope") == "method" and unit.get("document_id") in wanted]
+    from py_swf.decompile.avm2_dec import decompile_method
+    records = []
+    for unit in suite.units():
+        if unit.language == "as3" and unit.document_id in wanted and not unit.diagnostic:
+            text, error = decompile_method(unit.abc, unit.body, unit.name)
+            ok = bool(text) and not error
+            records.append({"document_id": unit.document_id, "scope": "method", "bytecode_sha256": hashlib.sha256(unit.code).hexdigest(),
+                            "generation": "available" if ok else "failed", "source": text if ok else None})
+    return records
 
 
 def reference_output(data, pins, folder):
@@ -524,6 +546,11 @@ def evaluate_job(request):
                     if "completeness" not in document:
                         document["completeness"] = "complete" if document.get("generation") == "available" and document.get("identity_verified") else "partial"
             record["source"]["documents"] = save_documents(documents, folder)
+            if scenario.get("method_ids"):
+                if engine == "rust":
+                    (folder / "method-units").mkdir()
+                    response = peer_output(engine, data, source_pin, folder / "method-units")
+                record["source"]["methods"] = save_documents(method_records(engine, suite, response, scenario["method_ids"]), folder, "methods")
             try:
                 assert_complete_class_set(documents, data)
                 record["source"]["script_admission"] = prove_declaration_bootstraps(suite, documents)

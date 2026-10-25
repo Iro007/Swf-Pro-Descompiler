@@ -94,8 +94,17 @@ def drow(engine, case, same=True, seconds=None, measured=True, close=None, cover
             "seconds": seconds, "jpexs_closeness": close, "jpexs_coverage": cover, "units_total": total, "units_with_source": with_source}
 
 
-def test_schema_version_is_two_because_rows_now_carry_times():
-    assert bench.SCHEMA_VERSION == 2
+def test_schema_version_is_three_because_the_run_now_carries_robustness_and_per_unit_fidelity():
+    assert bench.SCHEMA_VERSION == 3
+
+
+def test_the_two_new_questions_are_categories_of_the_command_line_like_the_rest():
+    assert list(bench.CATEGORIES)[:3] == ["decompilers", "robustness", "unit_fidelity"]
+    assert bench.CATEGORIES["robustness"] == "Robustez" and bench.CATEGORIES["unit_fidelity"] == "Fidelidad por unidad"
+    import subprocess
+    help_text = subprocess.run([sys.executable, str(Path(bench.__file__)), "--help"], capture_output=True, text=True, check=True).stdout
+    for option in ("robustness", "unit_fidelity", "--unit-cap", "--robustness-timeout", "--workers"):
+        assert option in help_text, option
 
 
 def test_verdict_keeps_the_time_the_engine_spent_and_whether_it_ran():
@@ -203,3 +212,67 @@ def test_the_console_table_shows_the_index_the_seconds_and_marks_engines_on_othe
 def test_task_rows_round_the_tool_time_to_milliseconds_and_keep_none_when_it_did_not_finish():
     assert bench_tasks.row("flex", "f", "c", True, seconds=0.12345)["seconds"] == 0.123
     assert bench_tasks.row("flex", "f", "c", False, reason="boom")["seconds"] is None
+
+
+def line_of(table, engine):
+    return next(line for line in table["engines"] if line["engine"] == engine)
+
+
+def test_without_the_new_tables_the_index_keeps_its_four_terms():
+    rows = [drow("native", "c%d" % i, units=(1, 2)) for i in range(4)] + [drow("jpexs", "c%d" % i, units=(2, 2)) for i in range(4)]
+    tables = {"decompilers": bench.table(rows)}
+    before = [line["flash_index"] for line in tables["decompilers"]["engines"]]
+    bench.link_index(tables)
+    assert tables["decompilers"]["index_components"] == ["source", "recompiles", "same_trace", "units"]
+    assert [line["flash_index"] for line in tables["decompilers"]["engines"]] == before
+
+
+def table_of(lines):
+    return {"unit": "u", "winner": None, "note": None, "corpus_cases": 6, "engines": lines}
+
+
+def test_the_index_is_scored_again_over_the_terms_measured_for_every_ranked_engine():
+    rows = ([drow("native", "c%d" % i, same=i < 3, units=(1, 2)) for i in range(6)] + [drow("jpexs", "c%d" % i, units=(2, 2)) for i in range(6)])
+    tables = {"decompilers": bench.table(rows),
+              "robustness": table_of([{"engine": "native", "cases": 51, "robustness": 80.0}, {"engine": "jpexs", "cases": 51, "robustness": 40.0}]),
+              "unit_fidelity": table_of([{"engine": "native", "cases": 6, "fidelity": 0.5, "judged": 10}, {"engine": "jpexs", "cases": 6, "fidelity": 1.0, "judged": 4}])}
+    bench.link_index(tables)
+    decompilers = tables["decompilers"]
+    assert decompilers["index_components"] == ["source", "recompiles", "same_trace", "units", "unit_fidelity", "robustness"]
+    native, jpexs = line_of(decompilers, "native"), line_of(decompilers, "jpexs")
+    assert (native["unit_fidelity"], native["unit_fidelity_judged"], native["robustness"], native["robustness_cases"]) == (0.5, 10, 80.0, 51)
+    assert native["flash_index"] == round(100 * (0.5 + 0.5 + 0.5 + 0.5 + 0.5 + 0.8) / 6, 1)
+    assert jpexs["flash_index"] == round(100 * (1 + 1 + 1 + 1 + 1.0 + 0.4) / 6, 1)
+
+
+def test_a_term_one_ranked_engine_lacks_is_left_out_for_all_of_them():
+    rows = [drow("native", "c%d" % i, units=(1, 2)) for i in range(4)] + [drow("jpexs", "c%d" % i, units=(2, 2)) for i in range(4)]
+    tables = {"decompilers": bench.table(rows),
+              "robustness": table_of([{"engine": "native", "cases": 51, "robustness": 80.0}]),
+              "unit_fidelity": table_of([{"engine": "native", "cases": 4, "fidelity": 0.5, "judged": 3}, {"engine": "jpexs", "cases": 4, "fidelity": None, "judged": 0}])}
+    bench.link_index(tables)
+    decompilers = tables["decompilers"]
+    assert decompilers["index_components"] == ["source", "recompiles", "same_trace", "units", "unit_fidelity"], "jpexs has no robustness figure"
+    jpexs = line_of(decompilers, "jpexs")
+    assert jpexs["unit_fidelity"] is None and jpexs["unit_fidelity_cases"] == 4
+    assert jpexs["flash_index"] == round(100 * (1 + 1 + 1 + 1 + 0.0) / 5, 1), "measured but nothing judged: 0 in the index"
+    assert jpexs["robustness"] is None and jpexs["robustness_cases"] == 0
+
+
+def test_the_console_table_shows_robustness_and_per_unit_fidelity(capsys):
+    rows = [drow("native", "c%d" % i, units=(1, 2)) for i in range(4)] + [drow("jpexs", "c%d" % i, units=(2, 2)) for i in range(4)]
+    lines = [{"engine": "native", "name": "PySWF", "cases": 51, "outcomes": {"recovered": 20, "partial": 10, "clean_error": 15, "crash": 5, "hang": 1},
+              "robustness": 61.2, "comparable": True, "median_seconds": 0.2, "peak_memory_mib": 134.0, "reasons": []}]
+    units = [{"engine": "native", "name": "PySWF", "cases": 6, "evaluated": 36, "same": 17, "different": 0, "no_compile": 6, "not_run": 13, "judged": 23,
+              "fidelity": 17 / 23, "comparable": True, "reasons": []}]
+    tables = {"decompilers": bench.table(rows), "robustness": {**table_of(lines), "unit": "archivos dañados"}, "unit_fidelity": {**table_of(units), "unit": "unidades"}}
+    bench.link_index(tables)
+    bench.show(tables)
+    text = capsys.readouterr().out
+    assert "== Robustez ==" in text and "== Fidelidad por unidad ==" in text
+    robust = next(line for line in text.splitlines() if line.startswith("native") and "134" in line)
+    assert robust.split()[:8] == ["native", "51", "20", "10", "15", "5", "1", "61.2"], robust
+    fidelity = text.split("== Fidelidad por unidad ==")[1]
+    row = next(line for line in fidelity.splitlines() if line.startswith("native"))
+    assert row.split() == ["native", "6", "36", "17", "0", "6", "13", "74%"], row
+    assert "el índice promedia: source, recompiles, same_trace, units" in text

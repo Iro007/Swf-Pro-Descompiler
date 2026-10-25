@@ -67,12 +67,13 @@ def _embedded_tag(unit, code):
     return SWFTag(tag.tag_type, bytes(payload[:start]) + code + bytes(payload[end:]))
 
 
-def edit_unit(swf_bytes, locator, code, *, source=False):
+def edit_unit(swf_bytes, locator, code, *, source=False, allow_initializers=False):
     """Return a validated SWF; no caller-owned bytes or objects are modified.
 
     locator is an inventory document_id or metadata dict with document_id and
     optional bytecode_sha256. code is source text when source=True, otherwise
-    exact P-code. The identity addresses a method or an event, not a whole ABC.
+    exact P-code. The identity addresses a method or an event, not a whole ABC. `allow_initializers` lifts the
+    protection of constructors and initializers for callers that judge the result themselves (the unit benchmark).
     """
     movie = SWFFile()
     movie.read_bytes(swf_bytes)
@@ -81,7 +82,8 @@ def edit_unit(swf_bytes, locator, code, *, source=False):
         replacement, _ = edit_script(SWFTag(12, unit.code), code, source=source, swf_version=movie.version)
         replacement = _embedded_tag(unit, replacement.data)
     else:
-        replacement, _ = edit_script(unit.tag, code, unit.body_index or 0, source=source, swf_version=movie.version)
+        replacement, _ = edit_script(unit.tag, code, unit.body_index or 0, source=source, swf_version=movie.version,
+                                     allow_initializers=allow_initializers)
     outer = unit.tag_path[0]
     if len(unit.tag_path) > 1:
         parent = movie.tags[outer]

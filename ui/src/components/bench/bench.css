@@ -25,6 +25,34 @@
   --bench-8: #e34948;
 }
 
+/*
+ * How a case ended (stacked bars, chips): the outcomes of an engine on a damaged file and of a unit compiled alone. The hue
+ * says the order (green for what is best, red for the worst); the counts inside the segments, the legend and the table carry
+ * the same information in words, so the colour is never the only channel.
+ */
+:root {
+  --out-recovered: #2fa36f;
+  --out-partial: #d6a032;
+  --out-clean_error: #5d9be8;
+  --out-crash: #e2655c;
+  --out-hang: #9a6ee0;
+  --out-same: #2fa36f;
+  --out-different: #e2655c;
+  --out-no_compile: #d6a032;
+  --out-not_run: #6f8195;
+}
+:root[data-theme="light"] {
+  --out-recovered: #1a8a58;
+  --out-partial: #c8921a;
+  --out-clean_error: #3b7fd0;
+  --out-crash: #d4443a;
+  --out-hang: #7c4cc6;
+  --out-same: #1a8a58;
+  --out-different: #d4443a;
+  --out-no_compile: #c8921a;
+  --out-not_run: #8a97a6;
+}
+
 .bench {
   display: flex;
   flex-direction: column;
@@ -590,4 +618,114 @@
   .bench-stat-value {
     font-size: 26px;
   }
+}
+
+/* sections added with schema 3: robustness and per-unit fidelity */
+.bench-subhead {
+  margin-top: 6px;
+  color: var(--fg);
+  font-size: 13.5px;
+  font-weight: 650;
+}
+.bench-subhead.small {
+  margin-top: 12px;
+  font-size: 12.5px;
+}
+.bench-multiples {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+}
+.bench-terms {
+  color: var(--fg-dim);
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+.bench-terms strong {
+  color: var(--fg);
+}
+.bench-details.nested {
+  margin-top: 10px;
+}
+.bench-table.files td.reason {
+  white-space: normal;
+  min-width: 220px;
+}
+
+/* stacked bars */
+.sb-seg {
+  stroke: none;
+}
+.seg-recovered { fill: var(--out-recovered); }
+.seg-partial { fill: var(--out-partial); }
+.seg-clean_error { fill: var(--out-clean_error); }
+.seg-crash { fill: var(--out-crash); }
+.seg-hang { fill: var(--out-hang); }
+.seg-same { fill: var(--out-same); }
+.seg-different { fill: var(--out-different); }
+.seg-no_compile { fill: var(--out-no_compile); }
+.seg-not_run { fill: var(--out-not_run); }
+.sb-count {
+  fill: #fff;
+  font-size: 11.5px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+.sb-dot.s1 { fill: var(--bench-1); }
+.sb-dot.s2 { fill: var(--bench-2); }
+.sb-dot.s3 { fill: var(--bench-3); }
+.sb-dot.s4 { fill: var(--bench-4); }
+.sb-dot.s5 { fill: var(--bench-5); }
+.sb-dot.s6 { fill: var(--bench-6); }
+.sb-dot.s7 { fill: var(--bench-7); }
+.sb-dot.s8 { fill: var(--bench-8); }
+.stack-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  list-style: none;
+  color: var(--fg-dim);
+  font-size: 12px;
+}
+.stack-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.stack-swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+.stack-swatch.seg-recovered { background: var(--out-recovered); }
+.stack-swatch.seg-partial { background: var(--out-partial); }
+.stack-swatch.seg-clean_error { background: var(--out-clean_error); }
+.stack-swatch.seg-crash { background: var(--out-crash); }
+.stack-swatch.seg-hang { background: var(--out-hang); }
+.stack-swatch.seg-same { background: var(--out-same); }
+.stack-swatch.seg-different { background: var(--out-different); }
+.stack-swatch.seg-no_compile { background: var(--out-no_compile); }
+.stack-swatch.seg-not_run { background: var(--out-not_run); }
+
+/* the outcome of one cell in the detail tables */
+.out-chip {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.out-chip.seg-recovered { background: var(--out-recovered); }
+.out-chip.seg-partial { background: var(--out-partial); color: #0b1018; }
+.out-chip.seg-clean_error { background: var(--out-clean_error); }
+.out-chip.seg-crash { background: var(--out-crash); }
+.out-chip.seg-hang { background: var(--out-hang); }
+.out-chip.seg-same { background: var(--out-same); }
+.out-chip.seg-different { background: var(--out-different); }
+.out-chip.seg-no_compile { background: var(--out-no_compile); color: #0b1018; }
+.out-chip.seg-not_run { background: var(--out-not_run); }
+.sb-count.dark {
+  fill: #0b1018;
 }

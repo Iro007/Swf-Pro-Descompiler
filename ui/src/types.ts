@@ -55,21 +55,48 @@ export interface SuitePreview {
 
 /**
  * Benchmarks (operations `bench_results` and `benchmark_tools`). Runs written before schema 2 lack the optional fields
- * (times, `comparable`, `flash_index`, rows): the interface says "sin datos en esta corrida" instead of inventing them.
+ * (times, `comparable`, `flash_index`, rows) and those before schema 3 lack the robustness and per-unit fidelity tables: the
+ * interface says "sin datos en esta corrida" instead of inventing them.
  */
+export type Outcome='recovered'|'partial'|'clean_error'|'crash'|'hang';
+export type UnitOutcome='same'|'different'|'no_compile'|'not_run';
+/** Outcomes of an engine on the damaged files of one kind, or on all of them (the robustness table). */
+export interface OutcomeKind {cases:number;outcomes:Record<Outcome,number>;score:number|null}
+/** The units of one kind (class, method, action) an engine was judged on, or all of them (the per-unit fidelity table). */
+export interface UnitCounts {same:number;different:number;no_compile:number;not_run:number;evaluated:number;judged:number;fidelity:number|null}
 export interface BenchLine {
   engine:string;name:string;cases:number;source?:number;recompiles?:number;same_trace?:number;ok?:number;
   jpexs_closeness?:number|null;jpexs_coverage?:number|null;reference?:boolean;reasons:string[];details?:string[];
   median_seconds?:number|null;timed_cases?:number;comparable?:boolean;flash_index?:number|null;
   units_total?:number|null;units_with_source?:number|null;unit_coverage?:number|null;
+  /* schema 3, decompilers: the two terms that join the index when the run measured them for every ranked engine */
+  unit_fidelity?:number|null;unit_fidelity_judged?:number|null;unit_fidelity_cases?:number;robustness?:number|null;robustness_cases?:number;
+  /* schema 3, robustness table */
+  outcomes?:Record<Outcome,number>;by_kind?:Record<string,Partial<OutcomeKind>&Partial<UnitCounts>>;recoverable_cases?:number;
+  intact_units?:number;recovered_units?:number;unit_recovery?:number|null;peak_memory_mib?:number|null;
+  /* schema 3, per-unit fidelity table */
+  same?:number;different?:number;no_compile?:number;not_run?:number;evaluated?:number;judged?:number;fidelity?:number|null;
 }
-export interface BenchTable {unit:string;winner:string|null;note:string|null;corpus_cases?:number;engines:BenchLine[]}
+export interface BenchTable {
+  unit:string;winner:string|null;note:string|null;corpus_cases?:number;engines:BenchLine[];
+  /** the terms of the Índice Flash this run includes (decompilers table) */
+  index_components?:string[];
+  /** labels of the damage kinds (robustness) or of the unit kinds (per-unit fidelity) */
+  kinds?:Record<string,string>;
+  /** units the single-unit path cannot take for any engine, with the reasons (per-unit fidelity) */
+  out_of_scope?:{units:number;reasons:Record<string,number>};unit_cap?:number;
+}
 export interface BenchRow {
   engine:string;family:string;case:string;reason:string;measured?:boolean;ok?:boolean|null;source?:boolean;
   recompiles?:boolean|null;same_trace?:boolean|null;seconds?:number|null;language?:string;units_total?:number|null;units_with_source?:number|null;
+  /* robustness rows */
+  kind?:string;outcome?:Outcome|null;peak_memory_mib?:number|null;intact_units?:number|null;recovered_units?:number|null;reported?:boolean|null;
+  /* per-unit fidelity rows */
+  units?:Record<UnitOutcome,number>;details?:{unit:string;kind:string;outcome:UnitOutcome;reason:string}[];
 }
 export interface BenchResults {
   schema_version?:number;run_id:string;mode:string;created_utc:string;seconds:number;corpus:string;cases:number;
+  options?:{unit_cap?:number;robustness_timeout?:number;workers?:number};
   oracle?:{runtime:string;runtime_sha256:string|null};tables:Record<string,BenchTable>;rows?:Record<string,BenchRow[]>;
 }
 export interface BenchRun {run_id:string;mode:string;cases:number;seconds?:number;created_utc?:string;categories?:string[];winner?:string|null}

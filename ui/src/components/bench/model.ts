@@ -1,4 +1,4 @@
-import {BenchLine,BenchResults,BenchRun,BenchTable} from '../../types';
+import {BenchLine,BenchResults,BenchRun,BenchTable,Outcome,UnitOutcome} from '../../types';
 import {displayEngineName} from '../../displayNames';
 
 /**
@@ -7,10 +7,14 @@ import {displayEngineName} from '../../displayNames';
  * docs/BENCHMARKS_CODIGO.md defines the numbers (Índice Flash, medians, "measured on the same cases").
  */
 
-export const categoryOrder=['decompilers','compilers','disassemblers','converters','extractors'];
-export const categoryTitles:Record<string,string>={decompilers:'Descompiladores',compilers:'Compiladores',disassemblers:'Desensambladores',converters:'Conversores XML',extractors:'Extractores'};
+export const categoryOrder=['decompilers','robustness','unit_fidelity','compilers','disassemblers','converters','extractors'];
+export const categoryTitles:Record<string,string>={decompilers:'Descompiladores',robustness:'Robustez',unit_fidelity:'Fidelidad por unidad',compilers:'Compiladores',disassemblers:'Desensambladores',converters:'Conversores XML',extractors:'Extractores'};
+/** The two questions about the decompilers that join the Índice Flash: a run from before schema 3 has no table for them. */
+export const decompilerQuestions=['robustness','unit_fidelity'];
 export const categoryQuestions:Record<string,string>={
   decompilers:'¿Lo que emite recompila con un compilador independiente (Flex o Rascal) y Ruffle imprime la misma traza que el original?',
+  robustness:'¿Qué hace cada motor con un SWF dañado, truncado o corrupto? Lo mejor es recuperar lo que sigue intacto y avisar del daño; después dar salida sin avisar, fallar con un mensaje claro y, lo peor, caerse o colgarse.',
+  unit_fidelity:'¿El fuente de cada clase, método o acción, compilado solo y empalmado en el SWF original, imprime la misma traza que el original?',
   compilers:'¿Compilan el proyecto del corpus y el SWF se comporta como se espera?',
   disassemblers:'¿Desensamblar y reensamblar conserva el comportamiento?',
   converters:'¿Pasar de SWF a XML y de vuelta a SWF conserva el comportamiento?',
@@ -54,10 +58,24 @@ export const runLabel=(run:BenchRun)=>[dateLabel(run.created_utc??runIdToIso(run
 
 /* ---- metrics: one chart each ---- */
 
-export interface Metric {id:string;title:string;unit:Unit;lowerIsBetter?:boolean;referenceIs100?:boolean;value:(line:BenchLine)=>number|null;note:string}
+/* ---- the terms of the Índice Flash ---- */
+
+export interface Term {id:string;label:string}
+/** The six terms the index can have, in order: the first four are in every run that counts the units, the last two when the run measured them for every ranked engine. */
+export const indexTerms:Term[]=[{id:'source',label:'fuente'},{id:'recompiles',label:'recompila'},{id:'same_trace',label:'misma traza'},{id:'units',label:'unidades con fuente'},{id:'unit_fidelity',label:'fidelidad por unidad'},{id:'robustness',label:'robustez'}];
+const baseTerms=['source','recompiles','same_trace','units'];
+/** What the run says its index averages. A run from before schema 3 does not say: it averaged the four base terms if it has an index at all. */
+export const termsOf=(table:BenchTable):string[]=>table.index_components??(table.engines.some(line=>typeof line.flash_index==='number')?baseTerms:[]);
+const termLabel=(id:string)=>indexTerms.find(term=>term.id===id)?.label??id;
+
+export interface Metric {id:string;title:string;unit:Unit;lowerIsBetter?:boolean;referenceIs100?:boolean;value:(line:BenchLine)=>number|null;note:string;
+  /** what one sample of the figure is called in the tooltips (cases, damaged files...) */
+  noun?:[string,string];
+  /** more lines for the tooltip of a bar, after the sample */
+  extra?:(line:BenchLine)=>string[]}
 export const metrics:Record<string,Metric>={
   flash:{id:'flash',title:'Índice Flash',unit:'index',value:line=>finite(line.flash_index),
-    note:'Media de cuatro porcentajes que se miden igual en todos los motores, JPEXS incluido: casos con fuente completo, casos que recompilan, casos con la misma traza y unidades del SWF con fuente (de 0 a 100). No usa la cercanía ni la cobertura de JPEXS. Solo se ordenan motores medidos sobre los mismos casos.'},
+    note:'Media de los porcentajes que se miden igual en todos los motores, JPEXS incluido (de 0 a 100). No usa la cercanía ni la cobertura de JPEXS. Solo se ordenan motores medidos sobre los mismos casos.'},
   trace:{id:'trace',title:'Misma traza',unit:'percent',value:line=>percentOf(line.same_trace,line.cases),
     note:'Porcentaje de casos en que el fuente emitido recompila y Ruffle imprime la misma traza que el SWF original. Es el criterio de comportamiento.'},
   recompiles:{id:'recompiles',title:'Recompila',unit:'percent',value:line=>percentOf(line.recompiles,line.cases),
@@ -73,6 +91,14 @@ export const metrics:Record<string,Metric>={
   speed:{id:'speed',title:'Velocidad',unit:'seconds',lowerIsBetter:true,value:line=>finite(line.median_seconds),
     note:'Mediana de segundos por caso que tarda el motor en emitir el fuente, con su arranque incluido; no cuenta recompilar ni Ruffle. Menos es mejor. Un motor que falla pronto también sale rápido: léase junto al Índice Flash.'},
   ok:{id:'ok',title:'Casos correctos',unit:'percent',value:line=>percentOf(line.ok,line.cases),note:''},
+  robustness:{id:'robustness',title:'Robustez',unit:'index',value:line=>finite(line.robustness),noun:['archivo dañado','archivos dañados'],
+    note:'Nota de 0 a 100 sobre los archivos dañados (truncados o corruptos): cada archivo vale 100 si el motor recupera lo que sigue intacto y avisa del daño, 60 si da salida sin avisar, 40 si no da salida pero explica el error, y 0 si se cae o se cuelga. La nota es la media.',
+    extra:line=>typeof line.recovered_units==='number'&&typeof line.intact_units==='number'&&line.intact_units>0?[`${line.recovered_units} de ${plural(line.intact_units,'unidad intacta','unidades intactas')} con fuente`]:[]},
+  recovery:{id:'recovery',title:'Unidades recuperadas',unit:'percent',value:line=>scaled(line.unit_recovery),noun:['archivo dañado','archivos dañados'],
+    note:'Media, por archivo dañado, de las clases, scripts y acciones que seguían intactos (ningún byte dañado toca su código ni lo que necesita para leerse) para las que el motor emitió fuente verificado. Solo cuenta los archivos de los que algo se podía recuperar; no entra en la nota de robustez.'},
+  fidelity:{id:'fidelity',title:'Fidelidad por unidad',unit:'percent',value:line=>scaled(line.fidelity!==undefined?line.fidelity:line.unit_fidelity),
+    note:'Porcentaje de unidades (clases, métodos y acciones) cuyo fuente, compilado solo con el compilador de PySWF y empalmado en el SWF original, hace que Ruffle imprima la misma traza. Las unidades que la traza del caso nunca ejecuta no se juzgan y no cuentan. Es la misma ruta de compilación para todos los motores.',
+    extra:line=>{const judged=line.judged??line.unit_fidelity_judged;return typeof judged==='number'?[plural(judged,'unidad juzgada','unidades juzgadas')+(typeof line.not_run==='number'&&line.not_run>0?`, ${plural(line.not_run,'no se ejecuta','no se ejecutan')}`:'')]:[];}},
 };
 /** The primary metric of a category: the Índice Flash for decompilers, the share of correct cases for the rest. */
 export const primaryMetric=(category:string,table:BenchTable):Metric=>category==='decompilers'?metrics.flash:{...metrics.ok,note:`Porcentaje de ${table.unit}.`};
@@ -106,18 +132,32 @@ export interface BarItem {key:string;engine:string;label:string;sub?:string;valu
 export interface BarGroup {label?:string;items:BarItem[]}
 export interface Chart {mode:Classified['mode'];groups:BarGroup[];hasData:boolean;domain:[number,number];ticks:number[]}
 
-const casesText=(line:BenchLine,total:number)=>total>line.cases?`${line.cases} de ${total} ${total===1?'caso':'casos'}`:plural(line.cases,'caso','casos');
+const casesText=(line:BenchLine,total:number,noun:[string,string]=['caso','casos'])=>total>line.cases?`${line.cases} de ${total} ${total===1?noun[0]:noun[1]}`:plural(line.cases,noun[0],noun[1]);
 
 /** Lines of a tooltip, after the value: the sample the number comes from and what else explains it. */
-function detail(line:BenchLine,metric:Metric,total:number,muted:boolean):string[]{
-  const lines=[metric.id==='speed'&&typeof line.timed_cases==='number'?`mediana de ${plural(line.timed_cases,'caso','casos')}`:casesText(line,total)];
+function detail(line:BenchLine,metric:Metric,total:number,muted:boolean,terms:string[]):string[]{
+  const lines=[metric.id==='speed'&&typeof line.timed_cases==='number'?`mediana de ${plural(line.timed_cases,'caso','casos')}`:casesText(line,total,metric.noun)];
   if(metric.id==='flash'){
-    const parts:[string,Metric][]=[['fuente',metrics.source],['recompila',metrics.recompiles],['misma traza',metrics.trace],['unidades',metrics.units]];
-    lines.push(parts.map(([name,part])=>{const value=part.value(line);return `${name} ${value===null?'—':valueLabel('percent',value)}`;}).join(' · '));
+    lines.push(terms.map(term=>{const value=termPercent(line,term);return `${termLabel(term)} ${value===null?'—':valueLabel('percent',value)}`;}).join(' · '));
   }
+  lines.push(...(metric.extra?.(line)??[]));
   if(line.reference&&metric.referenceIs100)lines.push('Referencia: vale 100 % por definición');
   else if(muted)lines.push('Medido sobre otros casos: no se ordena con el resto');
   return lines;
+}
+
+/** One term of the index for a decompiler line, as a percentage; None where the run did not measure it. An engine measured for
+ *  per-unit fidelity that had no unit to judge scores 0 there, as in the index. */
+function termPercent(line:BenchLine,term:string):number|null{
+  switch(term){
+    case 'source':return metrics.source.value(line);
+    case 'recompiles':return metrics.recompiles.value(line);
+    case 'same_trace':return metrics.trace.value(line);
+    case 'units':return metrics.units.value(line);
+    case 'unit_fidelity':{const value=scaled(line.unit_fidelity);return value!==null?value:line.unit_fidelity_cases?0:null;}
+    case 'robustness':return finite(line.robustness);
+    default:return null;
+  }
 }
 
 /** Ticks and domain: 0 to 100 for percentages and the index, a round maximum for seconds. */
@@ -138,13 +178,14 @@ const tidy=(value:number|null)=>value===null?null:Math.round(value*1e6)/1e6;
 export function chartFor(table:BenchTable,metric:Metric):Chart{
   const found=classify(table);
   const total=table.corpus_cases??Math.max(0,...found.measured.map(line=>line.cases));
+  const terms=termsOf(table);
   const item=(line:BenchLine,muted:boolean):BarItem=>{
     const value=metric.value(line);
     const label=engineName(line);
-    const lines=detail(line,metric,total,muted);
+    const lines=detail(line,metric,total,muted,terms);
     const reference=!!line.reference&&!!metric.referenceIs100;
     const shown=value===null?'sin datos en esta corrida':exactLabel(metric.unit,value);
-    return {key:line.engine,engine:line.engine,label,sub:muted?casesText(line,total):undefined,value,slot:slotOf(line.engine),reference,muted,rank:null,
+    return {key:line.engine,engine:line.engine,label,sub:muted?casesText(line,total,metric.noun):undefined,value,slot:slotOf(line.engine),reference,muted,rank:null,
       aria:`${label}: ${shown}. ${lines.join('. ')}`,tip:{title:label,value:value===null?'Sin datos en esta corrida':exactLabel(metric.unit,value),lines}};
   };
   const order=(items:BarItem[])=>[...items].sort((a,b)=>Number(a.value===null)-Number(b.value===null)||(metric.lowerIsBetter?1:-1)*((tidy(a.value)??0)-(tidy(b.value)??0))||a.label.localeCompare(b.label,'es'));
@@ -167,6 +208,89 @@ export function chartFor(table:BenchTable,metric:Metric):Chart{
   return {mode:found.mode,groups,hasData:shown.length>0,...scaleFor(metric.unit,shown)};
 }
 
+/* ---- stacked bars: how a set of cases ended, one bar per engine ---- */
+
+export interface StackSpec {id:string;label:string;short:string}
+/** The five outcomes of an engine on a damaged file, best first. */
+export const outcomeSpecs:(StackSpec&{id:Outcome})[]=[
+  {id:'recovered',label:'Recuperó lo intacto y avisó del daño',short:'recuperó'},
+  {id:'partial',label:'Dio salida, pero sin avisar o sin lo intacto',short:'parcial'},
+  {id:'clean_error',label:'Sin salida, con un error claro',short:'error claro'},
+  {id:'crash',label:'Se cayó',short:'caída'},
+  {id:'hang',label:'Se colgó',short:'cuelgue'}];
+/** The four outcomes of a unit compiled alone and spliced into the original SWF. */
+export const unitSpecs:(StackSpec&{id:UnitOutcome})[]=[
+  {id:'same',label:'Misma traza que el original',short:'misma traza'},
+  {id:'different',label:'Otra traza',short:'otra traza'},
+  {id:'no_compile',label:'No compila',short:'no compila'},
+  {id:'not_run',label:'La traza no la ejecuta (no se juzga)',short:'no se ejecuta'}];
+
+export interface StackItem {key:string;engine:string;label:string;sub?:string;slot:number;muted:boolean;rank:number|null;total:number;segments:{id:string;value:number}[];aria:string;tip:Tip}
+export interface StackGroup {label?:string;items:StackItem[]}
+export interface Stack {mode:Classified['mode'];groups:StackGroup[];hasData:boolean}
+
+/** One stacked bar per engine, ordered and ranked by `order` (best first), the engines measured on other cases apart. */
+export function stackFor(table:BenchTable,specs:StackSpec[],read:(line:BenchLine)=>Record<string,number>|undefined,order:Metric,noun:[string,string]):Stack{
+  const found=classify(table);
+  const item=(line:BenchLine,muted:boolean):StackItem=>{
+    const counts=read(line)??{};
+    const segments=specs.map(spec=>({id:spec.id,value:counts[spec.id]??0}));
+    const total=segments.reduce((sum,segment)=>sum+segment.value,0);
+    const label=engineName(line);
+    const score=order.value(line);
+    const lines=[plural(total,noun[0],noun[1]),...specs.map(spec=>`${spec.short}: ${counts[spec.id]??0}${total?` (${valueLabel('percent',100*(counts[spec.id]??0)/total)})`:''}`),
+      ...(muted?['Medido sobre otros casos: no se ordena con el resto']:[])];
+    const value=score===null?'Sin datos en esta corrida':`${order.title} ${exactLabel(order.unit,score)}`;
+    return {key:line.engine,engine:line.engine,label,sub:muted?plural(total,noun[0],noun[1]):undefined,slot:slotOf(line.engine),muted,rank:null,total,segments,
+      aria:`${label}: ${total?specs.map(spec=>`${spec.short} ${counts[spec.id]??0}`).join(', '):'sin datos'}. ${lines[0]}`,tip:{title:label,value,lines}};
+  };
+  const scoreOf=(bar:StackItem)=>order.value(found.measured.find(line=>line.engine===bar.engine)!);
+  const sorted=(items:StackItem[])=>[...items].sort((a,b)=>Number(a.total===0)-Number(b.total===0)||((tidy(scoreOf(b))??-1)-(tidy(scoreOf(a))??-1))||a.label.localeCompare(b.label,'es'));
+  const groups:StackGroup[]=[];
+  if(found.mode==='ranked'||found.mode==='unranked'||found.mode==='single'){
+    const first=sorted((found.mode==='ranked'?found.ranked:found.measured).map(line=>item(line,false)));
+    if(found.mode==='ranked'){
+      let position=0,last:number|null=null,rank=0;
+      for(const bar of first){
+        const score=tidy(scoreOf(bar));
+        if(score===null||bar.total===0)continue;
+        position+=1;
+        if(score!==last){rank=position;last=score;}
+        bar.rank=rank;
+      }
+    }
+    groups.push({items:first});
+    if(found.others.length&&found.mode==='ranked')groups.push({label:'Medidos sobre otros casos',items:sorted(found.others.map(line=>item(line,true)))});
+  }
+  return {mode:found.mode,groups,hasData:groups.some(group=>group.items.some(bar=>bar.total>0))};
+}
+
+/* ---- small multiples: one chart per kind of damage, per kind of unit ---- */
+
+/** What each kind of damage does to a file, for the note under its chart. */
+export const damageNotes:Record<string,string>={
+  truncate_header:'El archivo se corta dentro de la cabecera (firma, longitud, rectángulo o frecuencia): no queda nada que recuperar, así que lo mejor es un error claro.',
+  truncate_tag:'El archivo se corta en mitad de un tag que no es código. Si el corte cae después del código, el código sigue entero y se puede recuperar.',
+  truncate_code:'El archivo se corta en mitad del cuerpo de un método o de una acción: lo anterior sigue intacto y un motor tolerante debería recuperarlo.',
+  bad_length:'La longitud de archivo de la cabecera no coincide con la real, pero el contenido está entero: lo ideal es leerlo todo y avisar.',
+  bad_compression:'El flujo zlib de un CWS está roto (bytes cambiados, cabecera o suma de comprobación malas): se pierde lo que viene después del primer byte dañado.',
+  bad_tag_length:'Un tag declara una longitud errónea y los siguientes se leen desde un sitio equivocado; el código anterior al tag sigue intacto.',
+  flip_code:'Se cambian bytes al azar dentro del tag de código (DoABC o DoAction): las unidades que el daño no toca siguen intactas.',
+  flip_noncode:'Se cambian bytes al azar dentro de un tag que no es código: todo el código sigue intacto.'};
+
+/** The robustness score of the files of one kind of damage, as a metric for its own chart. */
+export const damageMetric=(kind:string,title:string):Metric=>({id:`damage-${kind}`,title,unit:'index',noun:['archivo dañado','archivos dañados'],note:damageNotes[kind]??'',
+  value:line=>finite(line.by_kind?.[kind]?.score)});
+
+/** Per-unit fidelity of one group of unit kinds (classes and actions together, methods apart), as a metric for its own chart. */
+export const unitKindMetric=(id:string,title:string,kinds:string[],note:string):Metric=>({id,title,unit:'percent',noun:['caso','casos'],note,
+  value:line=>{
+    const parts=kinds.map(kind=>line.by_kind?.[kind]).filter(part=>!!part);
+    const judged=parts.reduce((sum,part)=>sum+(part!.judged??0),0);
+    return judged>0?100*parts.reduce((sum,part)=>sum+(part!.same??0),0)/judged:null;
+  },
+  extra:line=>{const judged=kinds.reduce((sum,kind)=>sum+(line.by_kind?.[kind]?.judged??0),0);return judged?[plural(judged,'unidad juzgada','unidades juzgadas')]:['ninguna unidad juzgada'];}});
+
 /* ---- highlight cards ---- */
 
 export interface Highlight {id:string;title:string;value:string;engine?:string;name?:string;slot?:number;sub:string}
@@ -180,7 +304,7 @@ const names=(list:string[])=>list.length>1?`${list.slice(0,-1).join(', ')} y ${l
 const tiedWith=(scored:Scored[])=>scored.slice(1).filter(other=>tidy(other.value)===tidy(scored[0].value)).map(other=>engineName(other.line));
 
 /**
- * Four cards from the decompilers table: only engines measured on the same cases compete, JPEXS among them (except for the
+ * Six cards from the decompilers table: only engines measured on the same cases compete, JPEXS among them (except for the
  * closeness to JPEXS, where it is the reference). A lead of one case or less is noise (as in the table), a lead of under one
  * point of the index is a technical tie.
  */
@@ -196,6 +320,10 @@ export function highlights(results:BenchResults):Highlight[]{
   const lead=trace.length>1?trace[0].value-trace[1].value:null;
   const flashTie=flash.length?tiedWith(flash):[],closeTie=close.length?tiedWith(close):[],fastTie=fast.length?tiedWith(fast):[],traceTie=trace.length?tiedWith(trace):[];
   const flashOf=fast.length?fast[0].line.flash_index:null;
+  const robust=leaders(pool,metrics.robustness.value),faithful=leaders(pool,metrics.fidelity.value);
+  const robustTie=robust.length?tiedWith(robust):[],faithfulTie=faithful.length?tiedWith(faithful):[];
+  const damaged=results.tables.robustness?.engines.find(line=>line.engine===robust[0]?.line.engine);
+  const wasMeasured=(key:string)=>key in results.tables?'Sin datos en esta corrida.':'Sin datos en esta corrida: es anterior a esta medición.';
   return [
     card('flash','Mejor Índice Flash',flash[0],flash[0]?valueLabel('index',flash[0].value):'',
       !flash.length?(pool.length?'Sin datos en esta corrida: no contó las unidades del SWF.':none):flashTie.length?`Empate con ${names(flashTie)}.`:gap===null?'Único motor con índice.':gap<1?`Empate técnico con ${engineName(flash[1].line)}.`:`${valueLabel('index',gap)} puntos sobre ${engineName(flash[1].line)}.`),
@@ -205,6 +333,10 @@ export function highlights(results:BenchResults):Highlight[]{
       !fast.length?(pool.length?'Sin datos en esta corrida: la corrida no midió tiempos.':none):`${fastTie.length?`Empate con ${names(fastTie)}. `:''}Por caso (mediana)${flashOf!=null?` · Índice Flash ${valueLabel('index',flashOf)}`:''}.`),
     card('cases','Más casos con la misma traza',trace[0],trace[0]?`${trace[0].value} de ${trace[0].line.cases}`:'',
       !trace.length?none:lead===null?'Único motor comparable.':lead===0?`Empate con ${names(traceTie)}.`:lead<=1?`Ventaja de 1 caso sobre ${engineName(trace[1].line)}: dentro del ruido.`:`Ventaja de ${lead} casos sobre ${engineName(trace[1].line)}.`),
+    card('robustness','Más robusto ante archivos dañados',robust[0],robust[0]?valueLabel('index',robust[0].value):'',
+      !robust.length?(pool.length?wasMeasured('robustness'):none):`${robustTie.length?`Empate con ${names(robustTie)}. `:''}${damaged?.outcomes?`Recuperó ${damaged.outcomes.recovered} de ${plural(damaged.cases,'archivo','archivos')}.`:'Nota de 0 a 100.'}`),
+    card('fidelity','Mayor fidelidad por unidad',faithful[0],faithful[0]?valueLabel('percent',faithful[0].value):'',
+      !faithful.length?(pool.length?wasMeasured('unit_fidelity'):none):`${faithfulTie.length?`Empate con ${names(faithfulTie)}. `:''}${typeof faithful[0].line.unit_fidelity_judged==='number'?`Sobre ${plural(faithful[0].line.unit_fidelity_judged,'unidad juzgada','unidades juzgadas')}.`:'Unidades compiladas solas.'}`),
   ];
 }
 

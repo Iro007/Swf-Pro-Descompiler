@@ -1,0 +1,1720 @@
+{
+  "schema_version": 1,
+  "corpus_id": "damaged-20261024",
+  "generator": "engines/pyswf/tools/make_damaged_corpus.py",
+  "seed": 20261024,
+  "prng": "sha256-counter",
+  "source_corpus": "parity-20261014/optimized",
+  "source_manifest_sha256": "675525c78f00b728db9d6d196936ede97e5647fc646d4d4ae9795add0020e39d",
+  "damage_kinds": {
+    "truncate_header": "Truncado dentro de la cabecera",
+    "truncate_tag": "Truncado en mitad de un tag",
+    "truncate_code": "Truncado en mitad del código",
+    "bad_length": "Longitud de archivo errónea",
+    "bad_compression": "Flujo zlib roto (CWS)",
+    "bad_tag_length": "Longitud de tag errónea",
+    "flip_code": "Bytes alterados en un tag de código",
+    "flip_noncode": "Bytes alterados en un tag que no es código"
+  },
+  "cases": [
+    {
+      "id": "truncate-header-dev-as2-timeline",
+      "relative": "truncate-header-dev-as2-timeline.swf",
+      "kind": "truncate_header",
+      "family_id": "dev-as2-timeline",
+      "language": "as2",
+      "source": "parity-20261014/optimized/swf/dev-as2-timeline/release.fws.swf",
+      "source_sha256": "892d362d0bfe117abac2048d050cbf1200bcb1f7aa90ac1f2784903161730c45",
+      "source_bytes": 207,
+      "options": {
+        "cut": 3
+      },
+      "params": {
+        "cut": 3,
+        "header_bytes": 19
+      },
+      "seed": 17830329780508487772,
+      "bytes": 3,
+      "sha256": "2a44829a6f3aa6ac5c2752e7de248663c2593a0855acb60cfe1d4c450fd77953",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            3,
+            207
+          ]
+        ]
+      }
+    },
+    {
+      "id": "truncate-header-dev-as2-captures",
+      "relative": "truncate-header-dev-as2-captures.swf",
+      "kind": "truncate_header",
+      "family_id": "dev-as2-captures",
+      "language": "as2",
+      "source": "parity-20261014/optimized/swf/dev-as2-captures/release.fws.swf",
+      "source_sha256": "9f11b8308bdc97bd0e2be2939255332c8b5c1bcfed5e801c886e988a3480b71f",
+      "source_bytes": 169,
+      "options": {
+        "cut": 6
+      },
+      "params": {
+        "cut": 6,
+        "header_bytes": 19
+      },
+      "seed": 13859845744959975600,
+      "bytes": 6,
+      "sha256": "5611e7c4a65021751c2c8ff6bd6ea1ed11bf12fc607a0afef973cc51c1b69124",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            6,
+            169
+          ]
+        ]
+      }
+    },
+    {
+      "id": "truncate-header-dev-as3-classes-namespaces",
+      "relative": "truncate-header-dev-as3-classes-namespaces.swf",
+      "kind": "truncate_header",
+      "family_id": "dev-as3-classes-namespaces",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-as3-classes-namespaces/release.fws.swf",
+      "source_sha256": "ab8688179e5fbb7c922b022466fdc337526bd47d598f92a51c77f5b321719cce",
+      "source_bytes": 1242,
+      "options": {
+        "cut": 8
+      },
+      "params": {
+        "cut": 8,
+        "header_bytes": 21
+      },
+      "seed": 8774542375867744191,
+      "bytes": 8,
+      "sha256": "5797c81eb463eb25a60ae7979926c6b0d184fa9e69769bdd8da7d027336f588b",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            8,
+            1242
+          ]
+        ]
+      }
+    },
+    {
+      "id": "truncate-header-dev-as3-closures",
+      "relative": "truncate-header-dev-as3-closures.swf",
+      "kind": "truncate_header",
+      "family_id": "dev-as3-closures",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-as3-closures/release.fws.swf",
+      "source_sha256": "6827a90d565f059ce1cdea390d9a8c62ba90e31095e1e03108ab9fab77862cf6",
+      "source_bytes": 997,
+      "options": {
+        "cut": 11
+      },
+      "params": {
+        "cut": 11,
+        "header_bytes": 21
+      },
+      "seed": 3480153109162015849,
+      "bytes": 11,
+      "sha256": "9d18b2c215410656f423fa69d5388d6eea2882d601fffa95a23121dae1956791",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            11,
+            997
+          ]
+        ]
+      }
+    },
+    {
+      "id": "truncate-header-dev-as3-control-handlers",
+      "relative": "truncate-header-dev-as3-control-handlers.swf",
+      "kind": "truncate_header",
+      "family_id": "dev-as3-control-handlers",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-as3-control-handlers/release.fws.swf",
+      "source_sha256": "600ed8586fd980756784125fa3916411c06d63c66b067622fbcc908ee1b20014",
+      "source_bytes": 1289,
+      "options": {
+        "cut": "first-3"
+      },
+      "params": {
+        "cut": 18,
+        "header_bytes": 21
+      },
+      "seed": 17425654780969958936,
+      "bytes": 18,
+      "sha256": "4ee308f57a3abffcd6949401d93a2c33f76466f92474e7e61784572d523f6bcb",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            18,
+            1289
+          ]
+        ]
+      }
+    },
+    {
+      "id": "truncate-header-dev-haxe-application",
+      "relative": "truncate-header-dev-haxe-application.swf",
+      "kind": "truncate_header",
+      "family_id": "dev-haxe-application",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-haxe-application/release.fws.swf",
+      "source_sha256": "bcd3983545e2b72379da348f7c5ce77b9fe9225c5f712a4367dfd4002a8ba84b",
+      "source_bytes": 6995,
+      "options": {
+        "cut": "first-1"
+      },
+      "params": {
+        "cut": 19,
+        "header_bytes": 20
+      },
+      "seed": 10557139149459899854,
+      "bytes": 19,
+      "sha256": "5a7d23129e659ebdbe5a2eb6227a4a012ddfd9ef3fabc22ad595fb5a67f9aa99",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            19,
+            6995
+          ]
+        ]
+      }
+    },
+    {
+      "id": "truncate-tag-dev-as2-timeline",
+      "relative": "truncate-tag-dev-as2-timeline.swf",
+      "kind": "truncate_tag",
+      "family_id": "dev-as2-timeline",
+      "language": "as2",
+      "source": "parity-20261014/optimized/swf/dev-as2-timeline/release.fws.swf",
+      "source_sha256": "892d362d0bfe117abac2048d050cbf1200bcb1f7aa90ac1f2784903161730c45",
+      "source_bytes": 207,
+      "options": {
+        "which": "first"
+      },
+      "params": {
+        "tag_index": 0,
+        "tag_code": 69,
+        "cut": 24
+      },
+      "seed": 4604761298418348770,
+      "bytes": 24,
+      "sha256": "15e702d2418d9c2897e028ea6e049beaa718d6ea142383317bfc580e57ab6d07",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            24,
+            207
+          ]
+        ]
+      }
+    },
+    {
+      "id": "truncate-tag-dev-as2-captures",
+      "relative": "truncate-tag-dev-as2-captures.swf",
+      "kind": "truncate_tag",
+      "family_id": "dev-as2-captures",
+      "language": "as2",
+      "source": "parity-20261014/optimized/swf/dev-as2-captures/release.fws.swf",
+      "source_sha256": "9f11b8308bdc97bd0e2be2939255332c8b5c1bcfed5e801c886e988a3480b71f",
+      "source_bytes": 169,
+      "options": {
+        "which": "last"
+      },
+      "params": {
+        "tag_index": 1,
+        "tag_code": 9,
+        "cut": 29
+      },
+      "seed": 6567144399618961721,
+      "bytes": 29,
+      "sha256": "a8b60bef197e8c89f9fc404a3536f34004424df1cfdc68ba84f587b2565ac168",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            29,
+            169
+          ]
+        ]
+      }
+    },
+    {
+      "id": "truncate-tag-dev-as3-classes-namespaces",
+      "relative": "truncate-tag-dev-as3-classes-namespaces.swf",
+      "kind": "truncate_tag",
+      "family_id": "dev-as3-classes-namespaces",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-as3-classes-namespaces/release.fws.swf",
+      "source_sha256": "ab8688179e5fbb7c922b022466fdc337526bd47d598f92a51c77f5b321719cce",
+      "source_bytes": 1242,
+      "options": {
+        "which": "last"
+      },
+      "params": {
+        "tag_index": 7,
+        "tag_code": 76,
+        "cut": 1237
+      },
+      "seed": 9068550654763122415,
+      "bytes": 1237,
+      "sha256": "36a6579379e05e6e9baad4ec2e8198c3d0c8608cb607004326e5990796335551",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            1237,
+            1242
+          ]
+        ]
+      }
+    },
+    {
+      "id": "truncate-tag-dev-as3-closures",
+      "relative": "truncate-tag-dev-as3-closures.swf",
+      "kind": "truncate_tag",
+      "family_id": "dev-as3-closures",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-as3-closures/release.fws.swf",
+      "source_sha256": "6827a90d565f059ce1cdea390d9a8c62ba90e31095e1e03108ab9fab77862cf6",
+      "source_bytes": 997,
+      "options": {
+        "which": "last"
+      },
+      "params": {
+        "tag_index": 7,
+        "tag_code": 76,
+        "cut": 990
+      },
+      "seed": 11478581184100702589,
+      "bytes": 990,
+      "sha256": "8d4afeaa230f539a1968fec7e791f5c5324e1163b9330573efa114e0f5d6b248",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            990,
+            997
+          ]
+        ]
+      }
+    },
+    {
+      "id": "truncate-tag-dev-as3-control-handlers",
+      "relative": "truncate-tag-dev-as3-control-handlers.swf",
+      "kind": "truncate_tag",
+      "family_id": "dev-as3-control-handlers",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-as3-control-handlers/release.fws.swf",
+      "source_sha256": "600ed8586fd980756784125fa3916411c06d63c66b067622fbcc908ee1b20014",
+      "source_bytes": 1289,
+      "options": {
+        "which": "first"
+      },
+      "params": {
+        "tag_index": 0,
+        "tag_code": 69,
+        "cut": 24
+      },
+      "seed": 5056800022400659234,
+      "bytes": 24,
+      "sha256": "53cd9398f74ca6cd61dc4d81cec62a43e0c1984b1bbfa1ea8b4865bead26ab07",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            24,
+            1289
+          ]
+        ]
+      }
+    },
+    {
+      "id": "truncate-tag-dev-haxe-application",
+      "relative": "truncate-tag-dev-haxe-application.swf",
+      "kind": "truncate_tag",
+      "family_id": "dev-haxe-application",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-haxe-application/release.fws.swf",
+      "source_sha256": "bcd3983545e2b72379da348f7c5ce77b9fe9225c5f712a4367dfd4002a8ba84b",
+      "source_bytes": 6995,
+      "options": {
+        "which": "last"
+      },
+      "params": {
+        "tag_index": 4,
+        "tag_code": 76,
+        "cut": 6981
+      },
+      "seed": 11099001706776670492,
+      "bytes": 6981,
+      "sha256": "1594f6681876c4d6daeebc93b4d48a309575784090cacab2bed2b5266cc126f7",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            6981,
+            6995
+          ]
+        ]
+      }
+    },
+    {
+      "id": "truncate-code-dev-as2-timeline",
+      "relative": "truncate-code-dev-as2-timeline.swf",
+      "kind": "truncate_code",
+      "family_id": "dev-as2-timeline",
+      "language": "as2",
+      "source": "parity-20261014/optimized/swf/dev-as2-timeline/release.fws.swf",
+      "source_sha256": "892d362d0bfe117abac2048d050cbf1200bcb1f7aa90ac1f2784903161730c45",
+      "source_bytes": 207,
+      "options": {
+        "between": [
+          0.3,
+          0.7
+        ]
+      },
+      "params": {
+        "block": 0,
+        "blocks": 1,
+        "cut": 69,
+        "between": [
+          0.3,
+          0.7
+        ]
+      },
+      "seed": 2384697298743495836,
+      "bytes": 69,
+      "sha256": "6b7415300cfe94e2075bfbc246c9b8dbe8304912755c7da8cdb07558953c6201",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            69,
+            207
+          ]
+        ]
+      }
+    },
+    {
+      "id": "truncate-code-dev-as2-captures",
+      "relative": "truncate-code-dev-as2-captures.swf",
+      "kind": "truncate_code",
+      "family_id": "dev-as2-captures",
+      "language": "as2",
+      "source": "parity-20261014/optimized/swf/dev-as2-captures/release.fws.swf",
+      "source_sha256": "9f11b8308bdc97bd0e2be2939255332c8b5c1bcfed5e801c886e988a3480b71f",
+      "source_bytes": 169,
+      "options": {
+        "between": [
+          0.3,
+          0.7
+        ]
+      },
+      "params": {
+        "block": 0,
+        "blocks": 1,
+        "cut": 112,
+        "between": [
+          0.3,
+          0.7
+        ]
+      },
+      "seed": 13407133188470380729,
+      "bytes": 112,
+      "sha256": "5de01e5f76e62d3e2ff16b6f6d9fe481ff7c6b78b27eb23e86faad212634c8c5",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            112,
+            169
+          ]
+        ]
+      }
+    },
+    {
+      "id": "truncate-code-dev-as3-classes-namespaces",
+      "relative": "truncate-code-dev-as3-classes-namespaces.swf",
+      "kind": "truncate_code",
+      "family_id": "dev-as3-classes-namespaces",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-as3-classes-namespaces/release.fws.swf",
+      "source_sha256": "ab8688179e5fbb7c922b022466fdc337526bd47d598f92a51c77f5b321719cce",
+      "source_bytes": 1242,
+      "options": {
+        "between": [
+          0.3,
+          0.7
+        ]
+      },
+      "params": {
+        "block": 4,
+        "blocks": 11,
+        "cut": 1123,
+        "between": [
+          0.3,
+          0.7
+        ]
+      },
+      "seed": 5620648529539671344,
+      "bytes": 1123,
+      "sha256": "f93bf5081c081e1d15a5f0faff98febc5ebd3fd5e4d61d509a76acc6bdcbfa01",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            1123,
+            1242
+          ]
+        ]
+      }
+    },
+    {
+      "id": "truncate-code-dev-as3-closures",
+      "relative": "truncate-code-dev-as3-closures.swf",
+      "kind": "truncate_code",
+      "family_id": "dev-as3-closures",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-as3-closures/release.fws.swf",
+      "source_sha256": "6827a90d565f059ce1cdea390d9a8c62ba90e31095e1e03108ab9fab77862cf6",
+      "source_bytes": 997,
+      "options": {
+        "between": [
+          0.3,
+          0.7
+        ]
+      },
+      "params": {
+        "block": 1,
+        "blocks": 5,
+        "cut": 896,
+        "between": [
+          0.3,
+          0.7
+        ]
+      },
+      "seed": 13025902239472544814,
+      "bytes": 896,
+      "sha256": "b0e5eceea46575348a068ae9844ad918b7d46f0ad07a1e3cad50d33489c91ff3",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            896,
+            997
+          ]
+        ]
+      }
+    },
+    {
+      "id": "truncate-code-dev-as3-control-handlers",
+      "relative": "truncate-code-dev-as3-control-handlers.swf",
+      "kind": "truncate_code",
+      "family_id": "dev-as3-control-handlers",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-as3-control-handlers/release.fws.swf",
+      "source_sha256": "600ed8586fd980756784125fa3916411c06d63c66b067622fbcc908ee1b20014",
+      "source_bytes": 1289,
+      "options": {
+        "between": [
+          0.3,
+          0.7
+        ]
+      },
+      "params": {
+        "block": 1,
+        "blocks": 4,
+        "cut": 898,
+        "between": [
+          0.3,
+          0.7
+        ]
+      },
+      "seed": 11412300051891062210,
+      "bytes": 898,
+      "sha256": "2a633b567f4b5d0d0e999242fefdf8bc1895f0d17ddb2932be52c81cdc0de34d",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            898,
+            1289
+          ]
+        ]
+      }
+    },
+    {
+      "id": "truncate-code-dev-haxe-application",
+      "relative": "truncate-code-dev-haxe-application.swf",
+      "kind": "truncate_code",
+      "family_id": "dev-haxe-application",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-haxe-application/release.fws.swf",
+      "source_sha256": "bcd3983545e2b72379da348f7c5ce77b9fe9225c5f712a4367dfd4002a8ba84b",
+      "source_bytes": 6995,
+      "options": {
+        "between": [
+          0.2,
+          0.45
+        ]
+      },
+      "params": {
+        "block": 22,
+        "blocks": 63,
+        "cut": 4774,
+        "between": [
+          0.2,
+          0.45
+        ]
+      },
+      "seed": 6338951546552284103,
+      "bytes": 4774,
+      "sha256": "0f67252f83bfd46a644633c54563cecae25ab15e5c0f8ba28986aa847a73036b",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            4774,
+            6995
+          ]
+        ]
+      }
+    },
+    {
+      "id": "truncate-code-dev-haxe-application-2",
+      "relative": "truncate-code-dev-haxe-application-2.swf",
+      "kind": "truncate_code",
+      "family_id": "dev-haxe-application",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-haxe-application/release.fws.swf",
+      "source_sha256": "bcd3983545e2b72379da348f7c5ce77b9fe9225c5f712a4367dfd4002a8ba84b",
+      "source_bytes": 6995,
+      "options": {
+        "between": [
+          0.55,
+          0.85
+        ]
+      },
+      "params": {
+        "block": 50,
+        "blocks": 63,
+        "cut": 6449,
+        "between": [
+          0.55,
+          0.85
+        ]
+      },
+      "seed": 10858858138056669946,
+      "bytes": 6449,
+      "sha256": "99f583308404a0b154292a2d38f378a39861c74bd8c777c3041d711cb1e26647",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            6449,
+            6995
+          ]
+        ]
+      }
+    },
+    {
+      "id": "bad-length-dev-as2-timeline",
+      "relative": "bad-length-dev-as2-timeline.swf",
+      "kind": "bad_length",
+      "family_id": "dev-as2-timeline",
+      "language": "as2",
+      "source": "parity-20261014/optimized/swf/dev-as2-timeline/release.fws.swf",
+      "source_sha256": "892d362d0bfe117abac2048d050cbf1200bcb1f7aa90ac1f2784903161730c45",
+      "source_bytes": 207,
+      "options": {
+        "length": "larger"
+      },
+      "params": {
+        "length": "larger",
+        "declared": 6068,
+        "real": 207
+      },
+      "seed": 6145060687950009633,
+      "bytes": 207,
+      "sha256": "522ad3cc63275d2d564d58d601750ad5e7419974208cfe62912b887dec0f00a8",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            4,
+            8
+          ]
+        ]
+      }
+    },
+    {
+      "id": "bad-length-dev-as2-captures",
+      "relative": "bad-length-dev-as2-captures.swf",
+      "kind": "bad_length",
+      "family_id": "dev-as2-captures",
+      "language": "as2",
+      "source": "parity-20261014/optimized/swf/dev-as2-captures/release.fws.swf",
+      "source_sha256": "9f11b8308bdc97bd0e2be2939255332c8b5c1bcfed5e801c886e988a3480b71f",
+      "source_bytes": 169,
+      "options": {
+        "length": "smaller"
+      },
+      "params": {
+        "length": "smaller",
+        "declared": 103,
+        "real": 169
+      },
+      "seed": 7661647794138648489,
+      "bytes": 169,
+      "sha256": "27016410656348815f9f087620fcfa230c6f3c746786c83203024600051b5890",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            4,
+            8
+          ]
+        ]
+      }
+    },
+    {
+      "id": "bad-length-dev-as3-classes-namespaces",
+      "relative": "bad-length-dev-as3-classes-namespaces.swf",
+      "kind": "bad_length",
+      "family_id": "dev-as3-classes-namespaces",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-as3-classes-namespaces/release.fws.swf",
+      "source_sha256": "ab8688179e5fbb7c922b022466fdc337526bd47d598f92a51c77f5b321719cce",
+      "source_bytes": 1242,
+      "options": {
+        "length": "zero"
+      },
+      "params": {
+        "length": "zero",
+        "declared": 0,
+        "real": 1242
+      },
+      "seed": 11875912605135209054,
+      "bytes": 1242,
+      "sha256": "d2b2452bf866c3f55e1e2eb9996b3352917506026d9dc0e205a70b800269fb31",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            4,
+            8
+          ]
+        ]
+      }
+    },
+    {
+      "id": "bad-length-dev-as3-closures",
+      "relative": "bad-length-dev-as3-closures.swf",
+      "kind": "bad_length",
+      "family_id": "dev-as3-closures",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-as3-closures/release.fws.swf",
+      "source_sha256": "6827a90d565f059ce1cdea390d9a8c62ba90e31095e1e03108ab9fab77862cf6",
+      "source_bytes": 997,
+      "options": {
+        "length": "huge"
+      },
+      "params": {
+        "length": "huge",
+        "declared": 4294967295,
+        "real": 997
+      },
+      "seed": 9678815183188927251,
+      "bytes": 997,
+      "sha256": "03b480c3e0fe2cada1fdcc5d54921905af82efe7769bd53e4e7e54d51124ba10",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            4,
+            8
+          ]
+        ]
+      }
+    },
+    {
+      "id": "bad-length-dev-as3-control-handlers",
+      "relative": "bad-length-dev-as3-control-handlers.swf",
+      "kind": "bad_length",
+      "family_id": "dev-as3-control-handlers",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-as3-control-handlers/release.fws.swf",
+      "source_sha256": "600ed8586fd980756784125fa3916411c06d63c66b067622fbcc908ee1b20014",
+      "source_bytes": 1289,
+      "options": {
+        "length": "larger"
+      },
+      "params": {
+        "length": "larger",
+        "declared": 9329,
+        "real": 1289
+      },
+      "seed": 11567340554364340741,
+      "bytes": 1289,
+      "sha256": "a87c8562c30aac2e5ccf74f8b61cc12c1cd5c36e9e2b37682eacfffe35fbd34d",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            4,
+            8
+          ]
+        ]
+      }
+    },
+    {
+      "id": "bad-length-dev-haxe-application",
+      "relative": "bad-length-dev-haxe-application.swf",
+      "kind": "bad_length",
+      "family_id": "dev-haxe-application",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-haxe-application/release.fws.swf",
+      "source_sha256": "bcd3983545e2b72379da348f7c5ce77b9fe9225c5f712a4367dfd4002a8ba84b",
+      "source_bytes": 6995,
+      "options": {
+        "length": "smaller"
+      },
+      "params": {
+        "length": "smaller",
+        "declared": 4590,
+        "real": 6995
+      },
+      "seed": 5716191493994119461,
+      "bytes": 6995,
+      "sha256": "674a089ce14d79f7cf964ddd97bc3fcd1db2ad4ed3f701cba1fe421e0fd1b621",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            4,
+            8
+          ]
+        ]
+      }
+    },
+    {
+      "id": "bad-compression-dev-as2-timeline",
+      "relative": "bad-compression-dev-as2-timeline.swf",
+      "kind": "bad_compression",
+      "family_id": "dev-as2-timeline",
+      "language": "as2",
+      "source": "parity-20261014/optimized/swf/dev-as2-timeline/release.cws.swf",
+      "source_sha256": "d04f8e1be48f786d04e982c89018599864dcbe6e6cee67274026d5805737241e",
+      "source_bytes": 172,
+      "options": {
+        "how": "flip_stream",
+        "flips": 2,
+        "at": [
+          0.25,
+          0.75
+        ]
+      },
+      "params": {
+        "how": "flip_stream",
+        "offsets": [
+          65,
+          101
+        ],
+        "intact_decompressed": 3
+      },
+      "seed": 4853789094922797915,
+      "bytes": 172,
+      "sha256": "9d1fd991b5f4320174652a33f8607767f556fb39f906ddc38f38fe62e79704a6",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            11,
+            207
+          ]
+        ]
+      }
+    },
+    {
+      "id": "bad-compression-dev-as2-captures",
+      "relative": "bad-compression-dev-as2-captures.swf",
+      "kind": "bad_compression",
+      "family_id": "dev-as2-captures",
+      "language": "as2",
+      "source": "parity-20261014/optimized/swf/dev-as2-captures/release.cws.swf",
+      "source_sha256": "e430034cd4b0724aeede5200d13c5d76cff0ebf754397f3f677c0008ebe82d87",
+      "source_bytes": 146,
+      "options": {
+        "how": "bad_checksum"
+      },
+      "params": {
+        "how": "bad_checksum",
+        "offset": 143
+      },
+      "seed": 6694324998193886396,
+      "bytes": 146,
+      "sha256": "75353012ae1ff58170ec0675fac045bcc4ee88712e8c85bc792d3740f8f860e2",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": []
+      }
+    },
+    {
+      "id": "bad-compression-dev-as3-classes-namespaces",
+      "relative": "bad-compression-dev-as3-classes-namespaces.swf",
+      "kind": "bad_compression",
+      "family_id": "dev-as3-classes-namespaces",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-as3-classes-namespaces/release.cws.swf",
+      "source_sha256": "4e79a424e004739638a14521a4c5b9fc81b2271f2ada4824c64921dee9f633b4",
+      "source_bytes": 844,
+      "options": {
+        "how": "flip_stream",
+        "flips": 2,
+        "at": [
+          0.8,
+          0.95
+        ]
+      },
+      "params": {
+        "how": "flip_stream",
+        "offsets": [
+          724,
+          774
+        ],
+        "intact_decompressed": 1053
+      },
+      "seed": 18285900503320753284,
+      "bytes": 844,
+      "sha256": "2e81678fd5640a493948aee5f2a6677acaad16c0a86ac29ccc13008b41999e03",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            1061,
+            1242
+          ]
+        ]
+      }
+    },
+    {
+      "id": "bad-compression-dev-as3-closures",
+      "relative": "bad-compression-dev-as3-closures.swf",
+      "kind": "bad_compression",
+      "family_id": "dev-as3-closures",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-as3-closures/release.cws.swf",
+      "source_sha256": "5e3575f4b041a1d6cd8c640afb7acf6666bdff503ced016760d910ae7e79603e",
+      "source_bytes": 692,
+      "options": {
+        "how": "bad_zlib_header"
+      },
+      "params": {
+        "how": "bad_zlib_header",
+        "offset": 8
+      },
+      "seed": 10133619386883971311,
+      "bytes": 692,
+      "sha256": "0e8282d92e15b6db537b7fe6cecc042799aa392ab688ff78661979998fbbd4e9",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            8,
+            997
+          ]
+        ]
+      }
+    },
+    {
+      "id": "bad-compression-dev-as3-control-handlers",
+      "relative": "bad-compression-dev-as3-control-handlers.swf",
+      "kind": "bad_compression",
+      "family_id": "dev-as3-control-handlers",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-as3-control-handlers/release.cws.swf",
+      "source_sha256": "2d16491221e26f8a2d2dd6d883f3bbff0138a8116e48892b87c3ecb164c29830",
+      "source_bytes": 880,
+      "options": {
+        "how": "flip_stream",
+        "flips": 3,
+        "at": [
+          0.25,
+          0.75
+        ]
+      },
+      "params": {
+        "how": "flip_stream",
+        "offsets": [
+          229,
+          590,
+          619
+        ],
+        "intact_decompressed": 169
+      },
+      "seed": 9839424775876984839,
+      "bytes": 880,
+      "sha256": "2d8d52c647a35d00e1b13c8b5763482b432acbe3d27494dd844989015f31dc3b",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            177,
+            1289
+          ]
+        ]
+      }
+    },
+    {
+      "id": "bad-compression-dev-haxe-application",
+      "relative": "bad-compression-dev-haxe-application.swf",
+      "kind": "bad_compression",
+      "family_id": "dev-haxe-application",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-haxe-application/release.cws.swf",
+      "source_sha256": "f08a7363aa0fea4bd3fea468f9dae0781702ed0d8ea0a7f87cc4f9c4ce7bbbdc",
+      "source_bytes": 4512,
+      "options": {
+        "how": "flip_stream",
+        "flips": 2,
+        "at": [
+          0.8,
+          0.95
+        ]
+      },
+      "params": {
+        "how": "flip_stream",
+        "offsets": [
+          3649,
+          4116
+        ],
+        "intact_decompressed": 5591
+      },
+      "seed": 14107154884436677133,
+      "bytes": 4512,
+      "sha256": "0c557ee0538b5556760ffb3622d32aaaefa2a41efe0b2c45a970a6616a72fe07",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            5599,
+            6995
+          ]
+        ]
+      }
+    },
+    {
+      "id": "bad-tag-length-dev-as2-timeline",
+      "relative": "bad-tag-length-dev-as2-timeline.swf",
+      "kind": "bad_tag_length",
+      "family_id": "dev-as2-timeline",
+      "language": "as2",
+      "source": "parity-20261014/optimized/swf/dev-as2-timeline/release.fws.swf",
+      "source_sha256": "892d362d0bfe117abac2048d050cbf1200bcb1f7aa90ac1f2784903161730c45",
+      "source_bytes": 207,
+      "options": {
+        "target": "code",
+        "length": "longer"
+      },
+      "params": {
+        "tag_index": 2,
+        "tag_code": 12,
+        "long_form": true,
+        "length": 167,
+        "declared": 170
+      },
+      "seed": 6741878888157561676,
+      "bytes": 207,
+      "sha256": "b375bd4ae51c94e12721d34ee5a7942c80f998bb91fa1dda26a4a17e795c9445",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            30,
+            207
+          ]
+        ]
+      }
+    },
+    {
+      "id": "bad-tag-length-dev-as2-captures",
+      "relative": "bad-tag-length-dev-as2-captures.swf",
+      "kind": "bad_tag_length",
+      "family_id": "dev-as2-captures",
+      "language": "as2",
+      "source": "parity-20261014/optimized/swf/dev-as2-captures/release.fws.swf",
+      "source_sha256": "9f11b8308bdc97bd0e2be2939255332c8b5c1bcfed5e801c886e988a3480b71f",
+      "source_bytes": 169,
+      "options": {
+        "target": "code",
+        "length": "shorter"
+      },
+      "params": {
+        "tag_index": 2,
+        "tag_code": 12,
+        "long_form": true,
+        "length": 129,
+        "declared": 126
+      },
+      "seed": 5392016302725975858,
+      "bytes": 169,
+      "sha256": "18f4d912f87790b5e63f1eab58abc3d659f98546b609e79aea8db29f8546fc02",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            30,
+            169
+          ]
+        ]
+      }
+    },
+    {
+      "id": "bad-tag-length-dev-as3-classes-namespaces",
+      "relative": "bad-tag-length-dev-as3-classes-namespaces.swf",
+      "kind": "bad_tag_length",
+      "family_id": "dev-as3-classes-namespaces",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-as3-classes-namespaces/release.fws.swf",
+      "source_sha256": "ab8688179e5fbb7c922b022466fdc337526bd47d598f92a51c77f5b321719cce",
+      "source_bytes": 1242,
+      "options": {
+        "target": "code",
+        "length": "longer"
+      },
+      "params": {
+        "tag_index": 6,
+        "tag_code": 82,
+        "long_form": true,
+        "length": 655,
+        "declared": 661
+      },
+      "seed": 2164729128368940113,
+      "bytes": 1242,
+      "sha256": "62ee46d265091ae937b8b5eec45920c24c32711eb306aa0c0f0b62bb9d9ec08f",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            566,
+            1242
+          ]
+        ]
+      }
+    },
+    {
+      "id": "bad-tag-length-dev-as3-closures",
+      "relative": "bad-tag-length-dev-as3-closures.swf",
+      "kind": "bad_tag_length",
+      "family_id": "dev-as3-closures",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-as3-closures/release.fws.swf",
+      "source_sha256": "6827a90d565f059ce1cdea390d9a8c62ba90e31095e1e03108ab9fab77862cf6",
+      "source_bytes": 997,
+      "options": {
+        "target": "noncode",
+        "which": "last",
+        "length": "shorter"
+      },
+      "params": {
+        "tag_index": 7,
+        "tag_code": 76,
+        "long_form": false,
+        "length": 9,
+        "declared": 5
+      },
+      "seed": 780001830604850277,
+      "bytes": 997,
+      "sha256": "0637badd427d8cbf984723b4bb72c83f4c5eed09520fa4535b93ba8008a7c2ed",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            982,
+            997
+          ]
+        ]
+      }
+    },
+    {
+      "id": "bad-tag-length-dev-as3-control-handlers",
+      "relative": "bad-tag-length-dev-as3-control-handlers.swf",
+      "kind": "bad_tag_length",
+      "family_id": "dev-as3-control-handlers",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-as3-control-handlers/release.fws.swf",
+      "source_sha256": "600ed8586fd980756784125fa3916411c06d63c66b067622fbcc908ee1b20014",
+      "source_bytes": 1289,
+      "options": {
+        "target": "noncode",
+        "which": "last",
+        "length": "longer"
+      },
+      "params": {
+        "tag_index": 7,
+        "tag_code": 76,
+        "long_form": false,
+        "length": 9,
+        "declared": 15
+      },
+      "seed": 76039012299742270,
+      "bytes": 1289,
+      "sha256": "41cfc6572e7e84ac0bc86680d92ade4cd65d794d0417deb476266376695f63e1",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            1274,
+            1289
+          ]
+        ]
+      }
+    },
+    {
+      "id": "bad-tag-length-dev-haxe-application",
+      "relative": "bad-tag-length-dev-haxe-application.swf",
+      "kind": "bad_tag_length",
+      "family_id": "dev-haxe-application",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-haxe-application/release.fws.swf",
+      "source_sha256": "bcd3983545e2b72379da348f7c5ce77b9fe9225c5f712a4367dfd4002a8ba84b",
+      "source_bytes": 6995,
+      "options": {
+        "target": "noncode",
+        "which": "last",
+        "length": "shorter"
+      },
+      "params": {
+        "tag_index": 4,
+        "tag_code": 76,
+        "long_form": false,
+        "length": 14,
+        "declared": 7
+      },
+      "seed": 16632626082740908029,
+      "bytes": 6995,
+      "sha256": "2f3f11ecd409f44aebaea8fd7f61e9f3f9a6b11ef12790ae8585c50f15f851ca",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            6975,
+            6995
+          ]
+        ]
+      }
+    },
+    {
+      "id": "flip-code-dev-as2-timeline",
+      "relative": "flip-code-dev-as2-timeline.swf",
+      "kind": "flip_code",
+      "family_id": "dev-as2-timeline",
+      "language": "as2",
+      "source": "parity-20261014/optimized/swf/dev-as2-timeline/release.fws.swf",
+      "source_sha256": "892d362d0bfe117abac2048d050cbf1200bcb1f7aa90ac1f2784903161730c45",
+      "source_bytes": 207,
+      "options": {
+        "flips": 1,
+        "where": "code"
+      },
+      "params": {
+        "tag_index": 2,
+        "tag_code": 12,
+        "where": "code",
+        "offsets": [
+          175
+        ]
+      },
+      "seed": 728990003600781637,
+      "bytes": 207,
+      "sha256": "eafb12b37faea1a40df27a015aa3f9c35f8f90d051f37c8cbcf9e8257aed1a63",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            175,
+            176
+          ]
+        ]
+      }
+    },
+    {
+      "id": "flip-code-dev-as2-captures",
+      "relative": "flip-code-dev-as2-captures.swf",
+      "kind": "flip_code",
+      "family_id": "dev-as2-captures",
+      "language": "as2",
+      "source": "parity-20261014/optimized/swf/dev-as2-captures/release.fws.swf",
+      "source_sha256": "9f11b8308bdc97bd0e2be2939255332c8b5c1bcfed5e801c886e988a3480b71f",
+      "source_bytes": 169,
+      "options": {
+        "flips": 2,
+        "where": "code"
+      },
+      "params": {
+        "tag_index": 2,
+        "tag_code": 12,
+        "where": "code",
+        "offsets": [
+          91,
+          129
+        ]
+      },
+      "seed": 16729187877910397115,
+      "bytes": 169,
+      "sha256": "67d3fe25835f03c3f6e83c1b682ed69894f9017cd781a46a291c1f7b703a264b",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            91,
+            92
+          ],
+          [
+            129,
+            130
+          ]
+        ]
+      }
+    },
+    {
+      "id": "flip-code-dev-as3-classes-namespaces",
+      "relative": "flip-code-dev-as3-classes-namespaces.swf",
+      "kind": "flip_code",
+      "family_id": "dev-as3-classes-namespaces",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-as3-classes-namespaces/release.fws.swf",
+      "source_sha256": "ab8688179e5fbb7c922b022466fdc337526bd47d598f92a51c77f5b321719cce",
+      "source_bytes": 1242,
+      "options": {
+        "flips": 1,
+        "where": "code"
+      },
+      "params": {
+        "tag_index": 6,
+        "tag_code": 82,
+        "where": "code",
+        "offsets": [
+          1083
+        ]
+      },
+      "seed": 3650814204617708791,
+      "bytes": 1242,
+      "sha256": "4678c6ecd4bf70571be64fa63c997abb87f6a5d4b093e2bb89c5dcdf6bef10ca",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            1083,
+            1084
+          ]
+        ]
+      }
+    },
+    {
+      "id": "flip-code-dev-as3-classes-namespaces-2",
+      "relative": "flip-code-dev-as3-classes-namespaces-2.swf",
+      "kind": "flip_code",
+      "family_id": "dev-as3-classes-namespaces",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-as3-classes-namespaces/release.fws.swf",
+      "source_sha256": "ab8688179e5fbb7c922b022466fdc337526bd47d598f92a51c77f5b321719cce",
+      "source_bytes": 1242,
+      "options": {
+        "flips": 3,
+        "where": "anywhere"
+      },
+      "params": {
+        "tag_index": 6,
+        "tag_code": 82,
+        "where": "anywhere",
+        "offsets": [
+          626,
+          803,
+          1000
+        ]
+      },
+      "seed": 9077383806524597181,
+      "bytes": 1242,
+      "sha256": "e3108860c9138f49f0d8f804c4c38200b446f02f1743bad2ce88b6c57f0ea05f",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            626,
+            627
+          ],
+          [
+            803,
+            804
+          ],
+          [
+            1000,
+            1001
+          ]
+        ]
+      }
+    },
+    {
+      "id": "flip-code-dev-as3-closures",
+      "relative": "flip-code-dev-as3-closures.swf",
+      "kind": "flip_code",
+      "family_id": "dev-as3-closures",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-as3-closures/release.fws.swf",
+      "source_sha256": "6827a90d565f059ce1cdea390d9a8c62ba90e31095e1e03108ab9fab77862cf6",
+      "source_bytes": 997,
+      "options": {
+        "flips": 2,
+        "where": "code"
+      },
+      "params": {
+        "tag_index": 6,
+        "tag_code": 82,
+        "where": "code",
+        "offsets": [
+          920,
+          921
+        ]
+      },
+      "seed": 7654827671534902043,
+      "bytes": 997,
+      "sha256": "bb21126ca397b9d9c45f70565b552474926e11ef01b0c60e0f7ee1d621310839",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            920,
+            922
+          ]
+        ]
+      }
+    },
+    {
+      "id": "flip-code-dev-as3-control-handlers",
+      "relative": "flip-code-dev-as3-control-handlers.swf",
+      "kind": "flip_code",
+      "family_id": "dev-as3-control-handlers",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-as3-control-handlers/release.fws.swf",
+      "source_sha256": "600ed8586fd980756784125fa3916411c06d63c66b067622fbcc908ee1b20014",
+      "source_bytes": 1289,
+      "options": {
+        "flips": 1,
+        "where": "code"
+      },
+      "params": {
+        "tag_index": 6,
+        "tag_code": 82,
+        "where": "code",
+        "offsets": [
+          1098
+        ]
+      },
+      "seed": 16634420733366709349,
+      "bytes": 1289,
+      "sha256": "7f013a19544300ad34ceef8fb5ea227af3bcd256a3b55e44bbeab0b9607299ef",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            1098,
+            1099
+          ]
+        ]
+      }
+    },
+    {
+      "id": "flip-code-dev-haxe-application",
+      "relative": "flip-code-dev-haxe-application.swf",
+      "kind": "flip_code",
+      "family_id": "dev-haxe-application",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-haxe-application/release.fws.swf",
+      "source_sha256": "bcd3983545e2b72379da348f7c5ce77b9fe9225c5f712a4367dfd4002a8ba84b",
+      "source_bytes": 6995,
+      "options": {
+        "flips": 1,
+        "where": "code"
+      },
+      "params": {
+        "tag_index": 3,
+        "tag_code": 82,
+        "where": "code",
+        "offsets": [
+          5788
+        ]
+      },
+      "seed": 5105845368456781599,
+      "bytes": 6995,
+      "sha256": "cb64cf2cd92c8abcb8a487b909c24ed87bd0314388eff085053d8d399de130c0",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            5788,
+            5789
+          ]
+        ]
+      }
+    },
+    {
+      "id": "flip-code-dev-haxe-application-2",
+      "relative": "flip-code-dev-haxe-application-2.swf",
+      "kind": "flip_code",
+      "family_id": "dev-haxe-application",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-haxe-application/release.fws.swf",
+      "source_sha256": "bcd3983545e2b72379da348f7c5ce77b9fe9225c5f712a4367dfd4002a8ba84b",
+      "source_bytes": 6995,
+      "options": {
+        "flips": 4,
+        "where": "anywhere"
+      },
+      "params": {
+        "tag_index": 3,
+        "tag_code": 82,
+        "where": "anywhere",
+        "offsets": [
+          1909,
+          4347,
+          5626,
+          6451
+        ]
+      },
+      "seed": 14400171248752772066,
+      "bytes": 6995,
+      "sha256": "cefb63e402c8ef174ca057a0cc9a65e726b81f8c35ab114ba6af8e4505a5818b",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            1909,
+            1910
+          ],
+          [
+            4347,
+            4348
+          ],
+          [
+            5626,
+            5627
+          ],
+          [
+            6451,
+            6452
+          ]
+        ]
+      }
+    },
+    {
+      "id": "flip-noncode-dev-as2-timeline",
+      "relative": "flip-noncode-dev-as2-timeline.swf",
+      "kind": "flip_noncode",
+      "family_id": "dev-as2-timeline",
+      "language": "as2",
+      "source": "parity-20261014/optimized/swf/dev-as2-timeline/release.fws.swf",
+      "source_sha256": "892d362d0bfe117abac2048d050cbf1200bcb1f7aa90ac1f2784903161730c45",
+      "source_bytes": 207,
+      "options": {
+        "flips": 1
+      },
+      "params": {
+        "tag_index": 1,
+        "tag_code": 9,
+        "offsets": [
+          27
+        ]
+      },
+      "seed": 12472027900065413438,
+      "bytes": 207,
+      "sha256": "c999ee1389b009d1b32e42b647e4d0c18ee5068cf473ac7a7a400d5a194fd52a",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            27,
+            28
+          ]
+        ]
+      }
+    },
+    {
+      "id": "flip-noncode-dev-as2-captures",
+      "relative": "flip-noncode-dev-as2-captures.swf",
+      "kind": "flip_noncode",
+      "family_id": "dev-as2-captures",
+      "language": "as2",
+      "source": "parity-20261014/optimized/swf/dev-as2-captures/release.fws.swf",
+      "source_sha256": "9f11b8308bdc97bd0e2be2939255332c8b5c1bcfed5e801c886e988a3480b71f",
+      "source_bytes": 169,
+      "options": {
+        "flips": 1
+      },
+      "params": {
+        "tag_index": 0,
+        "tag_code": 69,
+        "offsets": [
+          21
+        ]
+      },
+      "seed": 16619368681302164039,
+      "bytes": 169,
+      "sha256": "166e9c5a1ab26230f648b7c70e241ba2bcbadd08a92f382d5efda9f12beaa521",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            21,
+            22
+          ]
+        ]
+      }
+    },
+    {
+      "id": "flip-noncode-dev-as3-classes-namespaces",
+      "relative": "flip-noncode-dev-as3-classes-namespaces.swf",
+      "kind": "flip_noncode",
+      "family_id": "dev-as3-classes-namespaces",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-as3-classes-namespaces/release.fws.swf",
+      "source_sha256": "ab8688179e5fbb7c922b022466fdc337526bd47d598f92a51c77f5b321719cce",
+      "source_bytes": 1242,
+      "options": {
+        "flips": 2
+      },
+      "params": {
+        "tag_index": 7,
+        "tag_code": 76,
+        "offsets": [
+          1232,
+          1233
+        ]
+      },
+      "seed": 16971393316563642839,
+      "bytes": 1242,
+      "sha256": "378c003b91297f5c82df89f3b05c9aeb8bcc60d09c20a5af26356da541d09d6e",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            1232,
+            1234
+          ]
+        ]
+      }
+    },
+    {
+      "id": "flip-noncode-dev-as3-closures",
+      "relative": "flip-noncode-dev-as3-closures.swf",
+      "kind": "flip_noncode",
+      "family_id": "dev-as3-closures",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-as3-closures/release.fws.swf",
+      "source_sha256": "6827a90d565f059ce1cdea390d9a8c62ba90e31095e1e03108ab9fab77862cf6",
+      "source_bytes": 997,
+      "options": {
+        "flips": 1
+      },
+      "params": {
+        "tag_index": 2,
+        "tag_code": 65,
+        "offsets": [
+          524
+        ]
+      },
+      "seed": 16197301348701990029,
+      "bytes": 997,
+      "sha256": "90875aad87767d8613146a251505e019cf6928796e5c7644542867e37e55c61d",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            524,
+            525
+          ]
+        ]
+      }
+    },
+    {
+      "id": "flip-noncode-dev-as3-control-handlers",
+      "relative": "flip-noncode-dev-as3-control-handlers.swf",
+      "kind": "flip_noncode",
+      "family_id": "dev-as3-control-handlers",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-as3-control-handlers/release.fws.swf",
+      "source_sha256": "600ed8586fd980756784125fa3916411c06d63c66b067622fbcc908ee1b20014",
+      "source_bytes": 1289,
+      "options": {
+        "flips": 2
+      },
+      "params": {
+        "tag_index": 5,
+        "tag_code": 43,
+        "offsets": [
+          564,
+          565
+        ]
+      },
+      "seed": 12431290121392820162,
+      "bytes": 1289,
+      "sha256": "9738b56ed9f0af76246339b0ce3951519208fb5837a13c97be288e5fe0feb6ac",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            564,
+            566
+          ]
+        ]
+      }
+    },
+    {
+      "id": "flip-noncode-dev-haxe-application",
+      "relative": "flip-noncode-dev-haxe-application.swf",
+      "kind": "flip_noncode",
+      "family_id": "dev-haxe-application",
+      "language": "as3",
+      "source": "parity-20261014/optimized/swf/dev-haxe-application/release.fws.swf",
+      "source_sha256": "bcd3983545e2b72379da348f7c5ce77b9fe9225c5f712a4367dfd4002a8ba84b",
+      "source_bytes": 6995,
+      "options": {
+        "flips": 3
+      },
+      "params": {
+        "tag_index": 1,
+        "tag_code": 9,
+        "offsets": [
+          28,
+          29,
+          30
+        ]
+      },
+      "seed": 10348805359484444990,
+      "bytes": 6995,
+      "sha256": "df2adc118e62f0b2cd67d71610940fa52c1aaec6f8338e34637e3acc496b1465",
+      "damage": {
+        "basis": "decompressed_swf_including_8_byte_header",
+        "ranges": [
+          [
+            28,
+            31
+          ]
+        ]
+      }
+    }
+  ]
+}

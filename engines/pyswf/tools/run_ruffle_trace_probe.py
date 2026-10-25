@@ -44,8 +44,10 @@ def bounded_run(command, cwd, timeout=30, memory=2 * 1024**3):
             return {'returncode': process.returncode, 'stdout': stdout.decode('utf-8', errors='replace'),
                     'stderr': stderr.decode('utf-8', errors='replace'),
                     'wall_seconds': time.perf_counter() - start, 'memory_limit_bytes': memory,
+                    'peak_memory_bytes': job.peak_bytes() if job else None,
                     'timeout_seconds': timeout, 'timed_out': False}
         except subprocess.TimeoutExpired:
+            peak = job.peak_bytes() if job else None
             if job:
                 job.close(); job = None
             else:
@@ -56,7 +58,7 @@ def bounded_run(command, cwd, timeout=30, memory=2 * 1024**3):
             return {'returncode': process.returncode, 'stdout': stdout.decode('utf-8', errors='replace'),
                     'stderr': stderr.decode('utf-8', errors='replace'), 'timed_out': True,
                     'wall_seconds': time.perf_counter() - start, 'memory_limit_bytes': memory,
-                    'timeout_seconds': timeout}
+                    'peak_memory_bytes': peak, 'timeout_seconds': timeout}
         finally:
             if job:
                 job.close()

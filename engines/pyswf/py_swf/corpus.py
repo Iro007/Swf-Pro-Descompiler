@@ -40,6 +40,29 @@ def read_immutable_manifest(path, *, verify_sources=True):
     return manifest
 
 
+def read_damaged_manifest(path):
+    """Check the damaged-file corpus (corpus/damaged, written by tools/make_damaged_corpus.py): its manifest against the
+    seal beside it, every damaged file against its sha256 and every source against the sealed parity corpus."""
+    root = Path(path).resolve()
+    data = (root / 'manifest.json').read_bytes()
+    manifest = json.loads(data)
+    if hashlib.sha256(data).hexdigest() != (root / 'manifest.sha256').read_text(encoding='utf-8').strip():
+        raise ValueError('Damaged corpus manifest changed')
+    sources = root.parent
+    seen = set()
+    for case in manifest.get('cases', []):
+        if case['id'] in seen:
+            raise ValueError('Duplicate damaged case: ' + case['id'])
+        seen.add(case['id'])
+        file = (root / case['relative']).resolve()
+        if not file.is_relative_to(root) or hashlib.sha256(file.read_bytes()).hexdigest() != case['sha256']:
+            raise ValueError('Damaged corpus file changed: ' + case['relative'])
+        source = (sources / case['source']).resolve()
+        if not source.is_relative_to(sources) or hashlib.sha256(source.read_bytes()).hexdigest() != case['source_sha256']:
+            raise ValueError('Damaged corpus source changed: ' + case['source'])
+    return manifest
+
+
 def classify_application_units(inventory, application_classes, *, language=None):
     """Ownership-based app/dependency labels; never infer from output length."""
     names = set(application_classes)

@@ -37,7 +37,8 @@ const engines = {default_engine:'auto',engines:[
   {id:'jpexs',name:'JPEXS',available:false,version:null,category:'decompiler',path:null,detail:'Not configured in fixture',operations:['decompile','edit','fla','xfl']},
   ...['haxe','haxeflixel','flex','mtasc'].map(id=>({id,name:id,available:false,version:null,category:'compiler',path:null,detail:'Not configured in fixture',operations:['compile_project']})),
 ]};
-const benchRuns = [{run_id:'run-2',mode:'smoke',cases:6,seconds:20,created_utc:'2026-10-24T01:00:00Z',categories:['decompilers','compilers','extractors']},{run_id:'run-1',mode:'smoke',cases:6}];
+const benchRuns = [{run_id:'run-3',mode:'smoke',cases:6,seconds:900,created_utc:'2026-10-25T01:00:00Z',categories:['decompilers','robustness','unit_fidelity','compilers','extractors']},
+  {run_id:'run-2',mode:'smoke',cases:6,seconds:20,created_utc:'2026-10-24T01:00:00Z',categories:['decompilers','compilers','extractors']},{run_id:'run-1',mode:'smoke',cases:6}];
 // A run written before schema 2: no times, no `comparable`, no Indice Flash.
 const benchOld = {runs:benchRuns,folder:'C:/controlled/bench',results:{run_id:'run-1',mode:'smoke',created_utc:'2026-10-23T00:00:00Z',seconds:12,corpus:'controlled',cases:6,tables:{
   decompilers:{unit:'casos que recompilan',winner:null,note:'Sin ganador: la diferencia es de un caso.',engines:[
@@ -47,7 +48,7 @@ const benchOld = {runs:benchRuns,folder:'C:/controlled/bench',results:{run_id:'r
     {engine:'go',name:'GoSWF',cases:6,source:2,recompiles:2,same_trace:2,jpexs_closeness:null,jpexs_coverage:null,reasons:[]}]}}}};
 // Schema 2: PySWF, GoSWF and JPEXS (which competes like the others and is only the reference of the closeness) are ranked together;
 // Flare read only 2 of the 6 cases; pyflashkit is not installed.
-const benchNew = {runs:benchRuns,folder:'C:/controlled/bench',results:{schema_version:2,run_id:'run-2',mode:'smoke',created_utc:'2026-10-24T01:00:00Z',seconds:20,corpus:'controlled',cases:6,
+const benchTwo = {runs:benchRuns,folder:'C:/controlled/bench',results:{schema_version:2,run_id:'run-2',mode:'smoke',created_utc:'2026-10-24T01:00:00Z',seconds:20,corpus:'controlled',cases:6,
   oracle:{runtime:'ruffle-tests.exe',runtime_sha256:'ab'.repeat(32)},tables:{
   decompilers:{unit:'casos que recompilan',winner:null,note:'sin ganador claro: la ventaja es de 1 caso(s) o menos',corpus_cases:6,engines:[
     {engine:'native',name:'PySWF',cases:6,source:4,recompiles:4,same_trace:4,units_total:20,units_with_source:16,unit_coverage:0.8,jpexs_closeness:0.8,jpexs_coverage:0.6,median_seconds:0.15,timed_cases:6,comparable:true,flash_index:70,reasons:[]},
@@ -60,6 +61,34 @@ const benchNew = {runs:benchRuns,folder:'C:/controlled/bench',results:{schema_ve
     {engine:'native',name:'PySWF',cases:3,ok:3,median_seconds:0.02,timed_cases:3,comparable:true,details:[],reasons:[]}]},
   extractors:{unit:'SWF cuyos recursos se extraen todos',winner:null,note:'un solo motor medido: no hay con que compararlo',corpus_cases:1,engines:[
     {engine:'swfextract',name:'swfextract',cases:1,ok:1,median_seconds:2.3,timed_cases:1,comparable:false,details:[],reasons:[]}]}}}};
+// Schema 3: the same decompilers plus the robustness and per-unit fidelity tables, whose figures join the index.
+const outcomes = (r,p,c,k,h) => ({recovered:r,partial:p,clean_error:c,crash:k,hang:h});
+const damage = {truncate_header:'Truncado en la cabecera',truncate_tag:'Truncado en un tag',truncate_code:'Truncado en el código',bad_length:'Longitud de archivo errónea',bad_compression:'Flujo zlib roto',bad_tag_length:'Longitud de tag errónea',flip_code:'Bytes alterados en el código',flip_noncode:'Bytes alterados fuera del código'};
+const perKind = (scores) => Object.fromEntries(Object.keys(damage).map((kind, i) => [kind, {cases:6, outcomes:outcomes(1,2,2,1,0), score:scores[i]}]));
+const counts = (same, different, no_compile, not_run) => ({same, different, no_compile, not_run, evaluated: same + different + no_compile + not_run, judged: same + different + no_compile, fidelity: same + different + no_compile ? same / (same + different + no_compile) : null});
+const unitKinds = (c, m, a) => ({class: counts(...c), method: counts(...m), action: counts(...a)});
+const decompilers3 = benchTwo.results.tables.decompilers.engines.map(line => ({...line,
+  unit_fidelity: {native:0.74, jpexs:0.33, go:0.6}[line.engine] ?? null, unit_fidelity_judged: {native:23, jpexs:12, go:15}[line.engine] ?? null, unit_fidelity_cases: line.cases ? 6 : 0,
+  robustness: {native:54.9, jpexs:52.9, go:58.8}[line.engine] ?? null, robustness_cases: {native:51, jpexs:51, go:51, flare:12}[line.engine] ?? 0}));
+const benchNew = {runs:benchRuns,folder:'C:/controlled/bench',results:{...benchTwo.results,schema_version:3,run_id:'run-3',created_utc:'2026-10-25T01:00:00Z',seconds:900,
+  options:{unit_cap:20,robustness_timeout:30,workers:4},tables:{
+  ...benchTwo.results.tables,
+  decompilers:{...benchTwo.results.tables.decompilers,index_components:['source','recompiles','same_trace','units','unit_fidelity','robustness'],engines:decompilers3},
+  robustness:{unit:'archivos dañados en que el motor recupera lo intacto y avisa del daño (nota de 0 a 100)',winner:null,note:'sin ganador claro: la ventaja es de 1 caso(s) o menos',corpus_cases:51,kinds:damage,engines:[
+    {engine:'go',name:'GoSWF',cases:51,outcomes:outcomes(12,12,27,0,0),robustness:58.8,by_kind:perKind([40,70,50,80,40,60,60,60]),recoverable_cases:26,intact_units:60,recovered_units:21,unit_recovery:0.34,median_seconds:0.05,timed_cases:51,peak_memory_mib:40,comparable:true,reasons:[]},
+    {engine:'native',name:'PySWF',cases:51,outcomes:outcomes(14,10,20,7,0),robustness:54.9,by_kind:perKind([40,70,50,0,0,60,60,60]),recoverable_cases:26,intact_units:60,recovered_units:33,unit_recovery:0.55,median_seconds:0.06,timed_cases:51,peak_memory_mib:134,comparable:true,reasons:[]},
+    {engine:'jpexs',name:'JPEXS',cases:51,outcomes:outcomes(2,27,22,0,0),robustness:52.9,by_kind:perKind([40,60,60,60,40,60,60,60]),recoverable_cases:26,intact_units:60,recovered_units:40,unit_recovery:0.66,median_seconds:2.1,timed_cases:51,peak_memory_mib:239,comparable:true,reasons:[]},
+    {engine:'flare',name:'Flare 0.6',cases:12,outcomes:outcomes(1,5,4,2,0),robustness:40,by_kind:perKind([0,40,40,40,40,40,40,40]),recoverable_cases:5,intact_units:5,recovered_units:2,unit_recovery:0.4,median_seconds:0.4,timed_cases:12,peak_memory_mib:60,comparable:false,reasons:['no lee AS3']},
+    {engine:'pyflashkit',name:'pyflashkit',cases:0,outcomes:outcomes(0,0,0,0,0),robustness:null,by_kind:{},median_seconds:null,timed_cases:0,comparable:false,reasons:['no instalado']}]},
+  unit_fidelity:{unit:'unidades cuyo fuente, compilado solo y empalmado en el SWF original, imprime la misma traza',winner:'native',note:null,corpus_cases:6,unit_cap:20,kinds:{class:'Clases',method:'Métodos',action:'Acciones (AS2)'},
+    out_of_scope:{units:66,reasons:{'espacios de nombres privados o explícitos':60,'cierres con activación':6}},engines:[
+    {engine:'native',name:'PySWF',cases:6,...counts(17,0,6,13),by_kind:unitKinds([6,0,2,3],[10,0,4,10],[1,0,0,0]),comparable:true,reasons:[]},
+    {engine:'go',name:'GoSWF',cases:6,...counts(9,0,6,9),by_kind:unitKinds([0,0,0,0],[8,0,6,9],[1,0,0,0]),comparable:true,reasons:[]},
+    {engine:'jpexs',name:'JPEXS',cases:6,...counts(4,0,8,4),by_kind:unitKinds([1,0,3,1],[2,0,5,3],[1,0,0,0]),comparable:true,reasons:['no emitió fuente verificable de ninguna unidad evaluable']},
+    {engine:'flare',name:'Flare 0.6',cases:2,...counts(2,0,0,0),by_kind:unitKinds([0,0,0,0],[0,0,0,0],[2,0,0,0]),comparable:false,reasons:['no lee AS3']}]}},
+  rows:{robustness:[
+    ...['truncate-header-a','flip-code-b'].flatMap((id, i) => ['native','go','jpexs'].map((engine, j) => ({engine,family:'f',case:id,kind:i ? 'flip_code' : 'truncate_header',reason:'motivo '+engine,measured:true,outcome:['clean_error','recovered','partial'][(i + j) % 3],seconds:0.1,intact_units:i ? 2 : 0,recovered_units:0})))],
+    unit_fidelity:[{engine:'native',family:'f',case:'swf/f/release.fws.swf',measured:true,units:{same:1,different:0,no_compile:1,not_run:0},details:[{unit:'tag:6/method:5',kind:'method',outcome:'no_compile',reason:'SyntaxError: Compound member assignments'}],reason:''}]}}};
 const bridge = {
  invoke:async(command,args={})=>{
   if(command==='startup')return {path:'C:/controlled/demo.swf',smoke:false};
@@ -89,7 +118,7 @@ const bridge = {
    case 'timeline': return {frame:0,frame_count:2,display_list:[],svg:null,actionscript_executed:false};
    case 'compile_project': state={...state,filename:'compiled.swf',working_path:a.output,revision:sha('d'),dirty:false}; return {...state,path:a.output,engine:'python',validation:{valid:true,errors:[],warnings:[]},log:'Controlled UI fixture; compiler not executed'};
    case 'export': return {path:a.path,engine:'python',diagnostics:[]};
-   case 'bench_results': return a.run==='run-1'?benchOld:benchNew;
+   case 'bench_results': return a.run==='run-1'?benchOld:a.run==='run-2'?benchTwo:benchNew;
    case 'benchmark_tools': return {engines:[{id:'native',name:'PySWF',category:'decompiler',configured:true,operations:['source']},{id:'flare',name:'Flare',category:'decompiler',configured:false,operations:['source'],setup_diagnostic:'sin configurar en el fixture'}]};
    default: throw new Error('Unexpected suite operation: '+args.operation);
   }
@@ -237,12 +266,22 @@ with sync_playwright() as p:
     expect(cards.nth(2)).to_contain_text("0,070 s")
     expect(cards.nth(3)).to_contain_text("5 de 6")
     expect(cards.nth(3)).to_contain_text("Ventaja de 1 caso sobre PySWF: dentro del ruido")
+    # Schema 3 adds two cards: the most robust against damaged files and the best per-unit fidelity.
+    expect(cards).to_have_count(6)
+    expect(cards.nth(4)).to_contain_text("Más robusto ante archivos dañados")
+    expect(cards.nth(4)).to_contain_text("58,8")
+    expect(cards.nth(4)).to_contain_text("GoSWF")
+    expect(cards.nth(5)).to_contain_text("Mayor fidelidad por unidad")
+    expect(cards.nth(5)).to_contain_text("74 %")
+    expect(cards.nth(5)).to_contain_text("PySWF")
+    # The page says which terms this run's index averages.
+    expect(dialog.get_by_test_id("index-terms")).to_contain_text("Esta corrida incluye: fuente, recompila, misma traza, unidades con fuente, fidelidad por unidad, robustez.")
     # The Índice Flash chart: sorted with JPEXS in it, the engine measured on other cases apart and marked.
     index_marks = dialog.locator('svg:has(> title:text-is("Índice Flash por motor")) [data-mark]')
     assert [mark.get_attribute("data-engine") for mark in index_marks.all()] == ["jpexs", "native", "go", "flare"]
     assert "muted" in index_marks.nth(3).get_attribute("class")
     expect(index_marks.nth(0)).to_have_attribute("aria-label", re.compile(r"^JPEXS: 85,0\."))
-    expect(index_marks.nth(1)).to_have_attribute("aria-label", re.compile(r"fuente 67\s%\s·\srecompila 67\s%\s·\smisma traza 67\s%\s·\sunidades 80\s%"))
+    expect(index_marks.nth(1)).to_have_attribute("aria-label", re.compile(r"fuente 67\s%\s·\srecompila 67\s%\s·\smisma traza 67\s%\s·\sunidades 80\s%\s·\sfidelidad por unidad 74\s%\s·\srobustez 55\s%"))
     expect(dialog.get_by_text("Medidos sobre otros casos").first).to_be_visible()
     # Closeness and coverage: JPEXS is the reference bar (100 % by definition, hatched, not ranked), nobody else is above it.
     close_marks = dialog.locator('svg:has(> title:text-is("Cercanía a JPEXS por motor")) [data-mark]')
@@ -270,7 +309,56 @@ with sync_playwright() as p:
     expect(page.get_by_test_id("units-native")).to_have_text("80%")
     expect(page.get_by_test_id("seconds-go")).to_have_text("0,070 s")
     expect(page.get_by_test_id("closeness-native")).to_have_text("80%")
+    # Robustness: a stacked bar per engine (best score first), the score bars, the files recovered and one chart per kind of damage.
+    expect(dialog.get_by_role("heading", name="Robustez", exact=True)).to_be_visible()
+    stacked = dialog.locator('svg:has(> title:text-is("Desenlace de cada archivo dañado, por motor")) [data-mark]')
+    assert [mark.get_attribute("data-engine") for mark in stacked.all()] == ["go", "native", "jpexs", "flare"]
+    assert "muted" in stacked.nth(3).get_attribute("class")
+    expect(stacked.nth(1)).to_have_attribute("aria-label", re.compile(r"PySWF: recuperó 14, parcial 10, error claro 20, caída 7, cuelgue 0\. 51 archivos dañados"))
+    assert dialog.locator('svg:has(> title:text-is("Desenlace de cada archivo dañado, por motor")) rect.sb-seg.seg-crash').count() == 1, "only PySWF crashed"
+    stacked.nth(1).hover()
+    expect(dialog.locator(".bench-tip")).to_contain_text("Robustez 54,9")
+    expect(dialog.locator(".bench-tip")).to_contain_text("caída: 7 (14 %)")
+    robust_marks = dialog.locator('svg:has(> title:text-is("Robustez por motor")) [data-mark]')
+    assert [mark.get_attribute("data-engine") for mark in robust_marks.all()] == ["go", "native", "jpexs", "flare"]
+    expect(dialog.locator('svg:has(> title:text-is("Unidades recuperadas por motor")) [data-mark]').first).to_be_visible()
+    for kind_title in ("Truncado en la cabecera", "Flujo zlib roto", "Bytes alterados fuera del código"):
+        expect(dialog.locator('svg:has(> title:text-is("%s por motor")) [data-mark]' % kind_title).first).to_be_visible()
+    expect(dialog.get_by_role("heading", name="Por tipo de daño")).to_be_visible()
+    expect(dialog.locator(".stack-legend").first).to_contain_text("Recuperó lo intacto y avisó del daño")
+    # Per-unit fidelity: the bars, the outcome of every unit, and classes against methods.
+    expect(dialog.get_by_role("heading", name="Fidelidad por unidad", exact=True)).to_be_visible()
+    fidelity_marks = dialog.locator('svg:has(> title:text-is("Fidelidad por unidad por motor")) [data-mark]')
+    assert [mark.get_attribute("data-engine") for mark in fidelity_marks.all()] == ["native", "go", "jpexs", "flare"]
+    expect(fidelity_marks.nth(0)).to_have_attribute("aria-label", re.compile(r"^PySWF: 73,9\s%\. .*23 unidades juzgadas"))
+    expect(dialog.locator('svg:has(> title:text-is("Desenlace de cada unidad, por motor")) [data-mark]').first).to_be_visible()
+    expect(dialog.locator('svg:has(> title:text-is("Clases y acciones por motor")) [data-mark]').first).to_be_visible()
+    expect(dialog.locator('svg:has(> title:text-is("Métodos por motor")) [data-mark]').first).to_be_visible()
+    expect(dialog.get_by_role("heading", name="Clases frente a métodos")).to_be_visible()
+    expect(dialog.get_by_text("Fuera de alcance:")).to_be_visible()
+    # The tables of the two sections are behind their own toggles.
+    for summary in dialog.locator("details.bench-details > summary").all():
+        if "Tabla completa" in summary.inner_text() and not summary.evaluate("element => element.parentElement.open"):
+            summary.click()
+    expect(page.get_by_test_id("robustness-native").first).to_have_text("54,9")
+    expect(page.get_by_test_id("crash-native")).to_have_text("7")
+    expect(page.get_by_test_id("recovery-native")).to_have_text("55%")
+    expect(page.get_by_test_id("fidelity-native")).to_have_text("74%")
+    expect(page.get_by_test_id("unit-fidelity-native")).to_have_text("74%")
+    expect(page.get_by_role("columnheader", name="Fidelidad por unidad").first).to_be_visible()
+    expect(dialog.get_by_text("Desenlace de cada archivo dañado ·")).to_be_visible()
     page.screenshot(path=str(OUTPUT / "ui-shell-controlled-benchmarks.png"))
+
+    # A run written with schema 2 still reads: four terms in the index, and the two new sections say they have no data.
+    dialog.get_by_role("combobox", name="Ejecución").select_option("run-2")
+    expect(dialog.get_by_test_id("index-terms")).to_contain_text("Esta corrida incluye: fuente, recompila, misma traza, unidades con fuente.")
+    expect(dialog.get_by_test_id("index-terms")).to_contain_text("No incluye: fidelidad por unidad, robustez")
+    expect(dialog.get_by_role("heading", name="Robustez", exact=True)).to_be_visible()
+    expect(dialog.get_by_text("Sin datos en esta corrida. La corrida es anterior a la medición de robustez")).to_be_visible()
+    expect(dialog.get_by_text("Sin datos en esta corrida. La corrida es anterior a la medición de fidelidad por unidad")).to_be_visible()
+    expect(dialog.locator('svg:has(> title:text-is("Índice Flash por motor")) [data-mark]').first).to_be_visible()
+    expect(dialog.get_by_label("Destacados").locator(".bench-stat").nth(4)).to_contain_text("Sin datos en esta corrida")
+    expect(dialog.get_by_label("Destacados").locator(".bench-stat").nth(5)).to_contain_text("Sin datos en esta corrida")
 
     # A run written before schema 2 still reads: no times and no index, said instead of drawn.
     dialog.get_by_role("combobox", name="Ejecución").select_option("run-1")

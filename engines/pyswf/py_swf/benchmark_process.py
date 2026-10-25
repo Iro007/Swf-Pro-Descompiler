@@ -33,6 +33,7 @@ class WindowsJob:
             _fields_ = [(key, ctypes.c_ulonglong) for key in ("read_count", "write_count", "other_count", "read_bytes", "write_bytes", "other_bytes")]
         class Extended(ctypes.Structure):
             _fields_ = [("basic", Basic), ("io", Io), ("process_memory", size), ("job_memory", size), ("peak_process", size), ("peak_job", size)]
+        self.extended = Extended
         self.kernel = ctypes.WinDLL("kernel32", use_last_error=True)
         self.kernel.CreateJobObjectW.argtypes = [ctypes.c_void_p, wintypes.LPCWSTR]
         self.kernel.CreateJobObjectW.restype = wintypes.HANDLE
@@ -41,6 +42,7 @@ class WindowsJob:
         self.kernel.SetInformationJobObject.argtypes = [wintypes.HANDLE, ctypes.c_int, ctypes.c_void_p, wintypes.DWORD]
         self.kernel.AssignProcessToJobObject.argtypes = [wintypes.HANDLE, wintypes.HANDLE]
         self.kernel.CloseHandle.argtypes = [wintypes.HANDLE]
+        self.kernel.QueryInformationJobObject.argtypes = [wintypes.HANDLE, ctypes.c_int, ctypes.c_void_p, wintypes.DWORD, ctypes.c_void_p]
         self.handle = self.kernel.CreateJobObjectW(None, None)
         if not self.handle:
             raise ctypes.WinError(ctypes.get_last_error())
@@ -57,6 +59,15 @@ class WindowsJob:
         finally:
             if process:
                 self.kernel.CloseHandle(process)
+
+    def peak_bytes(self):
+        """Peak committed memory of every process the job has held at once (the whole tree), or None if unreadable."""
+        if not self.handle:
+            return None
+        information = self.extended()
+        if not self.kernel.QueryInformationJobObject(self.handle, 9, ctypes.byref(information), ctypes.sizeof(information), None):
+            return None
+        return int(information.peak_job)
 
     def close(self):
         if self.handle:

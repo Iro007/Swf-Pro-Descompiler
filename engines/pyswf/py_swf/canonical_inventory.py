@@ -148,6 +148,7 @@ def abc_layout(data):
         raise ValueError('ABC script refers to a missing class')
     bodies = []
     for index in range(r.count()):
+        begin = r.pos
         method = r.u30()
         limits = [r.u30() for _ in range(4)]
         length = r.u30(); start = r.pos
@@ -156,7 +157,8 @@ def abc_layout(data):
         traits()
         if method >= method_count:
             raise ValueError("ABC method body index exceeds method table")
-        bodies.append({"body_index": index, "method_index": method, "start": start,
+        # begin/end frame the whole body record (header, code, exception table, traits): what damage can reach
+        bodies.append({"body_index": index, "method_index": method, "start": start, "begin": begin, "end": r.pos,
                        "code": code, "limits": limits, "exceptions": exceptions})
     if r.pos != len(data):
         raise ValueError("Trailing bytes after ABC inventory")

@@ -27,7 +27,20 @@ INDEX_COMPONENTS = BASE_COMPONENTS + EXTRA_COMPONENTS
 
 
 def bench_directory():
-    return Path(os.environ.get("FLASH_BENCH_DIR") or ROOT / "reports" / "bench")
+    explicit = os.environ.get("FLASH_BENCH_DIR")
+    if explicit:
+        return Path(explicit)
+    primary = ROOT / "reports" / "bench"
+    if (primary / "index.json").is_file():
+        return primary
+    for parent in ROOT.parents:
+        candidate = parent / "reports" / "bench"
+        if (candidate / "index.json").is_file():
+            return candidate
+    cwd_candidate = Path.cwd() / "reports" / "bench"
+    if (cwd_candidate / "index.json").is_file():
+        return cwd_candidate
+    return primary
 
 
 def is_measured(row):

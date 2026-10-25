@@ -50,7 +50,8 @@
       { "from": "../engines/goswf/dist/goswf.exe", "to": "bin/goswf.exe" },
       { "from": "../engines/asmswf/dist/asmswf.exe", "to": "bin/asmswf.exe" },
       { "from": "../LICENSE", "to": "LICENSE" },
-      { "from": "../THIRD_PARTY_NOTICES.md", "to": "THIRD_PARTY_NOTICES.md" }
+      { "from": "../THIRD_PARTY_NOTICES.md", "to": "THIRD_PARTY_NOTICES.md" },
+      { "from": "../reports/bench", "to": "reports/bench", "filter": ["index.json", "*/results.json"] }
     ],
     "win": {
       "icon": "build/icon.png",

@@ -289,8 +289,11 @@ def decompress_zws(rest_data, decompressed_length, *, strict=False):
     try:
         return decode(unknown)
     except lzma.LZMAError:
-        size = max(decompressed_length - 8, 0).to_bytes(8, "little")
-        return decode(size)
+        try:
+            size = max(decompressed_length - 8, 0).to_bytes(8, "little")
+            return decode(size)
+        except lzma.LZMAError as err:
+            raise ValueError(f"Corrupted LZMA stream: {err}") from err
 
 
 def decompress_body(signature, rest_data, decompressed_length, *, strict=False):
@@ -299,7 +302,10 @@ def decompress_body(signature, rest_data, decompressed_length, *, strict=False):
         raise ValueError("SWF decompressed size exceeds safety limit")
     if signature == "CWS":
         decoder = zlib.decompressobj()
-        result = decoder.decompress(rest_data, MAX_DECOMPRESSED_BYTES + 1)
+        try:
+            result = decoder.decompress(rest_data, MAX_DECOMPRESSED_BYTES + 1)
+        except zlib.error as err:
+            raise ValueError(f"Corrupted zlib stream: {err}") from err
         if len(result) > MAX_DECOMPRESSED_BYTES or decoder.unconsumed_tail:
             raise ValueError("zlib decompressed size exceeded safety limit")
         if strict and (not decoder.eof or decoder.unused_data):
@@ -345,15 +351,25 @@ class SWFFile:
         rest_data = file_bytes[8:]
 
         decompressed_data = decompress_body(self.signature, rest_data, decompressed_length, strict=strict)
-        self._parse_decompressed(decompressed_data, strict=strict)
+        try:
+            self._parse_decompressed(decompressed_data, strict=strict)
+        except (IndexError, struct.error) as err:
+            raise ValueError(f"Corrupted or truncated SWF data: {err}") from err
 
     def _parse_decompressed(self, data, *, strict=False):
+        if not data:
+            raise ValueError("Truncated SWF: empty decompressed stream")
         stream = BitStream(data)
-        self.rect = parse_rect(stream)
+        try:
+            self.rect = parse_rect(stream)
+        except (EOFError, IndexError) as err:
+            raise ValueError(f"Truncated SWF rect header: {err}") from err
         
         # Read FrameRate
         # Minor byte (fraction), Major byte (integer)
         # We read 2 bytes from stream
+        if stream.byte_offset + 2 > len(data):
+            raise ValueError("Truncated SWF header: missing frame rate")
         fps_bytes = data[stream.byte_offset : stream.byte_offset + 2]
         stream.byte_offset += 2
         
@@ -362,6 +378,8 @@ class SWFFile:
         self.frame_rate = integer + fraction / 256.0
         
         # Read FrameCount (UI16)
+        if stream.byte_offset + 2 > len(data):
+            raise ValueError("Truncated SWF header: missing frame count")
         self.frame_count = int.from_bytes(data[stream.byte_offset : stream.byte_offset + 2], "little")
         stream.byte_offset += 2
         

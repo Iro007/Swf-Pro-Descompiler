@@ -10,7 +10,10 @@ from copy import deepcopy
 from datetime import datetime, timezone
 import hashlib
 import json
+import lzma
 import os
+import struct
+import zlib
 from pathlib import Path
 import re
 import shutil
@@ -277,7 +280,10 @@ class UniversalSuite:
         else:
             data = read_bounded(path)
             parsed = SWFFile()
-            parsed.read_bytes(data)
+            try:
+                parsed.read_bytes(data)
+            except (IndexError, struct.error, zlib.error, lzma.LZMAError) as err:
+                raise ValueError(f"Invalid or corrupted SWF file: {err}") from err
             self.project = SwfProject(path.name, data, data, engine="auto")
             self.origin = str(path)
             self.undo_stack, self.redo_stack = [], []

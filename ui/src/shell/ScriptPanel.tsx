@@ -85,31 +85,48 @@ export default function ScriptPanel({node,session,engine,onEngineChange}:{node:T
   const result=part?.result;
   const draftKey=`script|${documentKey}|${part?.unitId}|${engine}`;
   const draft=single?drafts.get<Draft>(draftKey):undefined;
+  const pcodeDraftKey=`pcode|${documentKey}|${part?.unitId}`;
+  const pcodeDraft=single?drafts.get<Draft>(pcodeDraftKey):undefined;
   const original=result?sourceOf(result):null;
   const canEdit=single&&!!result&&(result.editable||(result.engine==='jpexs'&&!!result.source_document&&result.document_source!=null));
+  const canEditPcode=single&&!!result&&result.pcode!=null&&part?.unitId!=null;
   const placeholderSource=result&&original===null?`// Fuente no disponible con ${displayEngineName(result.engine)}${diagnosticsOf(result)[0]?`: ${diagnosticsOf(result)[0].split('\n')[0]}`:''}.\n// Consulta el P-code o prueba otro motor.`:'';
   const sourceText=single?(draft?.text??original??(result?placeholderSource:part?.error?`// Error: ${part.error}`:'')):composeSource(parts);
-  const pcodeText=single?(result?result.pcode:part?.error?`// Error: ${part.error}`:''):composePcode(parts);
+  const pcodeText=single?(pcodeDraft?.text??(result?result.pcode:part?.error?`// Error: ${part.error}`:'')):composePcode(parts);
   const usedEngine=result?.engine??parts.find(item=>item.result)?.result?.engine;
   const diagnostics=single?diagnosticsOf(result):[];
   const engines:SuiteEngine[]=(catalog?.engines??[]).filter(item=>item.operations.includes('decompile'));
-  const status=!single?`Vista de solo lectura de ${parts.length} miembro${parts.length===1?'':'s'}`:draft?`Borrador · revisión base ${shortRevision(draft.revision)}`:canEdit?'Listo para editar':result?'Solo lectura con este motor':'';
-  const stale=!!draft&&draft.revision!==revision;
+  const status=!single?`Vista de solo lectura de ${parts.length} miembro${parts.length===1?'':'s'}`:draft?`Borrador de fuente · base ${shortRevision(draft.revision)}`:pcodeDraft?`Borrador de P-code · base ${shortRevision(pcodeDraft.revision)}`:canEdit?'Listo para editar fuente o P-code':canEditPcode?'P-code editable (fuente solo lectura)':result?'Solo lectura con este motor':'';
+  const stale=(!!draft&&draft.revision!==revision)||(!!pcodeDraft&&pcodeDraft.revision!==revision);
   const busy=!!session.busy;
   const loadedMask=parts.map(item=>item.result||item.error?'1':'0').join('');
   const syncKey=`${loadKey}|${loadedMask}|${generation}`;
-  const discard=()=>{drafts.set(draftKey,undefined);setGeneration(value=>value+1);};
+  const discard=()=>{
+    drafts.set(draftKey,undefined);
+    drafts.set(pcodeDraftKey,undefined);
+    setGeneration(value=>value+1);
+  };
 
   const type=(value:string)=>{
     if(!single||!result||!canEdit)return;
     if(value===(original??''))drafts.set(draftKey,undefined);
     else drafts.set<Draft>(draftKey,{text:value,revision:draft?.revision??result.revision});
   };
+  const typePcode=(value:string)=>{
+    if(!single||!result||!canEditPcode)return;
+    if(value===(result.pcode??''))drafts.set(pcodeDraftKey,undefined);
+    else drafts.set<Draft>(pcodeDraftKey,{text:value,revision:pcodeDraft?.revision??result.revision});
+  };
   const apply=async()=>{
     if(!part||!result||!draft||!canEdit)return;
     const next=await session.apply('Aplicando y validando…',()=>api.suiteRpc<SuiteState>('edit',{unit_id:part.unitId,code:draft.text,mode:'source',base_revision:draft.revision,engine:result.engine,
       ...(result.source_document?{source_document:result.source_document}:{})}),'Cambio validado y aplicado a la copia de trabajo.');
     if(next)drafts.set(draftKey,undefined);
+  };
+  const applyPcode=async()=>{
+    if(!part||!result||!pcodeDraft||!canEditPcode)return;
+    const next=await session.apply('Ensamblando P-code y validando…',()=>api.suiteRpc<SuiteState>('edit',{unit_id:part.unitId,code:pcodeDraft.text,mode:'pcode',base_revision:pcodeDraft.revision,engine:'python'}),'P-code ensamblado, validado y aplicado a la copia de trabajo.');
+    if(next)drafts.set(pcodeDraftKey,undefined);
   };
 
   if(!unitIds.length)return <div className="script-panel"><p className="panel-muted">{isClass?'Esta clase no tiene métodos con código.':'La unidad de código no está disponible.'}</p></div>;
@@ -126,8 +143,9 @@ export default function ScriptPanel({node,session,engine,onEngineChange}:{node:T
       <button type="button" className="tool-button" disabled={!single||busy} onClick={()=>setComparing(true)} title="Compara la salida de cada motor para esta unidad"><GitCompareArrows size={14}/>Comparar motores</button>
       <span className="toolbar-gap"/>
       <span className="toolbar-text dim" data-testid="script-status">{status}</span>
-      <button type="button" className="tool-button" disabled={!draft||busy} onClick={discard}>Descartar</button>
-      <button type="button" className="tool-button primary" disabled={!draft||!canEdit||busy} onClick={()=>void apply()}><Check size={14}/>Aplicar y validar</button>
+      <button type="button" className="tool-button" disabled={(!draft&&!pcodeDraft)||busy} onClick={discard}>Descartar</button>
+      {pcodeDraft?<button type="button" className="tool-button primary" disabled={!canEditPcode||busy} onClick={()=>void applyPcode()}><Check size={14}/>Aplicar P-code</button>:null}
+      <button type="button" className={`tool-button ${draft?'primary':''}`} disabled={!draft||!canEdit||busy} onClick={()=>void apply()}><Check size={14}/>Aplicar fuente</button>
     </div>
     {diagnostics.length?<details className="diagnostics"><summary><AlertTriangle size={13}/>{diagnostics[0].split('\n')[0]}{diagnostics.length>1?` (+${diagnostics.length-1})`:''}</summary>{diagnostics.map((text,index)=><p key={index}>{text}</p>)}</details>:null}
     {stale?<p className="panel-error">El documento cambió desde que empezaste este borrador. Se conserva tu texto; el motor comprobará la revisión antes de aplicar.</p>:null}
@@ -138,8 +156,8 @@ export default function ScriptPanel({node,session,engine,onEngineChange}:{node:T
         <CodeEditor value={sourceText} docKey={`src|${loadKey}|${documentKey}`} syncKey={syncKey} language="actionscript" readOnly={!canEdit} label={`Fuente de ${part?.name??node.label}`} testId="script-source" onChange={type}/>
       </section>}
       second={<section className="code-pane" aria-label="P-code">
-        <header className="pane-title"><span>P-code</span><span className="dim">solo lectura</span></header>
-        <CodeEditor value={pcodeText} docKey={`pcode|${loadKey}|${documentKey}`} syncKey={syncKey} language="pcode" readOnly label={`P-code de ${part?.name??node.label}`} testId="script-pcode"/>
+        <header className="pane-title"><span>P-code</span><span className="dim">{single?(canEditPcode?'editable':'lectura'):'lectura'}</span></header>
+        <CodeEditor value={pcodeText} docKey={`pcode|${loadKey}|${documentKey}`} syncKey={syncKey} language="pcode" readOnly={!canEditPcode} label={`P-code de ${part?.name??node.label}`} testId="script-pcode" onChange={typePcode}/>
       </section>}/>
     {isClass?<nav className="members" aria-label="Miembros de la clase">
       <button type="button" className={`member ${focus===null?'active':''}`} aria-pressed={focus===null} onClick={()=>setFocus(null)}>Clase completa</button>

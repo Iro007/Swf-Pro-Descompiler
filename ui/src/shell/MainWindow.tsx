@@ -1,5 +1,5 @@
 import {useCallback,useEffect,useMemo,useRef,useState} from 'react';
-import {ArrowDownToLine,FolderOpen,Hammer,Redo2,Save,Settings2,Undo2} from 'lucide-react';
+import {ArrowDownToLine,FolderOpen,Hammer,Redo2,Save,Search,Settings2,Undo2} from 'lucide-react';
 import * as api from '../api';
 import {TreeNode} from '../types';
 import {displayEngineName} from '../displayNames';
@@ -13,12 +13,13 @@ import CompileDialog from './dialogs/CompileDialog';
 import EnginesDialog from './dialogs/EnginesDialog';
 import ExportDialog from './dialogs/ExportDialog';
 import {AboutDialog,BenchmarksDialog,ConfirmDialog} from './dialogs/SmallDialogs';
+import SearchDialog from './dialogs/SearchDialog';
 import {branchIds,defaultExpansion,findNode,pathTo} from './treeModel';
 import {useSession} from './useSession';
 import {useSmokeVerification} from './smoke';
 import {ThemeChoice,applyTheme,readStored,rememberTheme,storedTheme,writeStored} from './util';
 
-type DialogId='compile'|'export'|'engines'|'benchmarks'|'about'|'abc';
+type DialogId='compile'|'export'|'engines'|'benchmarks'|'about'|'abc'|'search';
 interface Pending {title:string;message:string;confirmLabel:string;run:()=>void}
 export const engineKey='flash-studio.decompile-engine';
 const projectExtension=/\.(pyswfproj|flashproj)$/i;
@@ -94,6 +95,7 @@ export default function MainWindow(){
       if(key==='o'){event.preventDefault();now.openSwf();}
       else if(key==='s'){event.preventDefault();if(event.shiftKey)void now.session.saveSwf();else void now.session.saveProject();}
       else if(key==='w'){event.preventDefault();now.closeDocument();}
+      else if(key==='f'&&event.shiftKey){event.preventDefault();setDialog('search');}
       else if(key==='f'&&!event.shiftKey&&!target?.closest?.('.cm-editor')){event.preventDefault();filterRef.current?.focus();filterRef.current?.select();}
       else if((key==='z'||key==='y')&&!editing){
         event.preventDefault();
@@ -129,6 +131,8 @@ export default function MainWindow(){
     {id:'edit',label:'Edición',items:[
       {id:'undo',label:'Deshacer',shortcut:'Ctrl+Z',disabled:!state?.history.undo||!idle,onSelect:()=>void session.undo()},
       {id:'redo',label:'Rehacer',shortcut:'Ctrl+Y',disabled:!state?.history.redo||!idle,onSelect:()=>void session.redo()},
+      {id:'sep-search',separator:true},
+      {id:'search',label:'Buscar en el documento…',shortcut:'Ctrl+Mayús+F',disabled:!hasDocument,onSelect:()=>setDialog('search')},
       {id:'sep-validate',separator:true},
       {id:'validate',label:'Validar SWF de trabajo',disabled:!hasDocument||!idle,onSelect:()=>void session.validate()},
     ]},
@@ -156,6 +160,7 @@ export default function MainWindow(){
       <button type="button" className="tool-button" disabled={!idle} onClick={openSwf} title="Abrir SWF (Ctrl+O)"><FolderOpen size={15}/>Abrir</button>
       <button type="button" className="tool-button" disabled={!hasDocument||!idle} onClick={()=>void session.saveProject()} title="Guardar proyecto (Ctrl+S)"><Save size={15}/>Guardar</button>
       <button type="button" className="tool-button" disabled={!hasDocument||!idle} onClick={()=>setDialog('export')} title="Exportar"><ArrowDownToLine size={15}/>Exportar</button>
+      <button type="button" className="tool-button" disabled={!hasDocument} onClick={()=>setDialog('search')} title="Buscar en el documento (Ctrl+Mayús+F)"><Search size={15}/>Buscar</button>
       <span className="toolbar-separator" aria-hidden="true"/>
       <button type="button" className="tool-button" disabled={!state?.history.undo||!idle} onClick={()=>void session.undo()} title="Deshacer (Ctrl+Z)"><Undo2 size={15}/>Deshacer</button>
       <button type="button" className="tool-button" disabled={!state?.history.redo||!idle} onClick={()=>void session.redo()} title="Rehacer (Ctrl+Y)"><Redo2 size={15}/>Rehacer</button>
@@ -174,6 +179,7 @@ export default function MainWindow(){
     {dialog==='engines'?<EnginesDialog session={session} onClose={()=>setDialog(null)}/>:null}
     {dialog==='benchmarks'?<BenchmarksDialog onClose={()=>setDialog(null)}/>:null}
     {dialog==='about'?<AboutDialog onClose={()=>setDialog(null)}/>:null}
+    {dialog==='search'?<SearchDialog nodes={nodes} onSelect={reveal} onClose={()=>setDialog(null)}/>:null}
     {dialog==='abc'&&abcUnit&&selected?<AbcToolsDialog unitId={abcUnit} name={selected.label} session={session} onClose={()=>setDialog(null)}/>:null}
     {pending?<ConfirmDialog title={pending.title} confirmLabel={pending.confirmLabel} onConfirm={pending.run} onClose={()=>setPending(null)}><p>{pending.message}</p></ConfirmDialog>:null}
   </div>;

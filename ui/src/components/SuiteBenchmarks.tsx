@@ -4,7 +4,7 @@ import {BenchData,BenchResults,BenchmarkEngine} from '../types';
 import {problem} from '../shell/util';
 import Highlights from './bench/Highlights';
 import {CategorySection,DecompilersSection,IndexSection,RobustnessSection,UnitFidelitySection} from './bench/Sections';
-import {categoryOrder,dateLabel,decompilerQuestions,highlights,modeLabel,runIdToIso,runLabel} from './bench/model';
+import {categoryOrder,dateLabel,decompilerQuestions,highlights,modeLabel,runCategoriesLabel,runIdToIso,runLabel} from './bench/model';
 import {FocusContext} from './bench/shared';
 import './bench/bench.css';
 
@@ -61,10 +61,20 @@ export default function SuiteBenchmarks(){
             <h3 className="bench-title">Clasificación de motores</h3>
             <p className="bench-lead">¿Lo que genera cada motor se vuelve a compilar y se comporta igual en Ruffle? Mismo corpus y mismo oráculo para todos; los motores que no se midieron sobre los mismos casos no se ordenan entre sí.</p>
           </div>
-          <div className="bench-run"><label htmlFor={runField}>Ejecución</label>
-            <select id={runField} value={results.run_id} onChange={event=>void load(event.target.value)}>{bench!.runs.map(run=><option key={run.run_id} value={run.run_id}>{runLabel(run)}</option>)}</select></div>
+          <div className="bench-run">
+            <label htmlFor={runField}>Ejecución</label>
+            <div className="bench-run-row">
+              <select id={runField} value={results.run_id} onChange={event=>void load(event.target.value)}>{bench!.runs.map(run=><option key={run.run_id} value={run.run_id}>{runLabel(run)}</option>)}</select>
+              <button type="button" className="btn-secondary bench-reload-btn" title="Recargar mediciones desde disco" onClick={()=>void load(results.run_id)}>↻ Recargar</button>
+            </div>
+          </div>
         </header>
         <RunFacts results={results}/>
+        {!results.tables.decompilers ? (
+          <div className="bench-banner" role="status">
+            ℹ️ <b>Esta ejecución midió un subconjunto específico:</b> {runCategoriesLabel(Object.keys(results.tables))}. Para ver el Índice Flash y la comparativa completa de descompiladores, selecciona una ejecución completa en el menú superior o ejecuta <code>.\medir-codigo.ps1</code>.
+          </div>
+        ) : null}
         <Highlights cards={cards}/>
         <IndexSection results={results}/>
         {categories.map(key=>key==='decompilers'?<DecompilersSection key={key} results={results}/>:key==='robustness'?<RobustnessSection key={key} results={results}/>:key==='unit_fidelity'?<UnitFidelitySection key={key} results={results}/>:<CategorySection key={key} category={key} results={results}/>)}

@@ -60,6 +60,50 @@ function parseArgs(argv) {
 const cli = parseArgs(process.argv);
 const devUrl = process.env.ELECTRON_DEV_URL || null;
 const resourcesRoot = app.isPackaged ? process.resourcesPath : null;
+
+function resolveBenchDir() {
+  if (process.env.FLASH_BENCH_DIR) return process.env.FLASH_BENCH_DIR;
+  const candidates = [];
+  const addCandidate = (p) => {
+    if (!p) return;
+    let curr = path.resolve(p);
+    while (curr) {
+      const candidate = path.join(curr, 'reports', 'bench');
+      if (fs.existsSync(path.join(candidate, 'index.json')) && !candidates.includes(candidate)) {
+        candidates.push(candidate);
+      }
+      const parent = path.dirname(curr);
+      if (parent === curr) break;
+      curr = parent;
+    }
+  };
+  addCandidate(process.env.PORTABLE_EXECUTABLE_DIR);
+  addCandidate(process.cwd());
+  addCandidate(path.resolve(__dirname, '..'));
+  if (resourcesRoot) {
+    const resCandidate = path.join(resourcesRoot, 'reports', 'bench');
+    if (fs.existsSync(path.join(resCandidate, 'index.json')) && !candidates.includes(resCandidate)) {
+      candidates.push(resCandidate);
+    }
+  }
+  if (!candidates.length) return null;
+  if (candidates.length === 1) return candidates[0];
+  candidates.sort((a, b) => {
+    try {
+      const mtimeA = fs.statSync(path.join(a, 'index.json')).mtimeMs;
+      const mtimeB = fs.statSync(path.join(b, 'index.json')).mtimeMs;
+      return mtimeB - mtimeA;
+    } catch {
+      return 0;
+    }
+  });
+  return candidates[0];
+}
+
+const discoveredBenchDir = resolveBenchDir();
+if (discoveredBenchDir && !process.env.FLASH_BENCH_DIR) {
+  process.env.FLASH_BENCH_DIR = discoveredBenchDir;
+}
 // FLASH_UI_ROOT serves a build of the interface from another folder (to try a build without installing it).
 const uiRoot = process.env.FLASH_UI_ROOT
   ? path.resolve(process.env.FLASH_UI_ROOT)

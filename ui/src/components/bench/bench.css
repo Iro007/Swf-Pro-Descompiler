@@ -729,3 +729,37 @@
 .sb-count.dark {
   fill: #0b1018;
 }
+
+
+.bench-run-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.bench-run-row select {
+  flex: 1;
+  min-width: 0;
+}
+.bench-reload-btn {
+  padding: 4px 10px;
+  font-size: 12px;
+  white-space: nowrap;
+  border-radius: var(--radius-sm, 4px);
+  cursor: pointer;
+  background: var(--bg-raised);
+  color: var(--fg);
+  border: 1px solid var(--line);
+}
+.bench-reload-btn:hover {
+  background: var(--bg-hover, rgba(255, 255, 255, 0.08));
+}
+.bench-banner {
+  margin-top: 4px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm, 6px);
+  border: 1px solid var(--accent, #3987e5);
+  background: color-mix(in srgb, var(--accent, #3987e5) 12%, transparent);
+  color: var(--fg);
+  font-size: 13px;
+  line-height: 1.5;
+}

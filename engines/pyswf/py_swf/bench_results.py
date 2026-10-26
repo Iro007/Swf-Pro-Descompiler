@@ -26,21 +26,53 @@ EXTRA_COMPONENTS = ("unit_fidelity", "robustness")
 INDEX_COMPONENTS = BASE_COMPONENTS + EXTRA_COMPONENTS
 
 
-def bench_directory():
+def bench_directory() -> Path:
     explicit = os.environ.get("FLASH_BENCH_DIR")
     if explicit:
         return Path(explicit)
-    primary = ROOT / "reports" / "bench"
-    if (primary / "index.json").is_file():
-        return primary
-    for parent in ROOT.parents:
-        candidate = parent / "reports" / "bench"
-        if (candidate / "index.json").is_file():
-            return candidate
-    cwd_candidate = Path.cwd() / "reports" / "bench"
-    if (cwd_candidate / "index.json").is_file():
-        return cwd_candidate
-    return primary
+
+    candidates: list[Path] = []
+    from . import paths
+    ws_bench = paths.WORKSPACE / "reports" / "bench"
+    if (ws_bench / "index.json").is_file():
+        candidates.append(ws_bench)
+
+    for p in [ROOT, *ROOT.parents]:
+        c = p / "reports" / "bench"
+        if (c / "index.json").is_file() and c not in candidates:
+            candidates.append(c)
+
+    portable_dir = os.environ.get("PORTABLE_EXECUTABLE_DIR")
+    if portable_dir:
+        p_path = Path(portable_dir)
+        for p in [p_path, *p_path.parents]:
+            c = p / "reports" / "bench"
+            if (c / "index.json").is_file() and c not in candidates:
+                candidates.append(c)
+
+    cwd = Path.cwd()
+    for p in [cwd, *cwd.parents]:
+        c = p / "reports" / "bench"
+        if (c / "index.json").is_file() and c not in candidates:
+            candidates.append(c)
+
+    if not candidates:
+        return ws_bench
+    if len(candidates) == 1:
+        return candidates[0]
+
+    def candidate_score(folder: Path) -> tuple[float, int]:
+        idx = folder / "index.json"
+        try:
+            mtime = idx.stat().st_mtime
+            data = json.loads(idx.read_text(encoding="utf-8"))
+            count = len(data) if isinstance(data, list) else 0
+            return (mtime, count)
+        except Exception:
+            return (0.0, 0)
+
+    candidates.sort(key=candidate_score, reverse=True)
+    return candidates[0]
 
 
 def is_measured(row):
@@ -151,13 +183,23 @@ def upgrade(results):
     return results
 
 
+def default_run_id(runs: list[dict]) -> str:
+    if not runs:
+        raise ValueError("No benchmark runs available")
+    for entry in reversed(runs):
+        categories = entry.get("categories")
+        if categories is None or "decompilers" in categories:
+            return entry["run_id"]
+    return runs[-1]["run_id"]
+
+
 def read_bench(run=None):
     folder = bench_directory()
     index_path = folder / "index.json"
     runs = json.loads(index_path.read_text(encoding="utf-8")) if index_path.is_file() else []
     if not runs:
         return {"runs": [], "results": None, "folder": str(folder)}
-    wanted = run or runs[-1]["run_id"]
+    wanted = run or default_run_id(runs)
     if wanted not in {entry["run_id"] for entry in runs}:
         raise ValueError("Unknown benchmark run")
     results = upgrade(json.loads((folder / wanted / "results.json").read_text(encoding="utf-8")))

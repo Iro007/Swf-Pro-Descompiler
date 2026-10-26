@@ -54,7 +54,25 @@ const scaled=(ratio:number|null|undefined)=>{const value=finite(ratio);return va
 export const runIdToIso=(id:string)=>{const m=/^(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})$/.exec(id);return m?`${m[1]}-${m[2]}-${m[3]}T${m[4]}:${m[5]}:${m[6]}Z`:null;};
 export const dateLabel=(iso:string|null|undefined)=>{const date=iso?new Date(iso):null;return date&&!Number.isNaN(date.getTime())?date.toLocaleString('es',{dateStyle:'medium',timeStyle:'short'}):'';};
 export const modeLabel=(mode:string)=>mode==='full'?'Completa':'Rápida';
-export const runLabel=(run:BenchRun)=>[dateLabel(run.created_utc??runIdToIso(run.run_id))||run.run_id,modeLabel(run.mode),`${run.cases} casos`].join(' · ');
+export const runCategoriesLabel=(categories?:string[]):string=>{
+  if(!categories||!categories.length)return '';
+  if(categories.includes('decompilers')){
+    if(categories.length>=6)return 'Completa (todas las cat.)';
+    if(categories.length===1)return 'Solo Descompiladores';
+    return `Descompiladores + ${categories.length-1} cat.`;
+  }
+  if(categories.length===1){
+    const key=categories[0];
+    return `Solo ${categoryTitles[key]??key}`;
+  }
+  return categories.map(c=>categoryTitles[c]??c).join(', ');
+};
+export const runLabel=(run:BenchRun)=>{
+  const parts=[dateLabel(run.created_utc??runIdToIso(run.run_id))||run.run_id,modeLabel(run.mode),`${run.cases} casos`];
+  const cat=runCategoriesLabel(run.categories);
+  if(cat)parts.push(cat);
+  return parts.join(' · ');
+};
 
 /* ---- metrics: one chart each ---- */
 

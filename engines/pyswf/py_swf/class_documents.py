@@ -276,7 +276,25 @@ def reconstruct_class_sections(abc, *, method_sections=None, class_indices=None)
                     return ["        " + prefix + signature + ";"]
                 source = body_source(method_index, diagnostics)
                 if source is None:
-                    return ["        // Incomplete " + signature + f"; original method:{method_index} retained as P-code"]
+                    method_info = abc.methods[method_index] if 0 <= method_index < len(abc.methods) else None
+                    ret_type = _source_type(abc, method_info.return_type, shadow_names=shadow_names) if method_info and method_info.return_type else "*"
+                    if ret_type in ("int", "uint", "Number"):
+                        ret_stmt = "return 0;"
+                    elif ret_type == "Boolean":
+                        ret_stmt = "return false;"
+                    elif ret_type == "void":
+                        ret_stmt = "return;"
+                    elif ret_type == "*":
+                        ret_stmt = "return undefined;"
+                    else:
+                        ret_stmt = "return null;"
+                    return [
+                        "        // Incomplete " + signature + f"; original method:{method_index} retained as P-code",
+                        "        " + prefix + signature,
+                        "        {",
+                        f"            {ret_stmt}",
+                        "        }",
+                    ]
                 body_lines = source.splitlines()
                 if body_lines and body_lines[-1].strip() == "return;" and (constructor or abc.methods[method_index].return_type and _source_type(abc, abc.methods[method_index].return_type) == "void"):
                     body_lines.pop()

@@ -320,7 +320,15 @@ def prove_declaration_bootstraps(suite, documents):
             if len(bodies) != 1:
                 raise ValueError("Original script initializer is missing or ambiguous")
             identifier = prefix + "/script:" + str(index)
-            if any(trait.kind_flags & 15 != 4 for trait in script.traits):
+            has_classes = any(trait.kind_flags & 15 == 4 for trait in script.traits)
+            has_only_namespaces = bool(script.traits) and all(trait.kind_flags & 15 in (0, 6) and getattr(trait, 'vkind', 0) == 8 for trait in script.traits)
+            if not has_classes:
+                if has_only_namespaces:
+                    proofs.append({"document_id": identifier, "class_initialization_order": [],
+                                   "admission": "Package namespace declarations proven"})
+                    continue
+                raise ValueError("Whole-project adapter does not yet link non-class package declarations: " + identifier)
+            if any(trait.kind_flags & 15 != 4 and not (trait.kind_flags & 15 in (0, 6) and getattr(trait, 'vkind', 0) == 8) for trait in script.traits):
                 raise ValueError("Whole-project adapter does not yet link non-class package declarations: " + identifier)
             body = bodies[0]
             if body.init_scope_depth not in (0, 1):

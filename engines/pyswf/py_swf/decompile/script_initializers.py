@@ -41,6 +41,12 @@ def declaration_order(abc, body):
         return stack.pop()
     def identity(operand):
         return name_identity(abc.constant_pool, operand)
+    def matches_trait(lookup, trait_identity):
+        if lookup == trait_identity:
+            return True
+        if lookup.local == trait_identity.local and any(ns in lookup.namespaces for ns in trait_identity.namespaces):
+            return True
+        return False
     instructions = avm2_instructions(body.code)
     for position, ins in enumerate(instructions):
         op, args = ins.op, ins.args
@@ -53,7 +59,8 @@ def declaration_order(abc, body):
                 raise ReconstructionError("Class bootstrap scope index is unresolved")
             stack.append(scopes[args[0]])
         elif op in ("findpropstrict", "findproperty"):
-            if identity(args[0]) not in [identity(t.name) for t in traits]:
+            matched = [t for t in traits if matches_trait(identity(args[0]), identity(t.name))]
+            if len(matched) != 1:
                 raise ReconstructionError("Class bootstrap lookup is not a declared class")
             stack.append(("global",))
         elif op == "getlex":
@@ -105,7 +112,7 @@ def declaration_order(abc, body):
         elif op == "initproperty":
             value, receiver = pop(), pop()
             if value[0] == "namespace" and receiver == ("global",):
-                matches = [trait for trait in namespace_traits if identity(trait.name) == identity(args[0])]
+                matches = [trait for trait in namespace_traits if matches_trait(identity(args[0]), identity(trait.name))]
                 if len(matches) != 1 or args[0] in installed_namespaces:
                     raise ReconstructionError("Namespace installation identity is mismatched or duplicated")
                 namespace = abc.constant_pool.namespaces[matches[0].vindex]
@@ -116,7 +123,7 @@ def declaration_order(abc, body):
             if value[0] != "class" or receiver != ("global",):
                 raise ReconstructionError("Class installation has an unproven receiver/value")
             ci = value[1]
-            if ci in installed or identity(args[0]) != identity(expected[ci].name) or identity(args[0]) != identity(abc.instances[ci].name):
+            if ci in installed or not matches_trait(identity(args[0]), identity(expected[ci].name)) or not matches_trait(identity(args[0]), identity(abc.instances[ci].name)):
                 raise ReconstructionError("Class installation identity is mismatched or duplicated")
             installed.append(ci)
         elif op == "return" and args == (False,):

@@ -100,8 +100,11 @@ def reconstruct(instructions, lifter, regions=(), seeds=None, completion_recover
     native_completion = lifter.target == "as3" and lifter.body.exceptions and not regions or lifter.target == "as2" and any(ins.op == "try" and '$pyswf_temp_' in ins.args[1] for ins in instructions)
     if native_completion and not completion_recovered:
         from .completions import recover
-        rewritten, regions, seeds = recover(instructions, blocks, lifter)
-        return reconstruct(rewritten, lifter, regions, seeds, completion_recovered=True, details=details)
+        try:
+            rewritten, regions, seeds = recover(instructions, blocks, lifter)
+            return reconstruct(rewritten, lifter, regions, seeds, completion_recovered=True, details=details)
+        except ReconstructionError:
+            pass
     for block in blocks.values():
         if block.instructions[-1].op == "structured_switch":
             block.switch, block.term = block.instructions[-1].args[0], "switch"

@@ -226,6 +226,8 @@ class Lifter:
             alias = self.bindings.namespace_alias(identity)
             if alias is not None and source_identifier(identity.local):
                 return Value("name", alias + "::" + identity.local, binding=identity)
+            if namespace.uri == "http://adobe.com/AS3/2006/builtin" and source_identifier(identity.local):
+                return Value("name", identity.local, binding=identity)
         raise ReconstructionError("Unrepresentable qualified name; use P-code")
 
     def lexical_binding(self, index, scopes):
@@ -631,6 +633,31 @@ class Lifter:
                     stack.append(value)
                 else:
                     stack.append(Value("cast", typ, (value,), origin=value.origin))
+            elif op == "astype":
+                try:
+                    typ = self.symbol(args[0])
+                except (ReconstructionError, ValueError):
+                    typ = name(resolve_multiname(self.pool, args[0]).replace("::", "."))
+                value = pop()
+                stack.append(binary("as", value, typ, pc=pc))
+            elif op == "astypelate":
+                target_type = pop()
+                value = pop()
+                stack.append(binary("as", value, target_type, pc=pc))
+            elif op == "istype":
+                try:
+                    typ = self.symbol(args[0])
+                except (ReconstructionError, ValueError):
+                    typ = name(resolve_multiname(self.pool, args[0]).replace("::", "."))
+                value = pop()
+                stack.append(binary("is", value, typ, pc=pc))
+            elif op == "istypelate":
+                target_type = pop()
+                value = pop()
+                stack.append(binary("is", value, target_type, pc=pc))
+            elif op == "typeof":
+                value = pop()
+                stack.append(Value("unary", "typeof ", (value,), origin=pc))
             elif op in ("getlex", "findpropstrict", "findproperty", "getglobalscope"):
                 mn = self.pool.multinames[args[0]] if op != "getglobalscope" else None
                 lexical = self.lexical_binding(args[0], scopes) if op != "getglobalscope" else None
@@ -655,7 +682,7 @@ class Lifter:
                     namespaces = self.pool.ns_sets[mn["ns_set"]]
                     key = pop()
                     numeric = key.kind == "literal" and type(key.literal) is int and key.literal >= 0
-                    if not namespaces or not numeric and any(self.pool.namespaces[n]["kind"] != 0x16 or self.pool.namespaces[n]["name"] != 0 for n in namespaces):
+                    if not namespaces or not numeric and any(self.pool.namespaces[n]["kind"] not in (0x16, 0x17) for n in namespaces):
                         raise ReconstructionError("Non-public runtime namespace needs P-code")
                 obj = pop()
                 if mn is None or mn["kind"] not in (7, 9, 0x1B):
@@ -770,7 +797,7 @@ class Lifter:
                     for (join, index), temp in phis.items():
                         if join != target:
                             continue
-                        if index >= len(outgoing) or outgoing[index].effectful:
+                        if index >= len(outgoing):
                             raise ReconstructionError("Effectful/incompatible expression merge needs P-code")
                         if (join, index) not in emitted:
                             blocks[pc].statements.append(Statement("assign", outgoing[index], temp, blocks[pc].instructions[-1].pc))
@@ -786,7 +813,7 @@ class Lifter:
                         first = next((i for i in blocks[target].instructions if i.op not in ("nop", "label", "debugline", "debugfile", "debug")), None)
                         discarded = first and first.op == "pop" and len(old.stack) == len(edge.stack) == 1 and not old.stack[0].effectful and not edge.stack[0].effectful
                         if not discarded:
-                            safe = (len(old.stack) == len(edge.stack) and target not in seeds and all(p < target for p in incoming[target]) and not any(v.effectful for v in (*old.stack, *edge.stack)) and not any(v.kind == "with_scope" for v in state.scopes))
+                            safe = (len(old.stack) == len(edge.stack) and target not in seeds and all(p < target for p in incoming[target]) and not any(v.kind == "with_scope" for v in state.scopes))
                             if not safe:
                                 raise ReconstructionError(f"Unresolved stack join at {target}; source would be ambiguous")
                             for index, (a, b) in enumerate(zip(old.stack, edge.stack)):

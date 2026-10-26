@@ -1,5 +1,6 @@
 import {ReactNode,useEffect,useId,useRef} from 'react';
 import {X} from 'lucide-react';
+import ErrorBoundary from './ErrorBoundary';
 
 type Size='sm'|'md'|'lg'|'xl'|'full';
 
@@ -19,7 +20,9 @@ export default function Dialog({title,onClose,children,size='md',footer}:{title:
         <h2 id={titleId}>{title}</h2>
         <button type="button" className="icon-button" aria-label="Cerrar diálogo" onClick={onClose}><X size={16}/></button>
       </header>
-      <div className="modal-body">{children}</div>
+      <div className="modal-body">
+        <ErrorBoundary>{children}</ErrorBoundary>
+      </div>
       {footer?<footer className="modal-footer">{footer}</footer>:null}
     </dialog>
   );

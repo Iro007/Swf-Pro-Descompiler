@@ -367,8 +367,8 @@ export function scatterDots(table:BenchTable):Dot[]{
   const total=table.corpus_cases??Math.max(0,...found.measured.map(line=>line.cases));
   return found.measured.flatMap(line=>{
     const x=metrics.speed.value(line);
-    const y=metrics.index.value(line)??(typeof line.same_trace==='boolean'?(line.same_trace?100:0):null);
-    if(x===null||y===null||x<=0)return [];
+    const y=metrics.flash.value(line)??(typeof line.same_trace==='number'&&line.cases>0?100*line.same_trace/line.cases:null);
+    if(x===null||y===null||!Number.isFinite(y)||x<=0)return [];
     const muted=!found.ranked.includes(line)&&found.mode==='ranked';
     const label=engineName(line);
     const closenessVal=metrics.closeness.value(line);

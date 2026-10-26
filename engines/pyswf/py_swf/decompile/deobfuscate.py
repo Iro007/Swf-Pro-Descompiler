@@ -11,8 +11,8 @@ def sanitize_identifier(name: str, symbol_map: Dict[str, str], prefix: str = "sy
     """Reemplaza caracteres no imprimibles o nombres de ofuscador por identificadores limpios."""
     if not name:
         return name
-    # Verificar si contiene caracteres de control o patrones típicos de ofuscadores (§...§, \\x..)
-    is_obfuscated = bool(re.search(r"[\x00-\x1f\x7f-\x9f§]", name)) or (
+    # Verificar si contiene caracteres de control, caracteres de ancho cero o patrones típicos de ofuscadores (§...§, \x..)
+    is_obfuscated = bool(re.search(r"[\x00-\x1f\x7f-\x9f§\u200b-\u200d\ufeff\u00ad]", name)) or (
         name.startswith("_loc") and len(name) > 10
     )
 

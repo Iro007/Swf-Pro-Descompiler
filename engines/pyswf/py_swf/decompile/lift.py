@@ -673,7 +673,7 @@ class Lifter:
                     stack.append(self.lexical_binding(args[0], scopes) or self.symbol(args[0]))
                 else:
                     stack.append(self.lexical_object(args[0], scopes) or Value("global", "") if op != "getglobalscope" else Value("global", ""))
-            elif op in ("getproperty", "setproperty", "initproperty", "callproperty", "callpropvoid", "callproplex", "constructprop", "getsuper", "setsuper", "callsuper", "callsupervoid"):
+            elif op in ("getproperty", "setproperty", "initproperty", "callproperty", "callpropvoid", "callproplex", "constructprop", "getsuper", "setsuper", "callsuper", "callsupervoid", "getdescendants", "deleteproperty"):
                 params = tuple(pop() for _ in range(args[1]))[::-1] if op.startswith(("call", "construct")) else ()
                 value = pop() if op in ("setproperty", "initproperty", "setsuper") else None
                 mn = self.pool.multinames[args[0]]
@@ -690,7 +690,7 @@ class Lifter:
                 if key is not None:
                     if obj.kind == "global":
                         raise ReconstructionError("Runtime global property lookup needs P-code")
-                    target = Value("member", "", (obj, key), origin=pc)
+                    target = Value("descendant" if op == "getdescendants" else "member", "", (obj, key), origin=pc)
                 else:
                     prop = self.lexical_binding(args[0], scopes) or self.symbol(args[0], inherited=op in ("getsuper", "setsuper", "callsuper", "callsupervoid"))
                     if op in ("getsuper", "setsuper", "callsuper", "callsupervoid"):
@@ -707,10 +707,15 @@ class Lifter:
                             raise ReconstructionError("Private/non-public member has an unproven receiver; use P-code")
                     if prop.binding and prop.binding.package_qualified and obj.kind not in ("global", "activation"):
                         raise ReconstructionError("Qualified package name requires a proven global receiver; use P-code")
-                    target = prop if obj.kind in ("global", "activation") else Value("member", "", (obj, literal(prop.text.split(".")[-1])), origin=pc, binding=prop.binding)
+                    kind = "descendant" if op == "getdescendants" else "member"
+                    target = prop if obj.kind in ("global", "activation") and op != "getdescendants" else Value(kind, "", (obj, literal(prop.text.split(".")[-1])), origin=pc, binding=prop.binding)
                     if obj.kind == "global" and any(v.kind == "with_scope" for v in scopes):
                         target = Value("dynamic_name", prop.text, origin=pc)
-                if op in ("getproperty", "getsuper"):
+                if op == "getdescendants":
+                    stack.append(target)
+                elif op == "deleteproperty":
+                    stack.append(Value("unary", "delete ", (target,), origin=pc))
+                elif op in ("getproperty", "getsuper"):
                     stack.append(target)
                 elif value is not None:
                     store(target, value, pc)
@@ -744,6 +749,21 @@ class Lifter:
                     callee = Value("member", "", (callee, literal("call")), origin=pc)
                     params = (receiver, *params)
                 stack.append(Value("call", "", (callee, *params), origin=pc))
+            elif op == "dxns":
+                ns_uri = self.pool.strings[args[0]] if args[0] < len(self.pool.strings) else ""
+                emit(Statement("expr", Value("raw", f'default xml namespace = "{ns_uri}"', origin=pc), pc=pc))
+            elif op == "dxnslate":
+                val = pop()
+                emit(Statement("expr", Value("raw", f'default xml namespace = {render(val)}', origin=pc), pc=pc))
+            elif op == "checkfilter":
+                val = pop()
+                stack.append(val)
+            elif op == "esc_xelem":
+                val = pop()
+                stack.append(Value("call", "", (name("XML"), val), origin=pc))
+            elif op == "esc_xattr":
+                val = pop()
+                stack.append(Value("call", "", (name("escapeAttributeValue"), val), origin=pc))
             else:
                 raise ReconstructionError(f"Unsupported AS3 operation {op} at {pc}")
         block.statements, block.term, block.condition = statements, term, condition

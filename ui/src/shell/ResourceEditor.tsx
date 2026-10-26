@@ -20,6 +20,7 @@ export default function ResourceEditor({tagIndex,session}:{tagIndex:number;sessi
   const [glyphIndex,setGlyphIndex]=useState<number|null>(null);
   const [points,setPoints]=useState<Record<string,PointDraft>>({});
   const [showMeta,setShowMeta]=useState(false);
+  const [isDragging,setIsDragging]=useState(false);
   const epoch=useRef(0);
   const revision=state?.revision;
   const base=`res|${documentKey}|${tagIndex}`;
@@ -60,6 +61,30 @@ export default function ResourceEditor({tagIndex,session}:{tagIndex:number;sessi
     const next=await change(`Reemplazando ${kind==='image'?'imagen':'audio'}…`,{operation:`replace-${kind}`,path:mediaPath.trim()},undefined,'Recurso validado y aplicado a la copia de trabajo.');
     if(next)setMediaPath('');
   };
+  const handleDrop=async(e:React.DragEvent)=>{
+    e.preventDefault();
+    setIsDragging(false);
+    if(disabled||!e.dataTransfer.files||e.dataTransfer.files.length===0)return;
+    const file=e.dataTransfer.files[0];
+    const filePath=(file as unknown as {path?:string}).path;
+    const kind=info?.kind==='image'?'image':'sound';
+    if(filePath){
+      setMediaPath(filePath);
+      await session.apply(`Reemplazando ${kind==='image'?'imagen':'audio'}…`,
+        ()=>api.suiteRpc<SuiteState>('resource_edit',{tag_index:tagIndex,base_revision:state?.revision,operation:`replace-${kind}`,path:filePath}),
+        'Recurso validado y aplicado a la copia de trabajo.');
+    }else{
+      const reader=new FileReader();
+      reader.onload=async()=>{
+        const base64Data=(reader.result as string).split(',')[1];
+        const ext=file.name.split('.').pop()||(kind==='image'?'png':'mp3');
+        await session.apply(`Reemplazando ${kind==='image'?'imagen':'audio'}…`,
+          ()=>api.suiteRpc<SuiteState>('resource_edit',{tag_index:tagIndex,base_revision:state?.revision,operation:`replace-${kind}`,data_base64:base64Data,ext}),
+          'Recurso validado y aplicado a la copia de trabajo.');
+      };
+      reader.readAsDataURL(file);
+    }
+  };
   const saveText=async()=>{
     if(!textDraft)return;
     const next=await change('Guardando texto…',{operation:'text',text:textDraft.text},textDraft.revision,'Texto actualizado y validado.');
@@ -84,6 +109,25 @@ export default function ResourceEditor({tagIndex,session}:{tagIndex:number;sessi
       <div className="path-row">
         <input value={mediaPath} disabled={disabled} onChange={event=>setMediaPath(event.target.value)} aria-label={info.kind==='image'?'Imagen nueva':'Audio nuevo'} placeholder="Ruta del recurso de reemplazo"/>
         <button type="button" className="tool-button" disabled={disabled||!api.native} onClick={()=>void choose(info.kind==='image'?'image':'audio')}>Elegir</button>
+      </div>
+      <div 
+        className={`dropzone ${isDragging?'drag-over':''}`}
+        onDragOver={e=>{e.preventDefault();setIsDragging(true);}}
+        onDragLeave={()=>setIsDragging(false)}
+        onDrop={handleDrop}
+        style={{
+          border:'2px dashed var(--border,#555)',
+          borderRadius:6,
+          padding:'12px 8px',
+          textAlign:'center',
+          margin:'8px 0',
+          cursor:'pointer',
+          background:isDragging?'rgba(80,120,240,0.15)':'transparent',
+          fontSize:'0.82rem',
+          color:'var(--text-muted,#888)'
+        }}
+      >
+        <span>Arrastra aquí un archivo {info.kind==='image'?'PNG o JPEG':'MP3 o WAV'} para reemplazarlo al instante</span>
       </div>
       <button type="button" className="tool-button primary" disabled={disabled||!mediaPath.trim()} onClick={()=>void replaceMedia(info.kind==='image'?'image':'sound')}><Check size={14}/>Reemplazar y validar</button>
     </section>:null}

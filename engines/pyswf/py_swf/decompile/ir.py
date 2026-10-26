@@ -25,7 +25,7 @@ class Value:
 
     @property
     def effectful(self):
-        return self.kind in ("call", "member", "construct", "function", "container", "dynamic_name", "qualified", "array", "object", "enumeration_string", "primitive_conversion") or any(v.effectful for v in self.args)
+        return self.kind in ("call", "member", "construct", "function", "container", "dynamic_name", "qualified", "array", "object", "enumeration_string", "primitive_conversion", "descendant") or any(v.effectful for v in self.args)
 
 
 def name(text, pc=-1):
@@ -84,6 +84,11 @@ def render(value):
             return receiver + "." + key.literal
         identifier = key.kind == "literal" and isinstance(key.literal,str) and (key.literal.isidentifier() or value.binding is not None and source_identifier(key.literal))
         return f"{receiver}.{key.literal}" if identifier else f"{receiver}[{render(key)}]"
+    if value.kind == "descendant":
+        obj, key = value.args
+        receiver = "(" + render(obj) + ")" if obj.kind in ("object", "function") else render(obj)
+        identifier = key.kind == "literal" and isinstance(key.literal, str) and (key.literal.isidentifier() or key.literal == "*")
+        return f"{receiver}..{key.literal}" if identifier else f"{receiver}..[{render(key)}]"
     if value.kind == "array":
         return "[" + ", ".join(render(v) for v in value.args) + "]"
     if value.kind == "object":

@@ -200,7 +200,9 @@ def as3_regions(instructions, lifter):
         ordered = sorted(group, key=lambda item: item[1].target_offset)
         normal = next((i.args[0] for i in instructions if stop <= i.pc < ordered[0][1].target_offset and i.op == "jump"), None)
         if normal is None:
-            raise ReconstructionError("No proven normal exit for catch region")
+            # Fallback when all paths in try end with return/throw: look for catch exits or end of catch handlers
+            catch_exits = [i.args[0] for i in instructions if ordered[0][1].target_offset <= i.pc and i.op == "jump"]
+            normal = catch_exits[-1] if catch_exits else ordered[-1][1].target_offset
         catches = []
         for position, (_, caught) in enumerate(ordered):
             end = ordered[position + 1][1].target_offset if position + 1 < len(ordered) else normal

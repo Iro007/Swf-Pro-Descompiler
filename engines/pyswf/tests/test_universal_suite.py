@@ -127,3 +127,12 @@ def test_comparison_keeps_unavailable_engines(suite):
     assert [r['engine'] for r in results['results']] == ['python', 'rust', 'jpexs']
     assert results['results'][0]['source']
     assert results['parity'] is False and results['superiority'] is False
+
+
+def test_export_native_xfl(suite, tmp_path):
+    out_dir = tmp_path / 'exported_xfl'
+    res = suite.export({'format': 'xfl', 'path': str(out_dir)})
+    assert res['engine'] == 'python'
+    assert Path(res['path']).is_dir()
+    assert (out_dir / 'DOMDocument.xml').exists()
+

@@ -900,6 +900,10 @@ class UniversalSuite:
             if isinstance(data, tuple):
                 data = data[0]
             return {"path": publish(destination, data), "engine": "python", "animate_compatible": False, "diagnostics": []}
+        if format_ == "xfl":
+            from .export_xfl import export_xfl
+            published = export_xfl(self.movie(), destination)
+            return {"path": published, "engine": "python", "log": "Exportado con el motor nativo PySWF XFL.", "diagnostics": [], "animate_compatibility": "exported_native"}
         if format_ in ("fla", "xfl", "scripts", "xml"):
             with tempfile.TemporaryDirectory(prefix="flash-export-") as temporary:
                 folder = Path(temporary)
@@ -956,12 +960,19 @@ class UniversalSuite:
         if args.get("operation") == "replace-image":
             if tag.tag_type not in (20, 21, 35, 36):
                 raise ValueError("Este formato de imagen no admite reemplazo nativo")
+            if "data_base64" in args:
+                img_data = base64.b64decode(args["data_base64"])
+                ext = str(args.get("ext", "png")).lower().lstrip(".")
+            else:
+                img_data = read_bounded(args["path"])
+                ext = Path(args["path"]).suffix.lower().lstrip(".")
+            import io
             from PIL import Image
-            with Image.open(args["path"]) as image:
+            with Image.open(io.BytesIO(img_data)) as image:
                 if image.width * image.height > 16 * 1024**2:
                     raise ValueError("Imagen superior al límite de 16 megapíxeles")
             from .resources import replace_image
-            replacement = replace_image(tag, read_bounded(args["path"]), Path(args["path"]).suffix.lstrip("."))
+            replacement = replace_image(tag, img_data, ext)
             if replacement is None:
                 raise ValueError("Imagen incompatible")
             movie.tags[index] = replacement
@@ -969,7 +980,13 @@ class UniversalSuite:
             from .sounds import replace_define_sound
             if tag.tag_type != 14:
                 raise ValueError("Selecciona un DefineSound")
-            movie.tags[index] = replace_define_sound(tag, read_bounded(args["path"]), Path(args["path"]).suffix.lstrip("."))
+            if "data_base64" in args:
+                snd_data = base64.b64decode(args["data_base64"])
+                ext = str(args.get("ext", "mp3")).lower().lstrip(".")
+            else:
+                snd_data = read_bounded(args["path"])
+                ext = Path(args["path"]).suffix.lower().lstrip(".")
+            movie.tags[index] = replace_define_sound(tag, snd_data, ext)
         elif args.get("operation") == "text":
             from .text_fonts import replace_edit_text_string
             if tag.tag_type != 37:
@@ -1275,7 +1292,10 @@ class UniversalSuite:
             if len(data) > 5 * 1024**2:
                 raise ValueError("La previsualización integrada admite SWF de hasta 5 MiB por transporte; usa el runtime externo para archivos mayores")
             return {"data": base64.b64encode(data).decode("ascii"), "filename": self.project.filename, "sha256": sha(data)}
-        if operation == "resource_edit":
+        if operation in ("resource_edit", "replace_resource"):
+            if operation == "replace_resource" and "operation" not in args:
+                tag = self.movie().tags[int(args["tag_index"])]
+                args["operation"] = "replace-image" if tag.tag_type in (20, 21, 35, 36) else "replace-sound"
             return self.resource_edit(args)
         if operation == "tool_operation":
             return self.tool_operation(args)

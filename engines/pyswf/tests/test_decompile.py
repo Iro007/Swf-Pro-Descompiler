@@ -146,3 +146,12 @@ def test_avm2_reconstructs_lookup_switch_targets():
     assert "case 0:" in source
     assert "case 1:" in source
     assert "default:" in source
+
+
+def test_avm2_e4x_descendant_and_namespace():
+    from py_swf.decompile.ir import render, Value, literal, name
+    node = Value("descendant", "", (name("xml"), literal("item")))
+    assert render(node) == "xml..item"
+    node_wildcard = Value("descendant", "", (name("doc"), literal("*")))
+    assert render(node_wildcard) == "doc..*"
+

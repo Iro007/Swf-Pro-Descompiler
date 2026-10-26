@@ -30,7 +30,7 @@ export const engineName=(line:{engine:string;name?:string})=>displayEngineName(l
  * eight decompilers take one each (JPEXS included: it competes like the others); the engines of other categories never share
  * a chart with a decompiler except PySWF, so the tools that only appear in one category reuse slots.
  */
-const slots:Record<string,number>={native:1,rust:2,go:3,js:4,flare:5,pyflashkit:6,asm:7,jpexs:8,flex:7,rascal:6,haxe:2,rabcdasm:3,flasm:5,swfmill:7,swfextract:6,flex_swfdump:4,mtasc:4};
+const slots:Record<string,number>={native:1,rust:2,go:3,js:4,flare:5,pyflashkit:6,asm:7,jpexs:8,as3_sorcerer:1,asv:2,sothink:3,trillix:4,decompiler_com:5,flex:7,rascal:6,haxe:2,rabcdasm:3,flasm:5,swfmill:7,swfextract:6,flex_swfdump:4,mtasc:4};
 export const slotOf=(engine:string)=>slots[engine]??1+[...engine].reduce((sum,char)=>sum+char.charCodeAt(0),0)%8;
 
 /* ---- numbers in Spanish ---- */
@@ -358,7 +358,7 @@ export function highlights(results:BenchResults):Highlight[]{
   ];
 }
 
-/* ---- scatter: closeness to JPEXS against speed ---- */
+/* ---- scatter: Flash Index / semantic fidelity against speed ---- */
 
 export interface Dot {key:string;engine:string;label:string;x:number;y:number;slot:number;reference:boolean;muted:boolean;aria:string;tip:Tip}
 /** One dot per measured engine that has both figures; the ones measured on other cases are marked, never dropped. */
@@ -366,13 +366,20 @@ export function scatterDots(table:BenchTable):Dot[]{
   const found=classify(table);
   const total=table.corpus_cases??Math.max(0,...found.measured.map(line=>line.cases));
   return found.measured.flatMap(line=>{
-    const x=metrics.speed.value(line),y=metrics.closeness.value(line);
+    const x=metrics.speed.value(line);
+    const y=metrics.index.value(line)??(typeof line.same_trace==='boolean'?(line.same_trace?100:0):null);
     if(x===null||y===null||x<=0)return [];
-    const muted=!found.ranked.includes(line)&&!line.reference&&found.mode==='ranked';
+    const muted=!found.ranked.includes(line)&&found.mode==='ranked';
     const label=engineName(line);
-    const lines=[casesText(line,total),...(line.reference?['Referencia: vale 100 % por definición']:muted?['Medido sobre otros casos: no se ordena con el resto']:[])];
-    const value=`${exactLabel('percent',y)} · ${secondsLabel(x)}`;
-    return [{key:line.engine,engine:line.engine,label,x,y,slot:slotOf(line.engine),reference:!!line.reference,muted,
-      aria:`${label}: cercanía a JPEXS ${exactLabel('percent',y)}, ${secondsLabel(x)} por caso. ${lines.join('. ')}`,tip:{title:label,value,lines}}];
+    const closenessVal=metrics.closeness.value(line);
+    const lines=[
+      casesText(line,total),
+      `Índice Flash: ${exactLabel('index',y)}`,
+      ...(closenessVal!==null?[`Paridad textual con JPEXS: ${exactLabel('percent',closenessVal)}`]:[]),
+      ...(line.reference?['JPEXS: compite como herramienta externa']:muted?['Medido sobre otros casos: no se ordena con el resto']:[])
+    ];
+    const value=`Índice ${exactLabel('index',y)} · ${secondsLabel(x)}`;
+    return [{key:line.engine,engine:line.engine,label,x,y,slot:slotOf(line.engine),reference:false,muted,
+      aria:`${label}: Índice Flash ${exactLabel('index',y)}, ${secondsLabel(x)} por caso. ${lines.join('. ')}`,tip:{title:label,value,lines}}];
   });
 }

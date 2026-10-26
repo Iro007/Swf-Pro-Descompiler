@@ -157,7 +157,7 @@ export default function BenchTable({category,table,rows}:{category:string;table:
         </table>
       </div>}
     <Reasons table={table}/>
-    {decompilers?<p className="bench-note">Las columnas de JPEXS miden parecido con la referencia, no corrección, y no entran en el Índice Flash, que se calcula con {terms||'los términos que la corrida midió'}. El ganador de la tabla se decide solo por comportamiento (recompila y misma traza en Ruffle); el índice ordena la clasificación pero no lo reemplaza. «—» indica que no hay medida: JPEXS no estaba disponible, ninguna unidad verificada coincide o la corrida no midió tiempos, unidades, fidelidad por unidad ni robustez.</p>:null}
+    {decompilers?<p className="bench-note">Las columnas de paridad con JPEXS miden parecido sintáctico con esa herramienta externa, no corrección semántica, y no entran en el Índice Flash, que se calcula con {terms||'los términos que la corrida midió'}. La fidelidad real se juzga por comportamiento ejecutable (recompila y misma traza en el oráculo Ruffle). «—» indica que no hay medida disponible para ese motor o métrica.</p>:null}
     <p className="bench-note">{best?`${category==='robustness'?'Más robusto':category==='unit_fidelity'?'Más fiel por unidad':'Mejor por comportamiento'}: ${engineName(best)}.`:table.note}</p>
   </details>;
 }

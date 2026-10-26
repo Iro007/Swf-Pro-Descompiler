@@ -604,22 +604,91 @@ class ABCFile:
         self.major_version = reader.read_u16()
         self.constant_pool = parse_constant_pool(reader, self.major_version, self.minor_version)
         
+        self.parse_error = None
         method_count = reader.read_u30()
-        self.methods = [parse_method_info(reader) for _ in range(method_count)]
+        self.methods = []
+        for _ in range(method_count):
+            try:
+                self.methods.append(parse_method_info(reader))
+            except Exception as err:
+                if strict:
+                    raise
+                self.parse_error = f"truncated method info at {len(self.methods)}: {err}"
+                return
         
-        metadata_count = reader.read_u30()
-        self.metadata = [parse_metadata_info(reader) for _ in range(metadata_count)]
+        try:
+            metadata_count = reader.read_u30()
+        except Exception as err:
+            if strict: raise
+            self.parse_error = f"truncated metadata count: {err}"
+            return
+        self.metadata = []
+        for _ in range(metadata_count):
+            try:
+                self.metadata.append(parse_metadata_info(reader))
+            except Exception as err:
+                if strict:
+                    raise
+                self.parse_error = f"truncated metadata info at {len(self.metadata)}: {err}"
+                return
         
-        instance_count = reader.read_u30()
-        self.instances = [parse_instance_info(reader) for _ in range(instance_count)]
+        try:
+            instance_count = reader.read_u30()
+        except Exception as err:
+            if strict: raise
+            self.parse_error = f"truncated instance count: {err}"
+            return
+        self.instances = []
+        for _ in range(instance_count):
+            try:
+                self.instances.append(parse_instance_info(reader))
+            except Exception as err:
+                if strict:
+                    raise
+                self.parse_error = f"truncated instance info at {len(self.instances)}: {err}"
+                return
         
-        self.classes = [parse_class_info(reader) for _ in range(instance_count)]
+        self.classes = []
+        for _ in range(len(self.instances)):
+            try:
+                self.classes.append(parse_class_info(reader))
+            except Exception as err:
+                if strict:
+                    raise
+                self.parse_error = f"truncated class info at {len(self.classes)}: {err}"
+                return
         
-        script_count = reader.read_u30()
-        self.scripts = [parse_script_info(reader) for _ in range(script_count)]
+        try:
+            script_count = reader.read_u30()
+        except Exception as err:
+            if strict: raise
+            self.parse_error = f"truncated script count: {err}"
+            return
+        self.scripts = []
+        for _ in range(script_count):
+            try:
+                self.scripts.append(parse_script_info(reader))
+            except Exception as err:
+                if strict:
+                    raise
+                self.parse_error = f"truncated script info at {len(self.scripts)}: {err}"
+                return
         
-        method_body_count = reader.read_u30()
-        self.method_bodies = [parse_method_body_info(reader) for _ in range(method_body_count)]
+        try:
+            method_body_count = reader.read_u30()
+        except Exception as err:
+            if strict: raise
+            self.parse_error = f"truncated method body count: {err}"
+            return
+        self.method_bodies = []
+        for _ in range(method_body_count):
+            try:
+                self.method_bodies.append(parse_method_body_info(reader))
+            except Exception as err:
+                if strict:
+                    raise
+                self.parse_error = f"truncated method bodies at {len(self.method_bodies)}: {err}"
+                break
         if strict and reader.offset != len(data):
             raise ValueError("Trailing data after ABC structure")
 

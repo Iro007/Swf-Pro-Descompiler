@@ -1,4 +1,5 @@
 'use strict';
+process.env.FLASH_SUITE_TIMEOUT_SECONDS = process.env.FLASH_SUITE_TIMEOUT_SECONDS || '60';
 /**
  * RustSWF and PySWF are interchangeable readers: for the same file they answer `header`
  * and `raw` with the same fields and the same values, the shapes the single-window

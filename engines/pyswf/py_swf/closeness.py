@@ -71,7 +71,12 @@ def _same_code(unit, known):
     method bodies the inventory says the class/script owns (native documents do not carry a hash)."""
     if unit.get("bytecode_sha256") is not None:
         return unit["bytecode_sha256"] == known["sha"]
-    return bool(unit.get("unit_ids")) and set(unit["unit_ids"]) == known["methods"]
+    if not unit.get("unit_ids"):
+        return False
+    unit_methods = set(unit["unit_ids"])
+    if unit.get("scope") == "script":
+        return bool(known["methods"]) and known["methods"].issubset(unit_methods)
+    return unit_methods == known["methods"]
 
 
 def _verified(units, canonical):

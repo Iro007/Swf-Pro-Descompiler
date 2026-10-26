@@ -115,11 +115,11 @@ export function DecompilersSection({results}:{results:BenchResults}){
     </header>
     <div className="bench-grid">
       {[metrics.source,metrics.recompiles,metrics.trace,metrics.units,metrics.closeness,metrics.coverage,metrics.speed].map(metric=><MetricPanel key={metric.id} results={results} table={table} metric={metric}/>)}
-      <Panel title="Cercanía a JPEXS frente a velocidad" span2
-        note={`Cada punto es un motor: arriba, más parecido a JPEXS; a la izquierda, más rápido (mediana de segundos por caso, con el arranque del motor, en escala logarítmica). El rombo es JPEXS, la referencia de cercanía; los puntos huecos se midieron sobre otros casos. Mide parecido y velocidad, no corrección: léase junto al Índice Flash. ${sampleOf(results,table)}`}>
+      <Panel title="Fidelidad semántica frente a velocidad" span2
+        note={`Cada punto es un motor: arriba, mayor fidelidad de comportamiento (Índice Flash según el oráculo Ruffle, de 0 a 100); a la izquierda, más rápido (mediana de segundos por caso, con el arranque del motor, en escala logarítmica). JPEXS compite en igualdad de condiciones como una herramienta externa más. ${sampleOf(results,table)}`}>
         {dots.length>1
-          ?<ScatterChart title="Cercanía a JPEXS frente a segundos por caso, por motor" dots={dots}/>
-          :<Empty>Sin datos en esta corrida: hacen falta al menos dos motores con tiempos y con cercanía a JPEXS.</Empty>}
+          ?<ScatterChart title="Fidelidad frente a segundos por caso, por motor" yAxisLabel="Índice Flash / Oráculo Ruffle" dots={dots}/>
+          :<Empty>Sin datos en esta corrida: hacen falta al menos dos motores con tiempos y con índice/fidelidad.</Empty>}
       </Panel>
     </div>
     <Unmeasured lines={unmeasured}/>

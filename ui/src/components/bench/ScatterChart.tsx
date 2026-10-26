@@ -36,7 +36,7 @@ function placeLabels(spots:Spot[],left:number,right:number,top:number,bottom:num
  * Closeness to JPEXS (up) against seconds per case (right, logarithmic): the engines at the top left are the most
  * similar to the reference and the fastest. Every dot carries the name of its engine; the dot nearest the pointer answers.
  */
-export default function ScatterChart({title,dots}:{title:string;dots:Dot[]}){
+export default function ScatterChart({title,yAxisLabel='Fidelidad (Índice Flash / Oráculo Ruffle)',dots}:{title:string;yAxisLabel?:string;dots:Dot[]}){
   const [ref,width]=useWidth();
   const {engine:focus,set}=useFocus();
   const id=useId().replace(/:/g,'');
@@ -57,7 +57,7 @@ export default function ScatterChart({title,dots}:{title:string;dots:Dot[]}){
     const best=spots.map(spot=>({spot,distance:Math.hypot(spot.px-x,spot.py-y)})).sort((a,b)=>a.distance-b.distance)[0];
     if(best&&best.distance<=48)show(best.spot);else hide();
   };
-  const summary=`Cada punto es un motor. ${dots.map(dot=>`${dot.label}: cercanía ${Math.round(dot.y)} %, ${secondsLabel(dot.x)} por caso`).join('; ')}.`;
+  const summary=`Cada punto es un motor. ${dots.map(dot=>`${dot.label}: fidelidad ${Math.round(dot.y)}/100, ${secondsLabel(dot.x)} por caso`).join('; ')}.`;
 
   return <div className="bench-chart" ref={ref}>
     <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} role="group" aria-labelledby={`${id}t`} aria-describedby={`${id}d`} onKeyDown={moveBetweenMarks}>
@@ -72,7 +72,7 @@ export default function ScatterChart({title,dots}:{title:string;dots:Dot[]}){
         <text className="bc-tick" x={sx(tick)} y={bottom+16} textAnchor="middle">{tickLabel('seconds',tick)}</text>
       </g>)}
       <text className="bc-axis" x={(left+right)/2} y={height-8} textAnchor="middle">Segundos por caso (mediana, escala logarítmica): más a la izquierda, más rápido</text>
-      <text className="bc-axis" transform={`rotate(-90 12 ${(top+bottom)/2})`} x={12} y={(top+bottom)/2} textAnchor="middle">Cercanía a JPEXS</text>
+      <text className="bc-axis" transform={`rotate(-90 12 ${(top+bottom)/2})`} x={12} y={(top+bottom)/2} textAnchor="middle">{yAxisLabel}</text>
       <rect className="bc-hit" x={left} y={top} width={right-left} height={bottom-top} onPointerMove={nearest} onPointerLeave={hide}/>
       {spots.map((spot,index)=>{
         const {dot}=spot,label=labels[index];

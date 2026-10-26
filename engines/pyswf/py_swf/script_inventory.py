@@ -363,8 +363,7 @@ def enumerate_scripts(movie: SWFFile | bytes, *, max_depth=32, max_units=100000,
             path = (*parent, index)
             prefix = "tag:" + "/".join(map(str, path))
             try:
-                if tag.parse_error:
-                    raise ValueError(tag.parse_error)
+                has_tag_error = tag.parse_error
                 if tag.tag_type == 39:
                     if len(tag.data) < 4:
                         raise ValueError("Truncated sprite header")
@@ -374,13 +373,18 @@ def enumerate_scripts(movie: SWFFile | bytes, *, max_depth=32, max_units=100000,
                 if tag.is_doabc:
                     parsed = tag.parse_doabc()
                     if parsed is None:
-                        raise ValueError("Malformed ABC tag")
+                        raise ValueError(has_tag_error or "Malformed ABC tag")
                     abc = ABCFile()
                     abc.parse(parsed[2])
                     names = build_method_mapping(abc)
                     for body_index, body in enumerate(abc.method_bodies):
                         method_index = body.method
                         units.append(ScriptUnit(prefix + f"/method:{method_index}", path, "as3", "method", names.get(method_index, f"method_{method_index}"), body.code, tag, abc, body, body_index, method_index, byte_end=len(body.code)))
+                    if has_tag_error or getattr(abc, "parse_error", None):
+                        diag = has_tag_error or getattr(abc, "parse_error", None)
+                        units.append(ScriptUnit(prefix + "/diagnostic", path, "as3", "diagnostic", tag.name, tag=tag, diagnostic=str(diag)))
+                elif tag.parse_error:
+                    raise ValueError(tag.parse_error)
                 elif tag.tag_type in (12, 59):
                     start = 2 if tag.tag_type == 59 else 0
                     if len(tag.data) < start:

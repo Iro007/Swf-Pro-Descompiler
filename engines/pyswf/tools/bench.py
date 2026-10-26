@@ -371,7 +371,9 @@ def main():
     started = time.perf_counter()
     tables, all_rows = {}, {}
     judge_units = "unit_fidelity" in args.only
+    KNOWN_EXTERNAL_DECOMPILERS = ("as3_sorcerer", "asv", "sothink", "trillix", "decompiler_com")
     runnable = list(args.engines) + ([] if "jpexs" in args.engines else ["jpexs"])
+    all_decompiler_engines = list(runnable) + [e for e in KNOWN_EXTERNAL_DECOMPILERS if e not in runnable]
     pins = discover_pins(settings(runnable, args.job_timeout)) if {"decompilers", "unit_fidelity", "robustness"} & set(args.only) else None
 
     if "decompilers" in args.only or judge_units:
@@ -396,8 +398,23 @@ def main():
                     row = verdict(results[engine])
                     print("descompilador", case["family_id"], engine, row["same_trace"], flush=True)
                 case_rows[engine] = row
+            for ext in KNOWN_EXTERNAL_DECOMPILERS:
+                if ext not in case_rows:
+                    if ext in ("as3_sorcerer", "asv"):
+                        ext_diag = "Candidato con licencia restringida; no hay mediciones automatizadas en este equipo"
+                    elif ext in ("sothink", "trillix"):
+                        ext_diag = "Instalación comercial propietaria; pendiente de licencia autorizada"
+                    elif ext == "decompiler_com":
+                        ext_diag = "Servicio remoto de terceros; evaluado por separado con aprobación de corpus público"
+                    else:
+                        ext_diag = "Herramienta externa no configurada"
+                    case_rows[ext] = {
+                        "engine": ext, "family": case["family_id"], "case": case["relative"], "language": case["language"],
+                        "source": False, "recompiles": None, "same_trace": None, "measured": False, "seconds": None,
+                        "reason": ext_diag
+                    }
             # JPEXS ran once for this case: that job is its own row and the reference for the closeness of the rest.
-            for engine in runnable:
+            for engine in all_decompiler_engines:
                 row = case_rows[engine]
                 if engine in results:
                     row.update(units_row(results[engine], canonical))

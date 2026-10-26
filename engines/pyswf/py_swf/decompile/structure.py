@@ -425,22 +425,87 @@ class Structurer:
                     if value and value.kind in ("cast", "primitive_conversion"):
                         raise ReconstructionError("Enumeration binding conversion cannot be preserved by the header; use P-code")
                     same = lambda a, b: a.kind == b.kind == "name" and a.text == b.text
+
+                    nested_next = False
                     if not value or value.kind != "next" or not all(same(a, b) for a, b in zip(value.args, block.condition.args)):
-                        raise ReconstructionError("Enumeration body is not a proven nextname/nextvalue binding")
+                        def find_next(v):
+                            if v is None:
+                                return None
+                            if v.kind == "next" and all(same(a, b) for a, b in zip(v.args, block.condition.args)):
+                                return v
+                            for arg in getattr(v, "args", ()):
+                                found = find_next(arg)
+                                if found is not None:
+                                    return found
+                            return None
+
+                        def replace_next(v, rep):
+                            if v is None:
+                                return None
+                            if v.kind == "next" and all(same(a, b) for a, b in zip(v.args, block.condition.args)):
+                                return rep
+                            return replace(v, args=tuple(replace_next(arg, rep) for arg in v.args))
+
+                        candidate_val = find_next(binding.value if binding else None)
+                        if candidate_val is not None:
+                            value = candidate_val
+                            nested_next = True
+                        else:
+                            raise ReconstructionError("Enumeration body is not a proven nextname/nextvalue binding")
+
                     hidden = {v.text for v in block.condition.args}
-                    if hidden & binding.target.reads or any(hidden & s.value.reads or s.kind == "assign" and s.target.kind == "name" and s.target.text in hidden for m in members for s in self.blocks[m].statements if s is not binding and s.value):
+                    if nested_next:
+                        if self.fresh is None:
+                            raise ReconstructionError("Nested enumeration needs a hygienic temporary; use P-code")
+                        temporary = self.fresh(binding.pc)
+                        binding.value = replace_next(binding.value, temporary)
+                        target_reads = set()
+                    else:
+                        target_reads = binding.target.reads
+
+                    if hidden & target_reads or any(hidden & s.value.reads or s.kind == "assign" and s.target.kind == "name" and s.target.text in hidden for m in members for s in self.blocks[m].statements if s is not binding and s.value):
                         raise ReconstructionError("Enumeration registers have additional consumers")
                     raw_header = next((i for i in block.instructions if i.op == "hasnext2"), None)
                     if any(hidden & self.blocks[m].condition.reads for m in members - {pc} if self.blocks[m].condition) or raw_header is None or self.enumeration_registers_escape(outside[0], raw_header.args):
                         raise ReconstructionError("Enumeration registers escape the proven loop")
-                    if len(nodes) < 2 or not all(isinstance(n, Statement) and n.kind == "assign" for n in nodes[-2:]):
-                        raise ReconstructionError("Enumeration has no adjacent object/cursor initialization")
-                    cursor, obj = nodes[-2:]
-                    if cursor.target.text != block.condition.args[1].text or cursor.value.kind != "literal" or cursor.value.literal != 0 or obj.target.text != block.condition.args[0].text:
-                        raise ReconstructionError("Enumeration initialization differs from compiler pattern")
-                    del nodes[-2:]
+
+                    def is_zero_val(v, snapshots=None):
+                        if v is None:
+                            return False
+                        if v.kind == "literal" and v.literal == 0:
+                            return True
+                        if v.kind in ("cast", "primitive_conversion") and v.text in ("int", "uint", "Number") and v.args:
+                            return is_zero_val(v.args[0], snapshots)
+                        if snapshots and v.kind == "name" and v.text in snapshots:
+                            return is_zero_val(snapshots[v.text], snapshots)
+                        return False
+
+                    cur_name = block.condition.args[1].text
+                    obj_name = block.condition.args[0].text
+                    if len(nodes) >= 2 and isinstance(nodes[-2], Statement) and nodes[-2].kind == "assign" and nodes[-2].target.text == cur_name and is_zero_val(nodes[-2].value) and isinstance(nodes[-1], Statement) and nodes[-1].kind == "assign" and nodes[-1].target.text == obj_name:
+                        cursor, obj = nodes[-2:]
+                        del nodes[-2:]
+                    else:
+                        snapshots = {n.target.text: n.value for n in nodes if isinstance(n, Statement) and n.kind == "assign" and n.target.kind == "name" and n.target.text.startswith("$value")}
+                        obj_idx = next((i for i in range(len(nodes) - 1, -1, -1) if isinstance(nodes[i], Statement) and nodes[i].kind == "assign" and nodes[i].target.text == obj_name), None)
+                        cur_idx = next((i for i in range(len(nodes) - 1, -1, -1) if isinstance(nodes[i], Statement) and nodes[i].kind == "assign" and nodes[i].target.text == cur_name), None)
+                        if obj_idx is None or cur_idx is None or not is_zero_val(nodes[cur_idx].value, snapshots):
+                            raise ReconstructionError("Enumeration initialization differs from compiler pattern")
+                        cursor = nodes[cur_idx]
+                        obj = nodes[obj_idx]
+                        indices_to_del = {cur_idx, obj_idx}
+                        if cursor.value.kind == "name" and cursor.value.text.startswith("$value"):
+                            for i in range(cur_idx):
+                                if isinstance(nodes[i], Statement) and nodes[i].kind == "assign" and nodes[i].target.text == cursor.value.text:
+                                    indices_to_del.add(i)
+                        for i in sorted(indices_to_del, reverse=True):
+                            del nodes[i]
+
                     self.claimed.add(pc)
-                    if nullable_string:
+                    if nested_next:
+                        declaration = Statement("assign", Value("raw", "undefined"), temporary,
+                                                binding.pc, True, None)
+                    elif nullable_string:
                         if self.fresh is None:
                             raise ReconstructionError("Typed enumeration needs a hygienic temporary; use P-code")
                         # Preserve the original destination assignment in the

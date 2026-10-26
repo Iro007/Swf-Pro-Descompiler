@@ -54,6 +54,8 @@ def declaration_order(abc, body):
             continue
         if op in ("getlocal_0",) or op == "getlocal" and args == (0,):
             stack.append(("global",))
+        elif op == "getglobalscope":
+            stack.append(("global",))
         elif op == "getscopeobject":
             if not 0 <= args[0] < len(scopes):
                 raise ReconstructionError("Class bootstrap scope index is unresolved")

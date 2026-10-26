@@ -47,7 +47,18 @@ export default function SuiteBenchmarks(){
   const results=bench?.results??null;
   useEffect(()=>setHover(null),[results]);
   const cards=useMemo(()=>results?highlights(results):[],[results]);
-  const missing=engines.filter(item=>!item.configured);
+  const measuredEngineIds = useMemo(() => {
+    if (!results) return new Set<string>();
+    const set = new Set<string>();
+    for (const table of Object.values(results.tables)) {
+      for (const line of table.engines || []) {
+        if ((line.cases ?? 0) > 0) set.add(line.engine);
+      }
+    }
+    return set;
+  }, [results]);
+
+  const missing = engines.filter(item => !item.configured && !measuredEngineIds.has(item.id) && item.id !== 'ruffle');
   // The two new questions about the decompilers always get a section, with "sin datos en esta corrida" for a run that predates them.
   const categories=results?[...categoryOrder.filter(key=>key in results.tables||(decompilerQuestions.includes(key)&&'decompilers' in results.tables)),...Object.keys(results.tables).filter(key=>!categoryOrder.includes(key))]:[];
   const focus={engine:hover??pinned,set:setHover,pinned,pin:setPinned};
@@ -79,8 +90,8 @@ export default function SuiteBenchmarks(){
         <IndexSection results={results}/>
         {categories.map(key=>key==='decompilers'?<DecompilersSection key={key} results={results}/>:key==='robustness'?<RobustnessSection key={key} results={results}/>:key==='unit_fidelity'?<UnitFidelitySection key={key} results={results}/>:<CategorySection key={key} category={key} results={results}/>)}
       </>}
-      {missing.length?<section className="bench-section"><header className="bench-section-head"><div><h3>Sin medir en este equipo</h3></div></header>
-        <ul className="reasons">{missing.map(item=><li key={item.id}><strong>{item.name}</strong> · {item.setup_diagnostic??'sin configurar en este equipo'}</li>)}</ul></section>:null}
+      {missing.length?<section className="bench-section"><header className="bench-section-head"><div><h3>Herramientas de terceros no automatizadas</h3><p className="bench-lead">Herramientas propietarias comerciales o remotas que requieren licencia de pago o intervención manual:</p></div></header>
+        <ul className="reasons">{missing.map(item=><li key={item.id}><strong>{item.name}</strong> · {item.setup_diagnostic??'pendiente de instalación/licencia autorizada'}</li>)}</ul></section>:null}
     </div>
   </FocusContext.Provider>;
 }

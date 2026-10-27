@@ -750,20 +750,15 @@ class Lifter:
                     params = (receiver, *params)
                 stack.append(Value("call", "", (callee, *params), origin=pc))
             elif op == "dxns":
-                ns_uri = self.pool.strings[args[0]] if args[0] < len(self.pool.strings) else ""
-                emit(Statement("expr", Value("raw", f'default xml namespace = "{ns_uri}"', origin=pc), pc=pc))
+                if not 0 < args[0] < len(self.pool.strings):
+                    raise ReconstructionError(f"dxns names no string at {pc}; use P-code")
+                emit(Statement("expr", Value("raw", "default xml namespace = " + render(literal(self.pool.strings[args[0]])), origin=pc), pc=pc))
             elif op == "dxnslate":
                 val = pop()
                 emit(Statement("expr", Value("raw", f'default xml namespace = {render(val)}', origin=pc), pc=pc))
-            elif op == "checkfilter":
-                val = pop()
-                stack.append(val)
-            elif op == "esc_xelem":
-                val = pop()
-                stack.append(Value("call", "", (name("XML"), val), origin=pc))
-            elif op == "esc_xattr":
-                val = pop()
-                stack.append(Value("call", "", (name("escapeAttributeValue"), val), origin=pc))
+            elif op in ("esc_xelem", "esc_xattr"):
+                # Escapes of an interpolated XML literal ({x} inside <a>...</a>); no call expression means the same.
+                raise ReconstructionError(f"XML literal interpolation ({op}) needs P-code")
             else:
                 raise ReconstructionError(f"Unsupported AS3 operation {op} at {pc}")
         block.statements, block.term, block.condition = statements, term, condition

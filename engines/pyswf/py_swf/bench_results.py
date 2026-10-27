@@ -116,25 +116,26 @@ def robustness_score(outcomes):
 
 
 def unit_fidelity(counts):
-    """The share of judged units whose trace is the original's: same / (evaluated - not_run). A unit that is never
-    executed by the case's trace cannot be judged, so it is left out of the denominator; one that does not compile stays in.
-    None when no unit was judged."""
-    judged = sum(counts.get(name, 0) for name in ("same", "different", "no_compile"))
+    """The share of judged units whose trace is the original's: same / (same + different). A unit that is never
+    executed by the case's trace cannot be judged, and neither can one the judging compiler (PySWF's single-unit path)
+    refuses: that measures the judge's compiler, not the engine, and whether an engine's source compiles is already
+    measured by "recompiles" with independent compilers. Both stay out of the denominator. None when no unit was judged."""
+    judged = sum(counts.get(name, 0) for name in ("same", "different"))
     return counts.get("same", 0) / judged if judged else None
 
 
 def component_shares(line):
     """Each term of the Índice Flash for a decompiler line, as a share from 0 to 1; None where the run did not measure it.
 
-    An engine that was measured for per-unit fidelity but had no unit to judge (nothing it emitted could be compiled
-    alone and run) scores 0 there: there is no source whose behaviour is known."""
+    An engine that was measured for per-unit fidelity but had no unit to judge has no value there (None), so the term
+    leaves the index of the run (see `index_components`) instead of scoring 0 for what the judge could not compile."""
     cases = line.get("cases")
     shares = dict.fromkeys(INDEX_COMPONENTS)
     if cases:
         shares.update(source=line["source"] / cases, recompiles=line["recompiles"] / cases, same_trace=line["same_trace"] / cases)
     shares["units"] = line.get("unit_coverage")
     fidelity = line.get("unit_fidelity")
-    shares["unit_fidelity"] = fidelity if fidelity is not None else (0.0 if line.get("unit_fidelity_cases") else None)
+    shares["unit_fidelity"] = fidelity
     robustness = line.get("robustness")
     shares["robustness"] = None if robustness is None else robustness / 100
     return shares

@@ -72,7 +72,7 @@ const termNotes:Record<string,string>={
   recompiles:'casos en que ese fuente compila con un compilador independiente (Flex para AS3, Rascal para AS2).',
   same_trace:'casos en que, además, Ruffle imprime la misma traza que el SWF original.',
   units:'media, por caso, de las unidades del propio SWF (clases, scripts y acciones de su inventario ABC y AVM1) para las que el motor emitió fuente verificado.',
-  unit_fidelity:'unidades (clases, métodos y acciones) cuyo fuente, compilado solo con el compilador de PySWF y empalmado en el SWF original, imprime la misma traza: misma / (evaluadas − no ejecutadas). Un motor sin ninguna unidad juzgada puntúa 0.',
+  unit_fidelity:'unidades (clases, métodos y acciones) cuyo fuente, compilado solo con el compilador de PySWF y empalmado en el SWF original, imprime la misma traza: misma / (misma + otra traza). Las que el compilador juez no acepta («no compila») y las que no se ejecutan quedan fuera: miden al juez, no al motor (si su fuente compila ya lo mide «Recompila»). Sin ninguna unidad juzgada no hay nota y el término sale del índice.',
   robustness:'nota de 0 a 100 sobre los archivos dañados (truncados o corruptos): recuperó y avisó 100, dio salida sin avisar 60, error claro 40, caída o cuelgue 0; la media de todos los archivos.'};
 
 /** The headline: decompilers by the Índice Flash, with how it is computed and which terms this run includes. */

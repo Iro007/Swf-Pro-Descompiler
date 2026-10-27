@@ -470,7 +470,7 @@ def counts(items):
 
 def line_counts(units):
     evaluated = sum(units.values())
-    return {**units, "evaluated": evaluated, "judged": evaluated - units["not_run"], "fidelity": unit_fidelity(units)}
+    return {**units, "evaluated": evaluated, "judged": units["same"] + units["different"], "fidelity": unit_fidelity(units)}
 
 
 def table(rows, out_of_scope=None):

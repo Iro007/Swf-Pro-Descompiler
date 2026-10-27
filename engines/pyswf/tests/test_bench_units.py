@@ -260,7 +260,7 @@ def test_a_source_that_does_not_compile_or_behaves_differently_is_counted_agains
     assert row["units"] == {"same": 0, "different": 1, "no_compile": 1, "not_run": 1}, row
     assert outcomes == {"tag:6/method:5": "different", "tag:6/method:4": "no_compile", "tag:6/method:7": "not_run"}
     assert "super" in next(d["reason"] for d in row["details"] if d["outcome"] == "no_compile")
-    assert units.line_counts(row["units"])["fidelity"] == 0.0 and units.line_counts(row["units"])["judged"] == 2
+    assert units.line_counts(row["units"])["fidelity"] == 0.0 and units.line_counts(row["units"])["judged"] == 1, "no_compile is not judged"
 
 
 def test_source_with_the_wrong_hash_or_that_is_not_source_is_not_judged():
@@ -295,12 +295,12 @@ def test_the_table_counts_fidelity_by_kind_and_ranks_only_engines_judged_on_the_
     result = units.table(rows, {"units": 7, "reasons": {"cierres con activación": 7}})
     by = {line["engine"]: line for line in result["engines"]}
     assert (by["native"]["same"], by["native"]["different"], by["native"]["no_compile"], by["native"]["not_run"]) == (7, 1, 2, 3)
-    assert (by["native"]["evaluated"], by["native"]["judged"]) == (13, 10) and by["native"]["fidelity"] == 0.7
-    assert by["native"]["by_kind"]["method"]["fidelity"] == 5 / 8 and by["native"]["by_kind"]["class"]["fidelity"] is None
-    assert by["jpexs"]["fidelity"] == 0.5 and by["jpexs"]["cases"] == 2
+    assert (by["native"]["evaluated"], by["native"]["judged"]) == (13, 8) and by["native"]["fidelity"] == 7 / 8
+    assert by["native"]["by_kind"]["method"]["fidelity"] == 5 / 6 and by["native"]["by_kind"]["class"]["fidelity"] is None
+    assert by["jpexs"]["fidelity"] == 1.0 and by["jpexs"]["cases"] == 2
     assert by["flare"]["cases"] == 1 and by["flare"]["fidelity"] == 1.0 and by["flare"]["reasons"] == ["no lee AS3"]
     assert [by[e]["comparable"] for e in ("native", "jpexs", "flare")] == [True, True, False]
-    assert [line["engine"] for line in result["engines"]] == ["native", "jpexs", "flare"]
+    assert [line["engine"] for line in result["engines"]] == ["jpexs", "native", "flare"]
     assert result["winner"] is None and "sin ganador" in result["note"], "a lead of 0.2 over 4 judged units is not one unit"
     assert result["corpus_cases"] == 2 and result["out_of_scope"]["units"] == 7 and set(result["kinds"]) == set(units.KINDS)
 

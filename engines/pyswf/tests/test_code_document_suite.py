@@ -74,9 +74,8 @@ def test_partial_read_document_cannot_be_recompiled(tmp_path):
     abc = program.abc
     from tests.test_parity_class_documents import method_for
     body = method_for(abc, 0, 'f')
-    abc.constant_pool.strings.append('uri')
-    body.code = assemble_instructions(abc.constant_pool, 'pushbyte 2\ndxns ' + str(len(abc.constant_pool.strings) - 1) + '\nreturnvalue')
-    abc.methods[body.method].flags |= 0x40
+    # An escaped XML literal interpolation has no source form the decompiler can prove, so the class stays partial.
+    body.code = assemble_instructions(abc.constant_pool, 'pushbyte 2\nesc_xelem\nreturnvalue')
     original = tmp_path / 'partial.swf'
     original.write_bytes(swf_for(abc))
     suite = UniversalSuite(tmp_path / 'state')

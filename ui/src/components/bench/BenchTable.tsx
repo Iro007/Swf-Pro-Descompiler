@@ -93,7 +93,7 @@ function UnitsTable({table,rows}:{table:Table;rows?:BenchRow[]}){
         <caption className="bench-sr">Resultados de {table.unit}</caption>
         <thead><tr><th scope="col">Motor</th><th scope="col">Casos</th><th scope="col">Evaluadas</th><th scope="col">Misma traza</th><th scope="col">Otra traza</th><th scope="col">No compila</th>
           <th scope="col" title="La traza del caso nunca ejecuta la unidad: no se juzga">No se ejecuta</th>
-          <th scope="col" title="Misma traza / (evaluadas − no se ejecuta)">Fidelidad</th>
+          <th scope="col" title="Misma traza / (misma + otra traza); no compila y no se ejecuta quedan fuera">Fidelidad</th>
           {kinds.map(kind=><th key={kind} scope="col" title={`Fidelidad de ${table.kinds![kind].toLowerCase()}`}>{table.kinds![kind]}</th>)}</tr></thead>
         <tbody>{table.engines.map(line=>{
           const win=line.engine===table.winner;

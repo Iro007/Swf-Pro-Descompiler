@@ -142,8 +142,9 @@ def decompiler(engine, cases=6, same=3, units=0.5, fidelity=None, robustness=Non
 
 
 def test_the_unit_fidelity_of_a_set_of_units_leaves_out_the_ones_the_trace_never_runs():
-    assert unit_fidelity({"same": 3, "different": 1, "no_compile": 0, "not_run": 6}) == 0.75, "same / (evaluated - not_run)"
-    assert unit_fidelity({"same": 2, "different": 0, "no_compile": 2, "not_run": 0}) == 0.5, "a unit that does not compile stays in the denominator"
+    assert unit_fidelity({"same": 3, "different": 1, "no_compile": 0, "not_run": 6}) == 0.75, "same / (same + different)"
+    assert unit_fidelity({"same": 2, "different": 0, "no_compile": 2, "not_run": 0}) == 1.0, "what the judge's compiler refuses is not judged"
+    assert unit_fidelity({"same": 0, "different": 0, "no_compile": 3, "not_run": 0}) is None, "only refused units: nothing judged"
     assert unit_fidelity({"same": 0, "different": 0, "no_compile": 0, "not_run": 5}) is None, "nothing judged, nothing to be faithful about"
     assert unit_fidelity({}) is None and unit_fidelity({"same": 4}) == 1.0
 
@@ -153,7 +154,7 @@ def test_the_six_terms_of_the_index_and_who_has_which():
     shares = component_shares(decompiler("native", fidelity=0.8, robustness=60.0))
     assert shares == {"source": 0.5, "recompiles": 0.5, "same_trace": 0.5, "units": 0.5, "unit_fidelity": 0.8, "robustness": 0.6}
     nothing_judged = component_shares({**decompiler("rust"), "unit_fidelity": None, "unit_fidelity_cases": 6})
-    assert nothing_judged["unit_fidelity"] == 0.0, "measured but no unit judged: no source whose behaviour is known"
+    assert nothing_judged["unit_fidelity"] is None, "measured but nothing judged: no value, the term leaves the index"
     assert component_shares(decompiler("rust"))["unit_fidelity"] is None and component_shares(decompiler("rust"))["robustness"] is None
 
 

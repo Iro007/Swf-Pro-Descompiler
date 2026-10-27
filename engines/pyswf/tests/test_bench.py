@@ -252,10 +252,10 @@ def test_a_term_one_ranked_engine_lacks_is_left_out_for_all_of_them():
               "unit_fidelity": table_of([{"engine": "native", "cases": 4, "fidelity": 0.5, "judged": 3}, {"engine": "jpexs", "cases": 4, "fidelity": None, "judged": 0}])}
     bench.link_index(tables)
     decompilers = tables["decompilers"]
-    assert decompilers["index_components"] == ["source", "recompiles", "same_trace", "units", "unit_fidelity"], "jpexs has no robustness figure"
+    assert decompilers["index_components"] == ["source", "recompiles", "same_trace", "units"], "jpexs has no robustness figure nor a judged unit"
     jpexs = line_of(decompilers, "jpexs")
     assert jpexs["unit_fidelity"] is None and jpexs["unit_fidelity_cases"] == 4
-    assert jpexs["flash_index"] == round(100 * (1 + 1 + 1 + 1 + 0.0) / 5, 1), "measured but nothing judged: 0 in the index"
+    assert jpexs["flash_index"] == round(100 * (1 + 1 + 1 + 1) / 4, 1), "measured but nothing judged: the term leaves the index for all"
     assert jpexs["robustness"] is None and jpexs["robustness_cases"] == 0
 
 

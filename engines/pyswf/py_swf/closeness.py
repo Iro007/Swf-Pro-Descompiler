@@ -68,15 +68,19 @@ def similarity(a, b):
 
 def _same_code(unit, known):
     """Hash equality when the engine reports one; otherwise the engine must name exactly the
-    method bodies the inventory says the class/script owns (native documents do not carry a hash)."""
+    method bodies the inventory says the class/script owns (native documents do not carry a hash).
+    A script document also carries the methods of the classes it defines, so it may name more; that
+    looser match only counts when the engine itself says the script's source is complete, since a
+    partial script (P-code where it could not rebuild source) is not source for the whole script."""
     if unit.get("bytecode_sha256") is not None:
         return unit["bytecode_sha256"] == known["sha"]
     if not unit.get("unit_ids"):
         return False
     unit_methods = set(unit["unit_ids"])
-    if unit.get("scope") == "script":
-        return bool(known["methods"]) and known["methods"].issubset(unit_methods)
-    return unit_methods == known["methods"]
+    if unit_methods == known["methods"]:
+        return True
+    return (unit.get("scope") == "script" and unit.get("completeness") == "complete"
+            and bool(known["methods"]) and known["methods"].issubset(unit_methods))
 
 
 def _verified(units, canonical):

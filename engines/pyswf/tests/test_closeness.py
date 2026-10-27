@@ -88,3 +88,13 @@ def test_documents_without_a_hash_are_verified_by_the_methods_they_own(monkeypat
     wrong = {**owned, "unit_ids": ["tag:3/method:1"]}
     result = compare([wrong], reference, b"")
     assert result["matched"] == 0 and result["excluded"]["engine"] == 1
+
+
+def test_a_script_naming_its_classes_methods_counts_only_when_its_source_is_complete():
+    known = {"sha": "h", "methods": {"tag:3/method:9"}}
+    script = {"document_id": "tag:3/script:0", "scope": "script", "source": B, "unit_ids": ["tag:3/method:1", "tag:3/method:9"]}
+    assert closeness._same_code({**script, "completeness": "complete"}, known)
+    assert not closeness._same_code({**script, "completeness": "partial"}, known), "a partial script is not source for it"
+    assert not closeness._same_code({**script, "completeness": None}, known)
+    assert not closeness._same_code({**script, "scope": "class", "completeness": "complete"}, known), "classes still match exactly"
+    assert closeness._same_code({**script, "unit_ids": ["tag:3/method:9"], "completeness": "partial"}, known), "an exact match as before"

@@ -142,7 +142,8 @@ def documents_of(result):
             except OSError:
                 text = None
         units.append({"document_id": document.get("document_id"), "scope": document.get("scope"),
-                      "bytecode_sha256": document.get("bytecode_sha256"), "unit_ids": document.get("unit_ids"), "source": text})
+                      "bytecode_sha256": document.get("bytecode_sha256"), "unit_ids": document.get("unit_ids"),
+                      "completeness": document.get("completeness"), "source": text})
     return units
 
 
